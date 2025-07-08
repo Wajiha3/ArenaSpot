@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
+import Check_In from './pages/Check_In';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/checkin" element={<Check_In />} />
         {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
