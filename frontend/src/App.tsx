@@ -4,6 +4,7 @@ import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import Welcome from './pages/Welcome';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
 
 
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/welcome" element={<Welcome />} />
         {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
