@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function match1() {
+function Match1() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState('Matches');
 
@@ -53,4 +53,4 @@ function match1() {
   );
 };
 
-export default match1;
+export default Match1;
