@@ -11,8 +11,8 @@ function Payment_Confirmation() {
      
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
        
-       <div className='w-[3.6rem] h-[5.4rem]'>
-            <button>{"< back"}</button>
+        <div className='flex items-center h-[34px]'>
+            <button className="text-white text-lg">{"< back"}</button>
         </div>
 
         <div className="h-[34px] flex gap-2">
