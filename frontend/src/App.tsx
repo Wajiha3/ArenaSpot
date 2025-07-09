@@ -16,11 +16,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-<<<<<<< HEAD
-        <Route path="/checkin" element={<Check_In />} />
-=======
         <Route path="/welcome" element={<Welcome />} />
->>>>>>> 154ec8b7b0764056720665524882401172974f2a
+        <Route path="/checkin" element={<Check_In />} />
         {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
