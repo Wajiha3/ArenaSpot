@@ -1,4 +1,5 @@
 const { insertUser, findUser, updateUser, deleteUser } = require('../data/user')
+const { authenticateToken } = require('./authToken')
 
 // variável de mensagens de erro
 const errors = {
@@ -77,13 +78,4 @@ async function loginUser (data) {
     return token ;
 }
 
-async function getUser (data) {
-
-    
-    return await findUser(data)
-}
-
-
-/*gamesPlayed, wins, losses, paymentToken*/
-
-module.exports = { createUser, loginUser, getUser }
+module.exports = { createUser, loginUser, }

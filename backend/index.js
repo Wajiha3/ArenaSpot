@@ -15,6 +15,7 @@ const cors = require('cors')
 app.use(cors());
 
 const { createUser, loginUser, getUser } = require('./services/user')
+const { authenticateToken } = require('./services/authToken')
 
 
 
@@ -52,7 +53,34 @@ app.post('/api/auth/login', async (req, res) => {
 
 
 app.get('/api/user/:id', async (req, res) => {
-   
+    try {
+        // Verificar token e obter o utilizador autenticado
+        const authenticatedUser = await authenticateToken(req);
+
+        const requestedId = req.params.id;
+
+        // Verificar se o utilizador autenticado está a aceder ao próprio perfil
+        if (authenticatedUser._id.toString() !== requestedId) {
+            return res.status(403).json({ message: "Forbidden Access." });
+        }
+
+        // Obter os dados do utilizador
+        const userData = await findUser({ _id: new ObjectId(requestedId) });
+
+        if (!userData) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        // Remover password antes de retornar
+        delete userData.password;
+
+        // Retorna o utilizador sem a password e depois de confirmado que está autenticado
+        return res.status(200).json(userData);
+
+        } catch (err) {
+        // Erros
+        return res.status(err.status || 500).json({ message: err.message || "Error." });
+    }
 })
 
 
