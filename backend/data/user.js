@@ -17,14 +17,14 @@ async function findUser (data) {
 }
 
 // Update User
-async function updateUser (data) {
+async function updateUser (filter, update) {
     const collection = await getCollection("user");
-    const result = await collection.updateOne(data)
+    const result = await collection.updateOne(filter, { $set: update })
     return result
 }
 
 // Delete User
-async function deleteUser(data) {
+async function deleteUser (data) {
     const collection = await getCollection("user");
     await collection.deleteOne(data)
 }

@@ -1,5 +1,7 @@
 const { insertUser, findUser, updateUser, deleteUser } = require('../data/user')
 
+const { addToken } = require('./authToken');
+
 
 // variável de mensagens de erro
 const errors = {
@@ -12,8 +14,6 @@ const errors = {
     }
 }
 
-// Criação de array de tokens de sessão
-const tokensArr = []
 
 async function createUser (data) {
 
@@ -72,10 +72,22 @@ async function loginUser (data) {
     }
     // atribuir token como o id gerado
     const token = user._id.toString() 
-    // Adicionar token ao Array de Tokens
-    tokensArr.push(token)
+    // Adicionar token ao Array de Tokens através da função
+    addToken(token)
     // Retorno de sucesso com um token
     return token ;
 }
 
-module.exports = { createUser, loginUser }
+
+async function checkInUser({_id: userId}) {
+    const user = await findUser({_id: userId})
+    if (!user) {
+        throw new Error("User not found");
+    }
+    // Atualiza paymentToken para true
+    const updateResult = await updateUser({ _id: userId }, { paymentToken: true });
+
+    return updateResult
+}
+
+module.exports = { createUser, loginUser, checkInUser }

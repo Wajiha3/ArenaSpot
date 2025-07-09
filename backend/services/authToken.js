@@ -1,27 +1,35 @@
-const { findUser } = require('../data/user')
+const { findUser } = require('../data/user');
+const { ObjectId } = require('mongodb');
 
-async function authenticateToken (req, res) {
-    const authHeader = req.headers['authorization']; // aceder ao header: Authorization
-    const token = authHeader?.split(' ')[1]; // Remove "Bearer" e isola o token
+// Criação de array de tokens de sessão
+const tokensArr = [];
+
+async function authenticateToken (token) {
     // Verificar se token foi recebido
-    if (!token) { 
-        return res.status(401).json({"message": "Token not sent"})
+      if (!token) {
+        throw new Error("Token not sent");
     }
     // Verificar se existe sessão com o token recebido
     if (!tokensArr.includes(token)) {
-        return res.status(403).json({"message": "There isn't a session with the Token!"})
+        throw new Error("There isn't a session with the Token!");
     }
     // Verificar se token é válido
     if (!ObjectId.isValid(token)) {
-        return res.status(400).json({ "message": "Invalid Token!" });
+        throw new Error("Invalid Token!");
     }
     // Procurar o utilizador com base no token (que é o _id)
     const user = await findUser({ _id: new ObjectId(token) });
+    // Se não encontrar utilizador com o respetivo Token
     if (!user) {
-        return res.status(404).json({ "message": "User not found." });
+        throw new Error("User not found.");
     }
 
     return user
 }
 
-module.exports = { authenticateToken }
+// Adicionar tokens ao array de sessão
+function addToken(token) {
+    tokensArr.push(token);
+}
+
+module.exports = { tokensArr, addToken, authenticateToken }
