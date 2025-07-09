@@ -14,8 +14,9 @@ const cors = require('cors')
 
 app.use(cors());
 
-const { createUser, loginUser, getUser } = require('./services/user')
+const { createUser, loginUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
+const { findUser } = require('./data/user')
 
 
 
@@ -79,7 +80,7 @@ app.get('/api/user/:id', async (req, res) => {
 
         } catch (err) {
         // Erros
-        return res.status(err.status || 500).json({ message: err.message || "Error." });
+        return res.status(500).json({ message: err.message || "Error." });
     }
 })
 
