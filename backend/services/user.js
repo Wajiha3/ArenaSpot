@@ -21,14 +21,14 @@ async function createUser (data) {
 
     // confirmação se email já existe
     const user = await findUser({email})
-
-    
     if (user && email === user.email) {
        return {message: errors.message, error: errors.errors.email}
     }
 
+    // confirmação se email já existe
+    const playerName = await findUser({userName})
     // confirmação se username já existe
-    if (user && userName === user.userName) {
+    if (playerName && userName === playerName.userName) {
        return {message: errors.message, error: errors.errors.username}
     }
 
@@ -42,9 +42,12 @@ async function createUser (data) {
         return {"message": errors.message, "error": errors.errors.passwordConfirmation}
     }
 
+    let gamesPlayed = 0;
+    let wins = 0;
+    let losses = 0;
     
     // Não enviar a confirmação para a DB
-    const userData = { userName, password, email , position, firstName, lastName, birthDate }
+    const userData = { userName, password, email , position, firstName, lastName, birthDate, gamesPlayed, wins, losses }
 
     // se passar todas as confirmações, executa a função
     const id = await insertUser(userData);
@@ -53,27 +56,27 @@ async function createUser (data) {
 }
 
 
-async function readUser (data) {
+async function loginUser (data) {
 
     const { email, password } = data
     // erro se email não for encontrado
     const user = await findUser({email})
     if (!user) {
-        return res.status(404).json({"message": "Email not found!"})
+        return "Email not found!"
     }
     // erro se password não der match
     if (user.password !== password) {
-        return res.status(401).json({"message": "Invalid password!"})
+        return "Invalid password!"
     }
     // atribuir token como o id gerado
     const token = user._id.toString() 
     // Adicionar token ao Array de Tokens
     tokensArr.push(token)
     // Retorno de sucesso com um token
-    return res.status(200).json({ "token": token })
+    return token ;
 }
 
 
 /*gamesPlayed, wins, losses, paymentToken*/
 
-module.exports = { createUser, readUser }
+module.exports = { createUser, loginUser }
