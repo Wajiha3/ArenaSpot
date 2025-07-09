@@ -14,7 +14,7 @@ const cors = require('cors')
 
 app.use(cors());
 
-const { createUser, loginUser } = require('./services/user')
+const { createUser, loginUser, getUser } = require('./services/user')
 
 
 
@@ -50,6 +50,10 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(200).json({ message: "Logged in", token: result });
 });
 
+
+app.get('/api/user/:id', async (req, res) => {
+   
+})
 
 
 

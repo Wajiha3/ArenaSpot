@@ -45,9 +45,10 @@ async function createUser (data) {
     let gamesPlayed = 0;
     let wins = 0;
     let losses = 0;
+    let paymentToken = false;
     
     // Não enviar a confirmação para a DB
-    const userData = { userName, password, email , position, firstName, lastName, birthDate, gamesPlayed, wins, losses }
+    const userData = { userName, password, email , position, firstName, lastName, birthDate, gamesPlayed, wins, losses, paymentToken }
 
     // se passar todas as confirmações, executa a função
     const id = await insertUser(userData);
@@ -76,7 +77,13 @@ async function loginUser (data) {
     return token ;
 }
 
+async function getUser (data) {
+
+    
+    return await findUser(data)
+}
+
 
 /*gamesPlayed, wins, losses, paymentToken*/
 
-module.exports = { createUser, loginUser }
+module.exports = { createUser, loginUser, getUser }
