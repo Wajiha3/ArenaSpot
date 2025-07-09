@@ -21,8 +21,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/welcome" element={<Welcome />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/welcome" element={<Welcome />} />
         <Route path="/checkin" element={<Check_In />} />
         <Route path="/matches" element={<Matches />} />
          <Route path="/matches1" element={<Matches1 />} />
