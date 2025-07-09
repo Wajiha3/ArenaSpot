@@ -4,7 +4,11 @@ import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import Welcome from './pages/Welcome';
+import Check_In from './pages/Check_In';
+import Payment_Confirmation from './pages/Payment_Confirmation';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
+
 
 
 function App() {
@@ -14,6 +18,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/checkin" element={<Check_In />} />
+        <Route path="/paymentconfirmation" element={<Payment_Confirmation />} />
         {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
