@@ -11,8 +11,6 @@ function Welcome() {
         </div>
         <div className="h-[34px] flex gap-2">
           <img width={"34px"} src="/Icons/notifications.png" alt="" />
-            <img width={"34px"} src="/Icons/search.png" alt="" />
-            <img width={"34px"} src="/Icons/menu.png" alt="" />
         </div>
       </div>
       <div className="flex flex-col items-center w-[100%] px-[1.5rem]">

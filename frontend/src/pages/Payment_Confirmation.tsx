@@ -17,27 +17,19 @@ function Payment_Confirmation() {
 
         <div className="h-[34px] flex gap-2">
             <img width={"34px"} src="/Icons/notifications.png" alt="" />
-            <img width={"34px"} src="/Icons/search.png" alt="" />
-            <img width={"34px"} src="/Icons/menu.png" alt="" />
         </div>
       </div>
 
-      {/* Main content centered vertically */}
-      <div className="flex-grow flex flex-col items-center justify-center">
+      {/* Main content, moved up */}
+      <div className="flex flex-col items-center mt-8">
         {/* Check In title */}
-        <h1 className="text-3xl font-bold mb-4">Check In</h1>
-        
-        {/* Payment success message */}
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-2">Payment</h2>
-          <p className="text-green-500 text-xl font-bold">Successful!</p>
-        </div>
+        <h1 className="text-3xl font-bold mb-16">Check In</h1>
 
         {/* Success icon (optional) */}
-        <div className="mt-8 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+        <div className="mt-8 w-32 h-32 bg-green-500 rounded-full flex items-center justify-center mb-8">
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className="h-10 w-10 text-white" 
+            className="h-20 w-20 text-white" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -50,6 +42,13 @@ function Payment_Confirmation() {
             />
           </svg>
         </div>
+
+         {/* Payment success message */}
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold mb-2">Payment</h2>
+          <p className="text-2xl font-semibold">Successful!</p>
+        </div>
+
       </div>
     </div>
   );
