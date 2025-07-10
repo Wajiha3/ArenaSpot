@@ -33,3 +33,24 @@ async function startMatch(court) {
     return matchId
 }
 
+async function finishTeam (matchId, winningTeam) {
+    // find match por ID
+    const match = await findMatch({ _id: new ObjectId(String(matchId)) })
+    if (!match || match.status !== "In Progress") {
+        throw new Error("Match not found or already finished.")
+    }
+    // Atualiza match:
+    match.status = "Finished";
+    match.winningTeam = winningTeam;
+    match.finished = new Date();
+    // Update in the DB
+    await updateMatch({_id: matchId}, match);
+
+    if (winningTeam === teamA) {
+
+    }
+    const losers = winningTeam === teamA ? match.teamB : match
+}
+
+module.exports = { startMatch, }
+
