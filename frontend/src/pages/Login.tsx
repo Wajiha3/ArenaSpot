@@ -19,7 +19,7 @@ function Login() {
         try {
             const response = await fetch('http://localhost:3007/api/auth/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify(data),
             });
             if (response.ok) {
@@ -64,7 +64,8 @@ function Login() {
                     />
                     <div className={`mt-[1rem] flex items-center w-[90%] rounded-[20px] h-[3.5rem] pr-2 bg-[#F0F0F0] ${errors.password ? 'border-2 border-red-500' : ''}`}>
                         <img className="ml-[1rem]" width={"34px"} src="/Icons/key.png" alt="" />
-                        <input className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[100%]"
+                        <input
+                            className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[100%]"
                             type={noSee ? "password" : "text"}
                             placeholder="Password"
                             required
@@ -74,7 +75,9 @@ function Login() {
                         <img onClick={() => setNoSee(!noSee)} width={"34px"} src="/Icons/watch.png" alt="" />
                     </div>
                     {errors.password && <div className="text-red-500 w-[90%] text-left">{errors.password}</div>}
-                    <button type="submit" className='mt-5 bg-[#68C46B] text-[1.5rem] rounded-[27px] font-bold w-[90%] h-[3.5rem] flex justify-center items-center gap-1'>Get Started <img width={"40px"} src="/Icons/arrow-small-right.png" alt="" /></button>
+                    <button type="submit" className='bg-[#68C46B] text-[1.5rem] rounded-[27px] font-bold w-[90%] h-[3.5rem] mb-[2rem] flex justify-center items-center gap-1'>
+                        Get Started <img width={"40px"} src="/Icons/arrow-small-right.png" alt="" />
+                    </button>
                 </form>
                 <div className="mt-[2rem] flex items-center gap-5" >
                     <div className="w-[8rem] h-[0.2rem] bg-[#FFF]" />
@@ -93,4 +96,3 @@ function Login() {
 }
 
 export default Login;
-

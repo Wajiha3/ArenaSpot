@@ -63,7 +63,9 @@ async function loginUser (data) {
 
     const { email, password } = data
     // erro se email não for encontrado
+    console.log("Attempting to login with email:", email)
     const user = await findUser({email})
+    console.log("User found:", user)
     if (!user) {
         return "Email not found!"
     }
