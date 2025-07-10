@@ -23,8 +23,8 @@ async function createCourt (data) {
     const courtData = { status, courtNumber, queue, courtLevel }
     // se passar todas as confirmações, executa a função
     const id = await insertCourt(courtData);
-    
-    return { message: "Court created", id }
+
+    return id
 }
 
 module.exports = { createCourt }

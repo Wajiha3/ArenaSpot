@@ -17,6 +17,7 @@ app.use(cors());
 const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
 const { findUser } = require('./data/user')
+const { createCourt } = require('./services/courts')
 
 
 
@@ -31,7 +32,7 @@ app.post('/api/auth/signup', async (req, res) => {
       return res.status(400).json({ error: result.error });
     }
 
-    return res.status(200).json({ message: "Utilizador criado", _id: result});
+    return res.status(200).json({ message: "User created.", _id: result});
 })
 
 
@@ -75,6 +76,20 @@ app.post('/api/checkin', async (req, res) => {
         console.error("Erro no check-in:", err);
         return res.status(500).json({ message: "Check-in error" });
     }
+})
+
+// POST da criação do court
+app.post('/api/createcourt', async (req, res) => {
+    // criação de variável com o que recebe do form
+    const data = req.body
+    // importar função para criar court com o que receber da data
+    const result = await createCourt(data);
+    // se der erro, retornar erro
+    if (result.error) {
+        return res.status(400).json({ error: result.error })
+    }
+
+    return res.status(200).json({ message: "Court created.", _id: result })
 })
 
 
