@@ -52,6 +52,10 @@ async function joinQueue (courtId, user) {
         {queue: court.queue}
     )
 
+    if (court.queue.length >= 4) {
+        // function startMatch
+    }
+
     return {message: "Player added to queue!"}
 }
 
