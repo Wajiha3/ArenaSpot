@@ -12,7 +12,7 @@ async function insertCourt (data) {
 // Read Court
 async function findCourt (data) {
     const collection = await getCollection("courts");
-    const result = await collection.findOne(data._id)
+    const result = await collection.findOne(data)
     return result
 }
 

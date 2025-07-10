@@ -80,16 +80,18 @@ app.post('/api/checkin', async (req, res) => {
 
 // POST da criação do court
 app.post('/api/createcourt', async (req, res) => {
-    // criação de variável com o que recebe do form
-    const data = req.body
-    // importar função para criar court com o que receber da data
-    const result = await createCourt(data);
-    // se der erro, retornar erro
-    if (result.error) {
-        return res.status(400).json({ error: result.error })
-    }
+    try {
+        // criação de variável com o que recebe do form
+        const data = req.body
+        // importar função para criar court com o que receber da data
+        const result = await createCourt(data);
 
-    return res.status(200).json({ message: "Court created.", _id: result })
+        return res.status(200).json({ message: "Court created.", _id: result })
+
+    } catch (err) {
+        // se der erro, retornar erro
+            return res.status(400).json({ error: err.message })
+        }  
 })
 
 
