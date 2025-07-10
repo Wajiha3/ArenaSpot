@@ -18,6 +18,7 @@ const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
 const { findUser } = require('./data/user')
 const { createCourt, joinQueue } = require('./services/courts')
+const { findAllCourts } = require('./data/courts')
 
 
 
@@ -153,6 +154,25 @@ app.get('/api/user/:id', async (req, res) => {
         // Erro interno servidor
         return res.status(500).json({ message });
     }   
+})
+
+app.get('/api/allcourts', async (req, res) => {
+    try {
+         // Aceder ao header: Authorization
+        const authHeader = req.headers.authorization;
+        // Remove "Bearer" e isola o token
+        const token = authHeader
+        // Verificar token e obter o utilizador autenticado
+        const authenticatedUser = await authenticateToken(token);
+        // Se não encontrar o User Autenticado
+        if(!authenticatedUser) {
+            return res.status(401).json({ message: "Unauthorized"})
+        }
+        const courts = findAllCourts()
+        return res.status(200).json(courts)
+    } catch (err) {
+        return res.status(400).json({ error: err.message })
+    }
 })
 
 
