@@ -53,6 +53,7 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(200).json({ message: "Logged in", token: result });
 });
 
+
 // POST do Check-In
 app.post('/api/checkin', async (req, res) => {
     try {

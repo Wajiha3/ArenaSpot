@@ -47,16 +47,19 @@ async function joinQueue (courtId, user) {
     // adicionar user à queue
     court.queue.push(user)
 
+    // update court queue
     await updateCourt(
         {_id: court._id},
         {queue: court.queue}
     )
-
+    // iniciar match como null porque ainda não começou
+    let matchId = null
     if (court.queue.length >= 4) {
-        // function startMatch
-    }
+    // assim que tiver 4 user na queue, start match
+        matchId = await startMatch(court)
+    }   
 
-    return {message: "Player added to queue!"}
+    return {message: "Player added to queue!", matchId}
 }
 
 module.exports = { createCourt, joinQueue }
