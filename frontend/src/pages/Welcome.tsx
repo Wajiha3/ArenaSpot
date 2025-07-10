@@ -1,10 +1,13 @@
-import {  BrowserRouter as Routes, Route, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Routes, Route, useNavigate } from 'react-router-dom';
+import Navbar from '../Components/Navbar';
 
 function Welcome() {
   const navigate = useNavigate();
+  const [selectedNav, setSelectedNav] = useState('Home');
 
   return (
-    <div className="bg-black w-screen text-black pt-[2rem]">
+    <div className="bg-black w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className='w-[3.6rem] h-[5.4rem]'>
             <img src="/logo.png" alt="" />
@@ -19,13 +22,13 @@ function Welcome() {
             <p>Status: <span className='font-normal'>Open</span></p>
             <p>Active Courts: <span className='font-normal'>6</span></p>
             <p>Players Checked In: <span className='font-normal'>45</span></p>
-            <button className='mt-10 bg-[#68C46B] text-[1.5rem] text-white rounded-[25px] font-bold w-[55%] h-[3.5rem]'>Check In</button>
+            <button className='mt-10 bg-[#68C46B] text-[1.5rem] text-white rounded-[25px] font-bold w-[55%] h-[3.5rem]' onClick={() => navigate('/checkin')}>Check In</button>
         </div>
         <p className="text-[2rem] font-bold mt-[2rem] self-start text-white">Quick Actions</p>
         <div className='mt-4 grid grid-cols-2 grid-rows-2 gap-4 w-full'>
-            <button className='w-full h-20 bg-[#68C46B] text-[1.25rem] font-bold rounded-xl'>View Queues</button>
-            <button className='w-full h-20 bg-[#FF9800] text-[1.25rem] font-bold rounded-xl'>My Matches</button>
-            <button className='w-full h-20 bg-[#9C27B0] text-[1.25rem] font-bold rounded-xl col-span-2'>My Profile</button>
+            <button className='w-full h-20 bg-[#68C46B] text-[1.25rem] font-bold rounded-xl' onClick={() => navigate('/queues')}>View Queues</button>
+            <button className='w-full h-20 bg-[#FF9800] text-[1.25rem] font-bold rounded-xl'onClick={() => navigate('/matches')}>My Matches</button>
+            <button className='w-full h-20 bg-[#9C27B0] text-[1.25rem] font-bold rounded-xl col-span-2' onClick={() => navigate('/profile')}>My Profile</button>
         </div>
         <p className="text-[2rem] font-bold mt-[2rem] mb-[1rem] self-start text-white">Stats & History</p>
         <div className='w-full bg-[#83A1ED] rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold'>
@@ -53,6 +56,8 @@ function Welcome() {
             </div>
         </div>
       </div>
+       {/* Bottom Navigation */}
+     <Navbar />
     </div>
     
   );
