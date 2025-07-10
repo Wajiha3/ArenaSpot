@@ -21,14 +21,14 @@ function SignUp() {
           <InputBox icon="/Icons/name.png" type="text" placeholder="Last Name" />
           <InputBox icon="/Icons/email.png" type="email" placeholder="Email" />
           <InputBox icon="/Icons/birth.png" type="number" placeholder="Birthdate" />
-          <div className="mt-[1rem] flex items-center bg-[#F0F0F0] w-[90%] rounded-[20px] h-[3.5rem]">
+          <div className="mt-[1rem] flex items-center bg-[#F0F0F0] w-[90%] rounded-[20px] h-[3.5rem] pr-2">
             <img className="ml-[1rem]" width={"34px"} src="/Icons/key.png" alt="" />
-            <input className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[63%]" type={noSee ? "password":"text"} placeholder="Password" required />
+            <input className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[100%]" type={noSee ? "password":"text"} placeholder="Password" required />
             <img onClick={() => setNoSee(!noSee)} width={"34px"} src="/Icons/watch.png" alt="" />
           </div>
-          <div className="mt-[1rem] mb-[3rem] flex items-center bg-[#F0F0F0] w-[90%] rounded-[20px] h-[3.5rem]">
+          <div className="mt-[1rem] mb-[3rem] flex items-center bg-[#F0F0F0] w-[90%] rounded-[20px] h-[3.5rem] pr-2">
             <img className="ml-[1rem]" width={"34px"} src="/Icons/key.png" alt="" />
-            <input className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[63%]" type={noSee2 ? "password":"text"} placeholder="Confirm Password" required />
+            <input className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[100%]" type={noSee2 ? "password":"text"} placeholder="Confirm Password" required />
             <img onClick={() => setNoSee2(!noSee2)} width={"34px"} src="/Icons/watch.png" alt="" />
           </div>
 
