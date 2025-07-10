@@ -20,7 +20,7 @@ function Login() {
                         <input className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[100%]" type={noSee ? "password":"text"} placeholder="Password" required/>
                         <img onClick={() => setNoSee(!noSee)} width={"34px"} src="/Icons/watch.png" alt="" />   
                     </div>
-                    <button type="submit" className='bg-[#68C46B] text-[1.5rem] rounded-[27px] font-bold w-[90%] h-[3.5rem] mb-[2rem] flex justify-center items-center gap-1'>Get Started <img width={"40px"} src="/Icons/arrow-small-right.png" alt="" /></button>
+                    <button type="submit" className='bg-[#68C46B] text-[1.5rem] rounded-[27px] font-bold w-[90%] h-[3.5rem] mb-[2rem] flex justify-center items-center gap-1' onClick={() => navigate('/welcome')} >Get Started <img width={"40px"} src="/Icons/arrow-small-right.png" alt="" /></button>
                 </form>
                 <div className="mt-[2rem] flex items-center gap-5" >
                     <div className="w-[8rem] h-[0.2rem] bg-[#FFF]" />

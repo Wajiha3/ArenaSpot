@@ -1,7 +1,10 @@
+import React, { useState } from 'react';
 import { BrowserRouter as Routes, Route, useNavigate } from 'react-router-dom';
+import Navbar from '../Components/Navbar'; // Ensure this path is correct
 
 function Profile() {
     const navigate = useNavigate();
+    const [selectedNav, setSelectedNav] = useState('Profile');
 
     return (
         <div className="bg-black w-screen text-white pt-[2rem] pb-[5rem]">
@@ -11,8 +14,6 @@ function Profile() {
                 </div>
                 <div className="h-[34px] flex gap-2">
                     <img width={"34px"} src="/Icons/notifications.png" alt="" />
-                    <img width={"34px"} src="/Icons/search.png" alt="" />
-                    <img width={"34px"} src="/Icons/menu.png" alt="" />
                 </div>
             </div>
             <div className="flex flex-col items-center w-[100%] px-[1rem]">
@@ -70,7 +71,7 @@ function Profile() {
 
                 <div className='mt-5 w-full bg-[#74D8BC] rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold mb-[2rem]'>
                     <div className="flex justify-between">
-                        <span>Match 1:</span>
+                        <span className="cursor-pointer hover:underline" onClick={() => navigate('/match1')}>Match 1:</span>
                         <span>Won</span>
                     </div>
                     <div className="flex justify-between">
@@ -83,6 +84,8 @@ function Profile() {
                     </div>
                 </div>
             </div>
+             {/* Bottom Navigation */}
+      <Navbar />
         </div>
     );
 }

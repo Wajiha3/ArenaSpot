@@ -10,7 +10,7 @@ function Payment_Confirmation() {
     <div className="bg-black min-h-screen text-white p-6 flex flex-col">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className='flex items-center h-[34px]'>
-            <button className="text-white text-lg">{"< back"}</button>
+            <button className="text-white text-lg" onClick={() => navigate('/welcome')}>{"< back"}</button>
         </div>
   
       </div>
