@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Components/Navbar'; // Ensure this path is correct
 
 function Check_In() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ function Check_In() {
          <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
        
         <div className='flex items-center h-[34px]'>
-            <button className="text-white text-lg">{"< back"}</button>
+            <button className="text-white text-lg" onClick={() => navigate('/welcome')}>{"< back"}</button>
         </div>
 
         <div className="h-[34px] flex gap-2">
@@ -57,16 +58,16 @@ function Check_In() {
           <p className="text-black text-center">R$25.00</p>
         </div>
         <div
-          className={`w-full px-4 py-2 font-bold border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black cursor-pointer ${selectedOption === 'creditCard' ? 'bg-gray-800' : 'bg-[#2096F3]'}`}
+          className={`w-full px-4 py-2 font-bold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black cursor-pointer ${selectedOption === 'creditCard' ? 'bg-gray-800' : 'bg-[#2096F3]'}`}
           onClick={() => handlePaymentSelect('creditCard')}
         >
-          <span className="font-bold">Pay with Credit Card</span>
+          <span className="font-bold" onClick={() => navigate('/paymentconfirmation')}>Pay with Credit Card</span>
         </div>
         <div
-          className={`w-full px-4 py-2 bg-green-700 font-bold border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${selectedOption === 'applePay' ? 'bg-gray-800' : 'bg-gray-700'} cursor-pointer`}
+          className={`w-full px-4 py-2 bg-green-700 font-bold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${selectedOption === 'applePay' ? 'bg-gray-800' : 'bg-gray-700'} cursor-pointer`}
           onClick={() => handlePaymentSelect('applePay')}
         >
-          <span className="font-bold">Pay with Apple Pay</span>
+          <span className="font-bold" onClick={() => navigate('/paymentconfirmation')}>Pay with Apple Pay</span>
         </div>
       </div>
       </div>
@@ -85,11 +86,16 @@ function Check_In() {
               value={token}
               onChange={handleTokenChange}
               placeholder="Paste your token here"
-              className="w-full px-4 py-2 bg-[#C8E6FA] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+              className="w-full px-4 py-2 bg-[#C8E6FA] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
             />
           </div>
           <button
-            onClick={handleVerifyToken}
+            onClick={() => {
+              handleVerifyToken();
+              if (token.trim()) {
+                navigate('/paymentconfirmation');
+              }
+            }}
             disabled={!token.trim()}
             className={`px-4 py-2 rounded-md bg-orange-700 font-bold ${token.trim() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-700 cursor-not-allowed'} transition-colors`}
           >
@@ -102,32 +108,7 @@ function Check_In() {
           )}
         </div>
       </div>
-       <div className="fixed bottom-0 left-0 right-0 bg-gray-900 flex justify-around py-3 border-t border-gray-700">
-        <button
-          className={`text-center ${selectedNav === 'Home' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Home')}
-        >
-          <span className="block">Home</span>
-        </button>
-        <button
-          className={`text-center ${selectedNav === 'Queues' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Queues')}
-        >
-          <span className="block">Queues</span>
-        </button>
-        <button
-          className={`text-center ${selectedNav === 'Matches' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Matches')}
-        >
-          <span className="block">Matches</span>
-        </button>
-        <button
-          className={`text-center ${selectedNav === 'Profile' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Profile')}
-        >
-          <span className="block">Profile</span>
-        </button>
-      </div>
+       <Navbar />
     </div>
   );
 }

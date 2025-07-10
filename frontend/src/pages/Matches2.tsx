@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Components/Navbar'; // Ensure this path is correct
 
 function Matches2() {
   const navigate = useNavigate();
@@ -7,14 +8,6 @@ function Matches2() {
 
   return (
     <div className="bg-black min-h-screen w-screen text-white pt-4">
-
-   <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-       
-       <div className='flex items-center h-[34px]'>
-            <button className="text-white text-lg">{"< back"}</button>
-        </div>
-
-      </div>
 
       {/* Teams Section - moved down */}
       <div className="flex justify-between mb-8 mt-20">
@@ -51,39 +44,14 @@ function Matches2() {
 
       {/* Finish Button - moved further down */}
       <div className="flex justify-center mt-20 mb-60">
-        <button className="bg-red-800 hover:bg-blue-700 text-white font-bold py-2 px-12 rounded-md text-xl">
+        <button className="bg-red-800 hover:bg-blue-700 text-white font-bold py-2 px-12 rounded-md text-xl" onClick={() => navigate('/welcome')}>
           SAVE
         </button>
       </div>
 
     
         {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-900 flex justify-around py-3 border-t border-gray-700">
-        <button
-          className={`text-center ${selectedNav === 'Home' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Home')}
-        >
-          <span className="block">Home</span>
-        </button>
-        <button
-          className={`text-center ${selectedNav === 'Queues' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Queues')}
-        >
-          <span className="block">Queues</span>
-        </button>
-        <button
-          className={`text-center ${selectedNav === 'Matches' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Matches')}
-        >
-          <span className="block">Matches</span>
-        </button>
-        <button
-          className={`text-center ${selectedNav === 'Profile' ? 'text-blue-400 font-bold' : ''}`}
-          onClick={() => setSelectedNav('Profile')}
-        >
-          <span className="block">Profile</span>
-        </button>
-      </div>
+      <Navbar />
     </div>
   );
 };

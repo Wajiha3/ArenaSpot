@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Components/Navbar'; // Ensure this path is correct
 
 function Queues() {
     const navigate = useNavigate();
     const [selectedNav, setSelectedNav] = useState('Queues');
+    const [inQueue1, setInQueue1] = useState(false);
+    const [inQueue2, setInQueue2] = useState(false);
+    const [inQueue3, setInQueue3] = useState(false);
 
     return (
         <div className="bg-black w-screen text-black pt-[2rem] min-h-screen">
             <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-                <div className='w-[3.6rem] h-[5.4rem]'>
-                    <img src="/logo.png" alt="" />
-                </div>
+                  <div className='flex items-center h-[34px]'>
+            <button className="text-white text-lg" onClick={() => navigate('/welcome')}>{"< back"}</button>
+        </div>
                 <div className="h-[34px] flex gap-2">
                     <img width={"34px"} src="/Icons/notifications.png" alt="" />
                 </div>
@@ -38,7 +42,12 @@ function Queues() {
                         <li className=''>Lucas & Marcus</li>
                         <li className=''>Lucas & Marcus</li>
                     </ol>
-                    <button className='bg-[#264879] text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] text-white mt-5'>Join Queue</button>
+                    <button
+                        className={`text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] mt-5 transition-colors duration-200 ${inQueue1 ? 'bg-[#C34447] text-white' : 'bg-[#264879] text-white'}`}
+                        onClick={() => setInQueue1(!inQueue1)}
+                    >
+                        {inQueue1 ? 'Leave Queue' : 'Join Queue'}
+                    </button>
                 </div>
 
                 <p className="text-[2rem] font-bold text-white mb-4">Court 2 (Futvolley)</p>
@@ -66,7 +75,12 @@ function Queues() {
                         <li className=''>Lucas & Marcus</li>
                         <li className=''>Lucas & Marcus</li>
                     </ol>
-                    <button className='bg-[#C34447] text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] text-white mt-5'>Leave Queue</button>
+                    <button
+                        className={`text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] mt-5 transition-colors duration-200 ${inQueue2 ? 'bg-[#264879] text-white' : 'bg-[#C34447] text-white'}`}
+                        onClick={() => setInQueue2(!inQueue2)}
+                    >
+                        {inQueue2 ? 'Leave Queue' : 'Join Queue'}
+                    </button>
                 </div>
 
                 <p className="text-[2rem] font-bold text-white mb-4">Court 3 (Futvolley)</p>
@@ -90,35 +104,15 @@ function Queues() {
                         <li className=''>Lucas & Marcus</li>
                         <li className=''>Lucas & Marcus</li>
                     </ol>
-                    <button className='bg-[#264879] text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] text-white mt-5'>Join Queue</button>
+                    <button
+                        className={`text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] mt-5 transition-colors duration-200 ${inQueue3 ? 'bg-[#C34447] text-white' : 'bg-[#264879] text-white'}`}
+                        onClick={() => setInQueue3(!inQueue3)}
+                    >
+                        {inQueue3 ? 'Leave Queue' : 'Join Queue'}
+                    </button>
                 </div>
             </div>
-            <div className="fixed bottom-0 left-0 right-0 bg-gray-900 flex justify-around py-3 border-t border-gray-700 z-50">
-                <button
-                  className={`text-center ${selectedNav === 'Home' ? 'text-blue-400 font-bold' : ''}`}
-                  onClick={() => { setSelectedNav('Home'); navigate('/'); }}
-                >
-                  <span className="block text-white">Home</span>
-                </button>
-                <button
-                  className={`text-center ${selectedNav === 'Queues' ? 'text-blue-400 font-bold' : ''}`}
-                  onClick={() => setSelectedNav('Queues')}
-                >
-                  <span className="block text-white">Queues</span>
-                </button>
-                <button
-                  className={`text-center ${selectedNav === 'Matches' ? 'text-blue-400 font-bold' : ''}`}
-                  onClick={() => { setSelectedNav('Matches'); navigate('/matches'); }}
-                >
-                  <span className="block text-white">Matches</span>
-                </button>
-                <button
-                  className={`text-center ${selectedNav === 'Profile' ? 'text-blue-400 font-bold' : ''}`}
-                  onClick={() => { setSelectedNav('Profile'); navigate('/profile'); }}
-                >
-                  <span className="block text-white">Profile</span>
-                </button>
-            </div>
+            <Navbar />
         </div>
     );
 }

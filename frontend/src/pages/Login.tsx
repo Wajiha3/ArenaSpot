@@ -73,8 +73,12 @@ function Login() {
                         />
                         <img onClick={() => setNoSee(!noSee)} width={"34px"} src="/Icons/watch.png" alt="" />
                     </div>
+<<<<<<< HEAD
                     {errors.password && <div className="text-red-500 w-[90%] text-left">{errors.password}</div>}
                     <button type="submit" className='mt-5 bg-[#68C46B] text-[1.5rem] rounded-[27px] font-bold w-[90%] h-[3.5rem] flex justify-center items-center gap-1'>Get Started <img width={"40px"} src="/Icons/arrow-small-right.png" alt="" /></button>
+=======
+                    <button type="submit" className='bg-[#68C46B] text-[1.5rem] rounded-[27px] font-bold w-[90%] h-[3.5rem] mb-[2rem] flex justify-center items-center gap-1' onClick={() => navigate('/welcome')} >Get Started <img width={"40px"} src="/Icons/arrow-small-right.png" alt="" /></button>
+>>>>>>> 818ef4703305ac75e2239521cdbc81c4a0c43884
                 </form>
                 <div className="mt-[2rem] flex items-center gap-5" >
                     <div className="w-[8rem] h-[0.2rem] bg-[#FFF]" />
