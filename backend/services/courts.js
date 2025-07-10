@@ -1,4 +1,5 @@
 const { insertCourt, findCourt, updateCourt, deleteCourt } = require('../data/courts')
+const { ObjectId } = require('mongodb')
 
 async function createCourt (data) {
 
@@ -27,4 +28,31 @@ async function createCourt (data) {
     return id
 }
 
-module.exports = { createCourt }
+
+async function joinQueue (courtId, user) {
+
+    // selecionar court desejado
+    const court = await findCourt({ _id: new ObjectId(String(courtId)) });
+    // se não encontrares o court
+    if (!court) {
+        throw new Error("Court not found.");
+    }
+    // função para encontrar se algum elemento (user com o seu id) está na queue
+    const alreadyInQueue = court.queue.find(e => String(e._id) === String(user._id))
+    // se user já estiver na queue escolhida
+    if (alreadyInQueue) {
+        throw new Error("Player already in queue.")
+    }
+
+    // adicionar user à queue
+    court.queue.push(user)
+
+    await updateCourt(
+        {_id: court._id},
+        {queue: court.queue}
+    )
+
+    return {message: "Player added to queue!"}
+}
+
+module.exports = { createCourt, joinQueue }

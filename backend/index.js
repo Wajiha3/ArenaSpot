@@ -17,7 +17,7 @@ app.use(cors());
 const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
 const { findUser } = require('./data/user')
-const { createCourt } = require('./services/courts')
+const { createCourt, joinQueue } = require('./services/courts')
 
 
 
@@ -93,6 +93,30 @@ app.post('/api/createcourt', async (req, res) => {
             return res.status(400).json({ error: err.message })
         }  
 })
+
+app.post('/api/courts/:id/join', async (req, res) => {
+
+    // court é escolhido em função do id nos parametros
+    const courtId = req.params.id
+
+    // Aceder ao header: Authorization
+    const authHeader = req.headers.authorization;
+    // Remove "Bearer" e isola o token --- NÃO SEI SE ESTÁ CERTO
+    const token = authHeader
+    // Verificar token e obter o utilizador autenticado
+    const authenticatedUser = await authenticateToken(token);
+    // Escolher utilizador por authenticatedUser
+    const user = await findUser(authenticatedUser)
+
+    try {
+        const result = await joinQueue (courtId, user)
+        return res.status(200).json(result)
+    } catch (err) {
+        return res.status(400).json({ error: err.message })
+    }
+})
+
+
 
 
 app.get('/api/user/:id', async (req, res) => {

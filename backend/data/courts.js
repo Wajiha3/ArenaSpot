@@ -15,6 +15,12 @@ async function findCourt (data) {
     const result = await collection.findOne(data)
     return result
 }
+// Read All Courts
+async function findAllCourts (data) {
+    const collection = await getCollection("courts");
+    const result = await collection.find()
+    return result
+}
 
 // Update Court
 async function updateCourt (filter, update) {
@@ -29,4 +35,4 @@ async function deleteCourt (data) {
     await collection.deleteOne(data)
 }
 
-module.exports = { insertCourt, findCourt, updateCourt, deleteCourt }
+module.exports = { insertCourt, findCourt, updateCourt, deleteCourt, findAllCourts }
