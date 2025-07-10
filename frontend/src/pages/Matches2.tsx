@@ -10,17 +10,14 @@ function Matches2() {
 
    <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
        
-       <div className='w-[3.6rem] h-[5.4rem]'>
-            <button>{"< back"}</button>
+       <div className='flex items-center h-[34px]'>
+            <button className="text-white text-lg">{"< back"}</button>
         </div>
 
-        <div className="h-[34px] flex gap-2">
-            <img width={"34px"} src="/Icons/notifications.png" alt="" />
-        </div>
       </div>
 
       {/* Teams Section - moved down */}
-      <div className="flex justify-between mb-8 mt-10">
+      <div className="flex justify-between mb-8 mt-20">
         {/* Team A */}
         <div className="text-center w-[48%] bg-white text-black p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Team A</h3>

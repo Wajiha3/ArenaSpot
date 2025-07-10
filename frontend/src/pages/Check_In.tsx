@@ -6,6 +6,7 @@ function Check_In() {
   const [selectedOption, setSelectedOption] = useState('');
   const [token, setToken] = useState('');
   const [isVerified, setIsVerified] = useState(false);
+  const [selectedNav, setSelectedNav] = useState('Home');
 
   const handlePaymentSelect = (option: string) => {
     setSelectedOption(option);
@@ -26,12 +27,12 @@ function Check_In() {
   };
 
   return (
-    <div className="bg-black w-screen text-white pb-10 pt-4">
+    <div className="bg-black min-h-screen w-screen text-white pt-4">
 
          <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
        
-       <div className='w-[3.6rem] h-[5.4rem]'>
-            <button>{"< back"}</button>
+        <div className='flex items-center h-[34px]'>
+            <button className="text-white text-lg">{"< back"}</button>
         </div>
 
         <div className="h-[34px] flex gap-2">
@@ -40,8 +41,11 @@ function Check_In() {
       </div>
 
 
-        <div className="text-center mb-8">
-      <h1 className="text-center font-bold text-2xl mb-4">Check In</h1>
+        <div className="text-center mb-8 text-2xl font-bold mb-16 mt-11">
+      <h1 className="text-center font-bold text-[2rem] mt-[2rem] mb-[2rem]">Check In</h1>
+     </div>
+
+     <div className="text-center mb-8 text-lg mb-16 mt-11">
       <p className='text-white text-center mb-6'>You are within 250m of Arena Footvolley. Please select a payment method to check in.</p>
      </div>
 
@@ -53,7 +57,7 @@ function Check_In() {
           <p className="text-black text-center">R$25.00</p>
         </div>
         <div
-          className={`w-full px-4 py-2 bg-blue-700 font-bold border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black ${selectedOption === 'creditCard' ? 'bg-gray-800' : 'bg-gray-700'} cursor-pointer`}
+          className={`w-full px-4 py-2 font-bold border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black cursor-pointer ${selectedOption === 'creditCard' ? 'bg-gray-800' : 'bg-[#2096F3]'}`}
           onClick={() => handlePaymentSelect('creditCard')}
         >
           <span className="font-bold">Pay with Credit Card</span>
@@ -67,7 +71,7 @@ function Check_In() {
       </div>
       </div>
 
-      <div className="bg-white text-center text-black p-6 rounded-lg border border-gray-700 max-w-md mt-6 mx-auto">
+      <div className="bg-white text-center text-black p-6 rounded-lg border border-gray-700 max-w-md mt-6 mb-20 mx-auto">
         <h2 className="text-xl text-black font-bold mb-4">Reception Payment</h2>
         <p className="text-black text-center mb-4">Enter token provided by reception:</p>
         <div className="flex flex-col space-y-4">
@@ -97,6 +101,32 @@ function Check_In() {
             </div>
           )}
         </div>
+      </div>
+       <div className="fixed bottom-0 left-0 right-0 bg-gray-900 flex justify-around py-3 border-t border-gray-700">
+        <button
+          className={`text-center ${selectedNav === 'Home' ? 'text-blue-400 font-bold' : ''}`}
+          onClick={() => setSelectedNav('Home')}
+        >
+          <span className="block">Home</span>
+        </button>
+        <button
+          className={`text-center ${selectedNav === 'Queues' ? 'text-blue-400 font-bold' : ''}`}
+          onClick={() => setSelectedNav('Queues')}
+        >
+          <span className="block">Queues</span>
+        </button>
+        <button
+          className={`text-center ${selectedNav === 'Matches' ? 'text-blue-400 font-bold' : ''}`}
+          onClick={() => setSelectedNav('Matches')}
+        >
+          <span className="block">Matches</span>
+        </button>
+        <button
+          className={`text-center ${selectedNav === 'Profile' ? 'text-blue-400 font-bold' : ''}`}
+          onClick={() => setSelectedNav('Profile')}
+        >
+          <span className="block">Profile</span>
+        </button>
       </div>
     </div>
   );

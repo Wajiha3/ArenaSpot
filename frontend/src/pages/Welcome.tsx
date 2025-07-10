@@ -25,8 +25,7 @@ function Welcome() {
         <div className='mt-4 grid grid-cols-2 grid-rows-2 gap-4 w-full'>
             <button className='w-full h-20 bg-[#68C46B] text-[1.25rem] font-bold rounded-xl'>View Queues</button>
             <button className='w-full h-20 bg-[#FF9800] text-[1.25rem] font-bold rounded-xl'>My Matches</button>
-            <button className='w-full h-20 bg-[#2096F3] text-[1.25rem] font-bold rounded-xl'>Make Payment</button>
-            <button className='w-full h-20 bg-[#9C27B0] text-[1.25rem] font-bold rounded-xl'>My Profile</button>
+            <button className='w-full h-20 bg-[#9C27B0] text-[1.25rem] font-bold rounded-xl col-span-2'>My Profile</button>
         </div>
         <p className="text-[2rem] font-bold mt-[2rem] mb-[1rem] self-start text-white">Stats & History</p>
         <div className='w-full bg-[#83A1ED] rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold'>
@@ -55,6 +54,7 @@ function Welcome() {
         </div>
       </div>
     </div>
+    
   );
 }
 

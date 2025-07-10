@@ -8,28 +8,21 @@ function Payment_Confirmation() {
 
   return (
     <div className="bg-black min-h-screen text-white p-6 flex flex-col">
-     
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-       
-       <div className='w-[3.6rem] h-[5.4rem]'>
-            <button>{"< back"}</button>
+        <div className='flex items-center h-[34px]'>
+            <button className="text-white text-lg">{"< back"}</button>
         </div>
-
-        <div className="h-[34px] flex gap-2">
-            <img width={"34px"} src="/Icons/notifications.png" alt="" />
-        </div>
+  
       </div>
-
-      {/* Main content, moved up */}
-      <div className="flex flex-col items-center mt-8">
-        {/* Check In title */}
-        <h1 className="text-3xl font-bold mb-16">Check In</h1>
-
-        {/* Success icon (optional) */}
-        <div className="mt-8 w-32 h-32 bg-green-500 rounded-full flex items-center justify-center mb-8">
+      <div className="text-center mb-8 text-2xl font-bold mb-16 mt-11">
+        <h1 className="text-center font-bold text-[2rem] mb-[2rem]">Check In</h1>
+      </div>
+      <div className="flex flex-col items-center flex-1 justify-start mt-4">
+        {/* Success icon (centered, moved up) */}
+        <div className="mt-14 w-40 h-40 bg-green-500 rounded-full flex items-center justify-center mb-4">
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className="h-20 w-20 text-white" 
+            className="h-30 w-30 text-white" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -42,13 +35,11 @@ function Payment_Confirmation() {
             />
           </svg>
         </div>
-
-         {/* Payment success message */}
-        <div className="text-center">
+        {/* Payment success message */}
+        <div className="text-center mt-6">
           <h2 className="text-2xl font-semibold mb-2">Payment</h2>
           <p className="text-2xl font-semibold">Successful!</p>
         </div>
-
       </div>
     </div>
   );
