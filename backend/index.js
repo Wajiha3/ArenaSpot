@@ -56,9 +56,9 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/checkin', async (req, res) => {
     try {
          // Aceder ao header: Authorization
-        const authHeader = req.headers['authorization'];
+        const authHeader = req.headers.authorization;
         // Remove "Bearer" e isola o token
-        const token = authHeader?.split(' ')[1];
+        const token = authHeader
         // Verificar token e obter o utilizador autenticado
         const authenticatedUser = await authenticateToken(token);
         // Se não encontrar o User Autenticado
@@ -72,7 +72,8 @@ app.post('/api/checkin', async (req, res) => {
 
     } catch (err) {
         // Erro servidor
-        return res.status(500).json({ message: "Check-in error" })
+        console.error("Erro no check-in:", err);
+        return res.status(500).json({ message: "Check-in error" });
     }
 })
 

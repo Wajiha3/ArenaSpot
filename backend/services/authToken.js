@@ -17,8 +17,9 @@ async function authenticateToken (token) {
     if (!ObjectId.isValid(token)) {
         throw new Error("Invalid Token!");
     }
+    const id = new ObjectId(String(token))
     // Procurar o utilizador com base no token (que é o _id)
-    const user = await findUser({ _id: new ObjectId(token) });
+    const user = await findUser({ _id: id });
     // Se não encontrar utilizador com o respetivo Token
     if (!user) {
         throw new Error("User not found.");
