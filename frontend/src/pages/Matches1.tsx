@@ -13,14 +13,11 @@ function Matches1() {
        <div className='flex items-center h-[34px]'>
             <button className="text-white text-lg">{"< back"}</button>
         </div>
-
-        <div className="h-[34px] flex gap-2">
-            <img width={"34px"} src="/Icons/notifications.png" alt="" />
-        </div>
+        
       </div>
 
       {/* Teams Section - moved down */}
-      <div className="flex justify-between mb-8 mt-10">
+      <div className="flex justify-between mb-8 mt-20">
         {/* Team A */}
         <div className="text-center w-[48%] bg-white text-black p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Team A</h3>
@@ -50,11 +47,11 @@ function Matches1() {
       </div>
 
       {/* Centered Time - moved after teams */}
-      <div className="flex justify-center items-center my-10">
+      <div className="flex justify-center items-center my-10 mb-20">
         <div className="text-8xl font-bold">08:10</div>
       </div>
 
-      {/* Start Button - moved down */}
+      {/* Finish Button - moved down */}
       <div className="flex justify-center mb-24">
         <button className="bg-red-800 hover:bg-blue-700 text-white font-bold py-2 px-12 rounded-md text-xl">
           Finish

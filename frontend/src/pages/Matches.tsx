@@ -10,8 +10,8 @@ function Matches() {
 
    <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
        
-       <div className='w-[3.6rem] h-[5.4rem]'>
-            <button>{"< back"}</button>
+       <div className='flex items-center h-[34px]'>
+            <button className="text-white text-lg">{"< back"}</button>
         </div>
 
         <div className="h-[34px] flex gap-2">
@@ -21,8 +21,8 @@ function Matches() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold mb-2">Your Match</h1>
-        <h2 className="text-xl font-bold mb-2">Is Now</h2>
+        <h1 className="text-[2rem] font-bold mt-[2rem] text-white">Your Match</h1>
+        <h2 className="text-[2rem] font-bold mb-[2rem] text-white">Is Now</h2>
       </div>
 
       {/* Start Button */}
