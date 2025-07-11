@@ -14,7 +14,6 @@ const errors = {
     }
 }
 
-
 async function createUser (data) {
 
     const { userName, password, passwordConfirmation, email , position, firstName, lastName, birthDate } = data
