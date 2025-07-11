@@ -1,5 +1,6 @@
 // PENSAR EM CRUD - CREATE, READ, UPDATE, DELETE
 
+const { ObjectId } = require("mongodb");
 const {getCollection, getConnection, closeConnection} = require("./mongodb")
 
 // Create Match
@@ -17,9 +18,21 @@ async function findMatch (data) {
 }
 
 // Read All Matches
-async function findAllMatches (data) {
+async function findAllMatches () {
     const collection = await getCollection("match");
-    const result = await collection.find()
+    const result = await collection.find().toArray()
+    return result
+}
+
+async function findMatchesById (userId) {
+    const collection = await getCollection("match");
+    const id = new ObjectId(String(userId))
+    const result = await collection({
+        $or: [
+            { teamA: id},
+            { teamB: id}
+        ]
+    }).sort({started: -1}).toArray();
     return result
 }
 
@@ -36,4 +49,4 @@ async function deleteMatch (data) {
     await collection.deleteOne(data)
 }
 
-module.exports = { insertMatch, findMatch, findAllMatches, updateMatch, deleteMatch }
+module.exports = { insertMatch, findMatch, findAllMatches, findMatchesById, updateMatch, deleteMatch }
