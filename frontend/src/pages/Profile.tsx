@@ -35,6 +35,11 @@ function Profile() {
     ],
   };
 
+  const handleClick = () => {
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  }
+
   return (
     <div className="bg-black w-screen text-white pt-[2rem] pb-[5rem]">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
@@ -81,7 +86,7 @@ function Profile() {
 
           <button
             className="mt-14 bg-[#C34447] text-[1.5rem] text-white rounded-[25px] font-bold w-[100%] h-[3.3rem]"
-            onClick={() => navigate("/login")}
+            onClick={() => handleClick()}
           >
             Log Out
           </button>

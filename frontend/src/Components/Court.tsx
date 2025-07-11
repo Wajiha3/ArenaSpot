@@ -9,17 +9,27 @@ interface CourtProps {
   number: string;
   level: string;
   queue: User[];
+  userQueue: string | null;
+  setUserQueue: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 
-function Court({ number, level, queue}: CourtProps) {
-const [inQueue, setInQueue] = useState(false);
+function Court({ number, level, queue, userQueue, setUserQueue}: CourtProps) {
+const inQueue = userQueue === number;
+
+const handleQueueClick = () => {
+  if (inQueue) {
+    setUserQueue(null); // Leave queue
+  } else {
+    setUserQueue(number); // Join this queue
+  }
+};
 
   return (
       <div>
-          <p className="text-[2rem] font-bold text-white mb-4">Court {number} (Futvolley)</p>
-          <div className='flex flex-col items-center rounded-[20px] bg-[#FFF] w-[100%] text-[1.25rem] p-[2rem] mb-10'>
-              <p className='text-[2rem] font-bold'>{level}</p>
+          <p className="text-[2rem] font-bold text-white mb-4 w-[95%] max-w-xl mx-auto">Court {number} (Futvolley)</p>
+          <div className='flex flex-col items-center rounded-[20px] bg-[#FFF] text-[1.25rem] p-[2rem] mb-10 w-[95%] max-w-xl mx-auto'>
+              <p className='text-[1.5rem] font-extrabold text-[#68C46B]'>{level}</p>
               <div className='flex flex-row flex-nowrap items-center gap-1'>
                   <span className='font-bold mr-2 whitespace-nowrap'>Status:</span>
                   <span className='whitespace-nowrap'>{queue.length > 0 ? "Match in Progress" : "Empty"}</span>
@@ -32,6 +42,7 @@ const [inQueue, setInQueue] = useState(false);
                   <span className='font-bold mr-1 whitespace-nowrap'>Queue Length:</span>
                   <span className='whitespace-nowrap'>{queue.length >= 4? `${Math.floor(queue.length / 2)} Teams` : `${queue.length} Players`}</span>
               </div>
+              {inQueue === true ? <p className='text-[#68C46B]'>You are in this queue</p> : ""}
               <p className='font-bold mt-5'>Queue</p>
               <div className="grid gap-3 mt-2">
                 {Array.from({ length: Math.ceil(queue.length / 2) }).map((_, i) => {
@@ -47,7 +58,7 @@ const [inQueue, setInQueue] = useState(false);
               </div>
               <button
                   className={`text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] mt-5 transition-colors duration-200 ${inQueue ? 'bg-[#C34447] text-white' : 'bg-[#264879] text-white'}`}
-                  onClick={() => setInQueue(!inQueue)}
+                  onClick={handleQueueClick}
               >
                   {inQueue ? 'Leave Queue' : 'Join Queue'}
               </button>

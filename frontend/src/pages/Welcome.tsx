@@ -1,13 +1,62 @@
-import React, { useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import { BrowserRouter as Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
+
+interface UserType {
+  _id: string;
+  userName: string;
+  password: string;
+  email: string;
+  position: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  gamesPlayed: number;
+  wins: number;
+  losses: number;
+  paymentToken: boolean;
+  level: string;
+}
 
 function Welcome() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Home");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [user, setUser] = useState<UserType| null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log(sessionStorage.getItem('token'));
+        const response = await fetch('http://localhost:3007/api/user/:id', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+          console.log("User data fetched successfully:", data);
+        } else {
+          const resData = await response.json();
+          console.log(sessionStorage.getItem('token'));
+          console.error('Error fetching user data:', resData.message);
+        }
+      } catch (err) {
+        setErrors({ form: "Network error" });
+        console.error('Network error:', err);
+      }
+    };
+
+    fetchData(); // Initial fetch
+
+    const interval = setInterval(fetchData, 60000); // Fetch every 3 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   return (
     <div className="bg-black w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
+      {errors.form && (<div className="text-red-500 text-center">{errors.form}</div>)}
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className="w-[3.6rem] h-[5.4rem]">
           <img src="/logo.png" alt="" />
@@ -18,7 +67,7 @@ function Welcome() {
       </div>
       <div className="flex flex-col items-center w-[100%] px-[1.5rem]">
         <p className="text-[2rem] font-bold mt-[2rem] mb-[2rem] text-white">
-          Welcome, Player
+          Welcome, {user ? user.userName : "Player"}
         </p>
         <div className="flex flex-col items-center rounded-[20px] bg-[#FFF] w-[100%] text-[1.25rem] font-bold p-[2rem]">
           <p>
@@ -65,19 +114,19 @@ function Welcome() {
         </p>
         <div className="w-full bg-[#83A1ED] rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold">
           <p>
-            Games Played: <span className="font-normal">142</span>
+            Games Played: <span className="font-normal">{user ? user.gamesPlayed : ""}</span>
           </p>
           <p>
-            Wins: <span className="font-normal">98</span>
+            Wins: <span className="font-normal">{user ? user.wins : ""}</span>
           </p>
           <p>
-            Losses: <span className="font-normal">44</span>
+            Losses: <span className="font-normal">{user ? user.losses : ""}</span>
           </p>
           <p>
-            Winning percentage: <span className="font-normal">60%</span>
+            Winning percentage: <span className="font-normal">{user ? user.wins * 100 / user.gamesPlayed : ""}</span>
           </p>
           <p>
-            Level: <span className="font-normal">Beginer</span>
+            Level: <span className="font-normal">{user ? user.level : ""}</span>
           </p>
           <div className="w-full bg-[#D9D9D9] rounded-full h-4">
             <div

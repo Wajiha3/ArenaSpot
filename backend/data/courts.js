@@ -18,7 +18,7 @@ async function findCourt (data) {
 // Read All Courts
 async function findAllCourts () {
     const collection = await getCollection("courts");
-    const result = await collection.find()
+    const result = await collection.find().toArray();
     return result
 }
 

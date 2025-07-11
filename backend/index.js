@@ -124,11 +124,13 @@ app.post('/api/courts/:id/join', async (req, res) => {
 app.get('/api/user/:id', async (req, res) => {
     try {
          // Aceder ao header: Authorization
-        const authHeader = req.headers['authorization'];
+        const authHeader = req.headers.authorization;
         // Remove "Bearer" e isola o token
-        const token = authHeader?.split(' ')[1];
+        const token = authHeader;
+        console.log("Token:", token);
         // Verificar token e obter o utilizador autenticado
         const authenticatedUser = await authenticateToken(token);
+        console.log("Authenticated User:", authenticatedUser);
         // Criar variável que mostre o id atual acedido pelos parâmetros
         const requestedId = req.params.id;
 
@@ -168,7 +170,8 @@ app.get('/api/allcourts', async (req, res) => {
         if(!authenticatedUser) {
             return res.status(401).json({ message: "Unauthorized"})
         }
-        const courts = findAllCourts()
+        const courts = await findAllCourts()
+        console.log(courts)
         return res.status(200).json(courts)
     } catch (err) {
         return res.status(400).json({ error: err.message })
