@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../Components/Navbar'; // Ensure this path is correct
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../Components/Navbar"; // Ensure this path is correct
 function Match1() {
   const navigate = useNavigate();
-  const [selectedNav, setSelectedNav] = useState('Matches');
+  const [selectedNav, setSelectedNav] = useState("Matches");
 
   return (
     <div className="bg-black min-h-screen w-screen text-white pt-4">
-
-   <div className="ml-[2rem] mr-[2rem] flex justify-between items-center h-[34px]">
-       <div className='flex items-center h-[34px]'>
-            <button className="text-white text-lg" onClick={() => navigate('/profile')}>{"< back"}</button>
-        </div>
-        <div className="h-[34px] flex gap-2 items-center">
-            <img width={"34px"} src="/Icons/notifications.png" alt="" />
+      <div className="ml-[2rem] mr-[2rem] flex justify-between items-center h-[34px]">
+        <div className="flex items-center h-[34px]">
+          <button
+            className="text-white text-lg"
+            onClick={() => navigate("/matches")}
+          >
+            {"< back"}
+          </button>
         </div>
       </div>
 
       {/* Match title */}
-      <h1 className="mb-16 text-[2rem] font-bold mt-[2rem] text-center text-white">Match 1</h1>
+      <h1 className="mb-16 text-[2rem] font-bold mt-[2rem] text-center text-white">
+        Match 1
+      </h1>
 
       {/* Teams section */}
       <div className="flex justify-between mb-6 gap-2">
@@ -37,7 +40,13 @@ function Match1() {
                 <p className="text-2xl font-bold text-black">Jonny</p>
                 <p className="text-2xl font-bold text-black">Fellipe</p>
               </div>
-              <img src="/Icons/trophy.png" alt="Trophy" width="48" height="38" className="ml-2" />
+              <img
+                src="/Icons/trophy.png"
+                alt="Trophy"
+                width="48"
+                height="38"
+                className="ml-2"
+              />
             </div>
           </div>
         </div>
@@ -46,7 +55,9 @@ function Match1() {
       {/* Result Box */}
       <div className="bg-white p-6 rounded-lg border border-gray-200 mb-0">
         <div className="mb-6">
-          <h3 className="font-bold text-2xl mb-4 text-center text-black">Result</h3>
+          <h3 className="font-bold text-2xl mb-4 text-center text-black">
+            Result
+          </h3>
           {/* Grey inner box */}
           <div className="bg-gray-300 p-5 rounded-lg">
             <div className="space-y-3 text-center">
@@ -63,9 +74,9 @@ function Match1() {
         </div>
       </div>
       {/* Black spacer before nav */}
-      <div className="w-full bg-black" style={{height: '96px'}}></div>
+      <div className="w-full bg-black" style={{ height: "96px" }}></div>
       {/* Bottom Navigation */}
-     <Navbar />
+      <Navbar />
     </div>
   );
 }

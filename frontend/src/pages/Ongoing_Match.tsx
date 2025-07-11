@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../Components/Navbar'; // Ensure this path is correct
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../Components/Navbar"; // Ensure this path is correct
 
-function Matches2() {
+function Ongoing_Match() {
   const navigate = useNavigate();
-  const [selectedNav, setSelectedNav] = useState('Matches');
+  const [selectedNav, setSelectedNav] = useState("Matches");
 
   return (
     <div className="bg-black min-h-screen w-screen text-white pt-4">
-
       {/* Teams Section - moved down */}
       <div className="flex justify-between mb-8 mt-20">
         {/* Team A */}
@@ -21,7 +20,6 @@ function Matches2() {
             <div className="bg-gray-200 p-3 rounded-lg">
               <p className="font-medium">R Marcus</p>
             </div>
-            <h5 className="text-3xl text-blue-700 font-bold mb-4">WON</h5>
           </div>
         </div>
         {/* Spacer between teams */}
@@ -36,24 +34,29 @@ function Matches2() {
             <div className="bg-gray-200 p-3 rounded-lg">
               <p className="font-medium">R Marcus</p>
             </div>
-            <h5 className="text-3xl text-red-700 font-bold mb-4">LOST</h5>
           </div>
         </div>
       </div>
 
+      {/* Centered Time - moved after teams */}
+      <div className="flex justify-center items-center my-10 mb-20">
+        <div className="text-8xl font-bold">08:10</div>
+      </div>
 
-      {/* Finish Button - moved further down */}
-      <div className="flex justify-center mt-20 mb-60">
-        <button className="bg-red-800 hover:bg-blue-700 text-white font-bold py-2 px-12 rounded-md text-xl" onClick={() => navigate('/welcome')}>
-          SAVE
+      {/* Finish Button - moved down */}
+      <div className="flex justify-center mb-24">
+        <button
+          className="bg-red-800 hover:bg-blue-700 text-white font-bold py-2 px-12 rounded-md text-xl"
+          onClick={() => navigate("/savematch")}
+        >
+          Finish
         </button>
       </div>
 
-    
-        {/* Bottom Navigation */}
+      {/* Bottom Navigation */}
       <Navbar />
     </div>
   );
-};
+}
 
-export default Matches2;
+export default Ongoing_Match;
