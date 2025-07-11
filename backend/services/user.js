@@ -83,7 +83,7 @@ async function loginUser (data) {
 }
 
 
-async function checkInUser({userId}) {
+async function checkInUser(userId) {
     const user = await findUser({_id: userId})
     if (!user) {
         throw new Error("User not found");

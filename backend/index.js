@@ -107,7 +107,7 @@ app.post('/api/courts/:id/join', async (req, res) => {
 
     // Aceder ao header: Authorization
     const authHeader = req.headers.authorization;
-    // Remove "Bearer" e isola o token --- NÃO SEI SE ESTÁ CERTO
+    // Remove "Bearer" e isola o token
     const token = authHeader
     // Verificar token e obter o utilizador autenticado
     const authenticatedUser = await authenticateToken(token);
