@@ -27,7 +27,7 @@ async function findAllMatches () {
 async function findMatchesById (userId) {
     const collection = await getCollection("matches");
     const id = new ObjectId(String(userId))
-    const result = await collection({
+    const result = await collection.find({
         $or: [
             { teamA: id},
             { teamB: id}
