@@ -28,7 +28,11 @@ async function startMatch(court) {
         status: "In Progress",
         winningTeam: null,
         started: new Date(),
-        finished: null
+        finished: null,
+        score: {
+            teamA: null,
+            teamB: null
+        }
     }
     // Inserir match na DB com os dados recebidos
     const matchId = await insertMatch(matchData)
@@ -37,7 +41,7 @@ async function startMatch(court) {
 }
 
 
-async function finishMatch (matchId, winningTeam) {
+async function finishMatch (matchId, winningTeam, score) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
     if (!match || match.status !== "In Progress") {
@@ -50,6 +54,12 @@ async function finishMatch (matchId, winningTeam) {
     // Iniciar variaveis de vitoriosos e derrotados
     let losers = null;
     let winners = null;
+
+    // validar score
+    if (!score || typeof score.teamA !== 'number' || typeof score.teamB !== 'number'
+        || score.teamA < 0 || score.teamA > 2 || score.teamB < 0 || score.teamB > 2 ||
+        score.teamA === score.teamB || (score.teamA !== 2 && score.teamB !== 2)
+        ) throw new Error ("Invalid Score")
 
     // atribuição de winningTeam
     if (winningTeam === "teamA") {
@@ -89,6 +99,8 @@ async function finishMatch (matchId, winningTeam) {
     match.status = "Finished";
     match.winningTeam = winningTeam;
     match.finished = new Date();
+    match.score = score
+
     // Update in the DB
     await updateMatch({_id: matchId}, match);
 

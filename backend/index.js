@@ -182,12 +182,12 @@ app.post('/api/match/start', async (req, res) => {
 // POST de finalização de match
 app.post('/api/match/:id/finish', async (req, res) => {
     // receber teamA/B como vencedora
-    const { winningTeam } = req.body
+    const { winningTeam, score } = req.body
     // receber id do match dos parametros
     const id = req.params.id
     // chamar função finishMatch
     try {
-        const result = await finishMatch(id, winningTeam)
+        const result = await finishMatch(id, winningTeam, score)
         res.status(200).json({ result })
     } catch (err) {
         res.status(400).json({ error: err.message })
