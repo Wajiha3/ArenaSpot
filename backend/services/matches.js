@@ -63,6 +63,11 @@ async function finishMatch (matchId, winningTeam, score) {
         score.teamA === score.teamB || (score.teamA !== 2 && score.teamB !== 2)
         ) throw new Error ("Invalid Score")
 
+    if ((winningTeam === "teamA" && score.teamA < score.teamB) ||
+        (winningTeam === "teamB" && score.teamB < score.teamA)) {
+        throw new Error ("Invalid Score: winning team doesn't match score.");
+        }
+
     // atribuição de winningTeam
     if (winningTeam === "teamA") {
         losers = teamB;
@@ -97,6 +102,11 @@ async function finishMatch (matchId, winningTeam, score) {
         await updateUserStats(loser._id, false, avgLosersPoints, avgWinnersPoints)
     }
 
+    // Buscar novamente os vencedores mas atualizados
+    const updatedWinner1 = await findUser({ _id: winner1._id });
+    const updatedWinner2 = await findUser({ _id: winner2._id });
+    const updatedWinners = [updatedWinner1, updatedWinner2];
+
     // Atualiza match:
     match.status = "Finished";
     match.winningTeam = winningTeam;
@@ -111,7 +121,7 @@ async function finishMatch (matchId, winningTeam, score) {
     if (!court) throw new Error("Court not found.")
 
     // Colocar vencedores no início da queue
-    court.queue = [winner1, winner2, ...court.queue]
+    court.queue = [...updatedWinners, ...court.queue]
 
     // Atualizar court com nova queue
     await updateCourt(
