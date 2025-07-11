@@ -222,10 +222,13 @@ app.post('/api/match/:id/finish', async (req, res) => {
     // receber id do match dos parametros
     const id = req.params.id
     // chamar função finishMatch
+    console.log(id)
     try {
+        console.log("adeus")
         const result = await finishMatch(id, winningTeam, score)
         res.status(200).json({ result })
     } catch (err) {
+        console.log("ola")
         res.status(400).json({ error: err.message })
     }
 })

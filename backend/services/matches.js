@@ -44,9 +44,11 @@ async function startMatch(court) {
 async function finishMatch (matchId, winningTeam, score) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
+     console.log('Match encontrado:', match)
     if (!match || match.status !== "In Progress") {
         throw new Error("Match not found or already finished.")
     }
+   
 
     // definir teams
     const { teamA, teamB, courtId } = match;
@@ -73,10 +75,10 @@ async function finishMatch (matchId, winningTeam, score) {
     }
 
     // Buscar os dados dos users vencedores e derrotados
-    const winner1 = await findUser({ _id: new ObjectId(String(winners[0])) });
-    const winner2 = await findUser({ _id: new ObjectId(String(winners[1])) });
-    const loser1 = await findUser({ _id: new ObjectId(String(losers[0])) });
-    const loser2 = await findUser({ _id: new ObjectId(String(losers[1])) });
+    const winner1 = await findUser({ _id: new ObjectId(String(winners[0]._id)) });
+    const winner2 = await findUser({ _id: new ObjectId(String(winners[1]._id)) });
+    const loser1 = await findUser({ _id: new ObjectId(String(losers[0]._id)) });
+    const loser2 = await findUser({ _id: new ObjectId(String(losers[1]._id)) });
 
     const winnerUsers = [winner1, winner2];
     const loserUsers = [loser1, loser2];
