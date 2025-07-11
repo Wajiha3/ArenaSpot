@@ -1,74 +1,110 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../Components/Navbar'; // Ensure this path is correct
+import React, { useState } from "react";
+import { useNavigate, Route } from "react-router-dom";
+import Navbar from "../Components/Navbar"; // Ensure this path is correct
 
 function Matches() {
   const navigate = useNavigate();
-  const [selectedNav, setSelectedNav] = useState('Matches');
+  const [selectedNav, setSelectedNav] = useState("Matches");
+  const filterOptions = [
+    "Today",
+    "Last week",
+    "Last month",
+    "Last year",
+  ] as const;
+  type FilterType = (typeof filterOptions)[number];
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>("Today");
+  const matchGroups: Record<
+    FilterType,
+    Array<{ label: string; result: string; link?: string }>
+  > = {
+    Today: [
+      { label: "Match 1:", result: "Won", link: "/match1" },
+      { label: "Match 2:", result: "Lost" },
+      { label: "Match 3:", result: "Won" },
+      { label: "Match 4:", result: "Lost" },
+      { label: "Match 5:", result: "Lost" },
+      { label: "Match 6:", result: "Lost" },
+    ],
+    "Last week": [
+      { label: "Match 1:", result: "Lost", link: "/match1" },
+      { label: "Match 2:", result: "Won" },
+      { label: "Match 3:", result: "Won" },
+      { label: "Match 4:", result: "Lost" },
+    ],
+    "Last month": [
+      { label: "Match 1:", result: "Lost", link: "/match1" },
+      { label: "Match 2:", result: "Won" },
+      { label: "Match 3:", result: "Won" },
+    ],
+    "Last year": [
+      { label: "Match 1:", result: "Lost", link: "/match1" },
+      { label: "Match 2:", result: "Won" },
+      { label: "Match 3:", result: "Lost" },
+      { label: "Match 4:", result: "Won" },
+      { label: "Match 5:", result: "Lost" },
+      { label: "Match 6:", result: "Lost" },
+      { label: "Match 7:", result: "Lost" },
+    ],
+  };
 
   return (
-    <div className="bg-black min-h-screen w-screen text-white pt-4">
+    <div className="bg-black w-screen text-white pt-[2rem] pb-[5rem]">
+      <div className="mt-10 flex items-center justify-between w-full px-8">
+        <p className="text-[2rem] font-bold text-center mb-2 flex-1 ml-8">
+          My Matches
+        </p>
+        <img width={"34px"} src="/Icons/filter.png" alt="" className="mb-2" />
+      </div>
 
-   <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-       
-       <div className='flex items-center h-[34px]'>
-            <button className="text-white text-lg" onClick={() => navigate('/welcome')}>{"< back"}</button>
+      <div className="mt-10 flex justify-center w-full">
+        <div className="grid grid-cols-2 grid-rows-2 gap-4 w-[80%]">
+          {filterOptions.map((filter) => (
+            <button
+              key={filter}
+              className={`w-[10rem] h-12 px-8 ${
+                selectedFilter === filter ? "bg-[#264879]" : "bg-[#68C46B]"
+              } text-[1.25rem] font-bold rounded-[20px] whitespace-nowrap`}
+              onClick={() => setSelectedFilter(filter)}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
-
-        <div className="h-[34px] flex gap-2">
-            <img width={"34px"} src="/Icons/notifications.png" alt="" />
-        </div>
       </div>
 
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-[2rem] font-bold mt-[2rem] text-white">Your Match</h1>
-        <h2 className="text-[2rem] font-bold mb-[2rem] text-white">Is Now</h2>
-      </div>
-
-      {/* Start Button */}
-      <div className="flex justify-center mb-16">
-        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-12 rounded-md text-xl" onClick={() => navigate('/matches1')}>
-          Start
-        </button>
-      </div>
-
-     {/* Teams Section */}
-        <div className="flex justify-between">
-          {/* Team A */}
-          <div className="text-center w-[48%] bg-white text-black p-4 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Team A</h3>
-            <div className="space-y-3">
-              <div className="bg-gray-200 p-3 rounded-lg">
-                <p className="font-medium">L Marcus</p>
-              </div>
-              <div className="bg-gray-200 p-3 rounded-lg">
-                <p className="font-medium">R Marcus</p>
-              </div>
+      <div className="mt-10 w-full flex justify-center">
+        <div className="bg-white rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold mb-[2rem] w-[90%] max-w-xl">
+          {matchGroups[selectedFilter].map((match, idx) => (
+            <div className="flex justify-between" key={idx}>
+              {match.link ? (
+                <span
+                  className="cursor-pointer hover:underline text-black"
+                  onClick={() => match.link && navigate(match.link)}
+                >
+                  {match.label}
+                </span>
+              ) : (
+                <span className="text-black">{match.label}</span>
+              )}
+              <span
+                className={
+                  match.result === "Won"
+                    ? "text-green-600"
+                    : match.result === "Lost"
+                    ? "text-red-600"
+                    : ""
+                }
+              >
+                {match.result}
+              </span>
             </div>
-          </div>
-
-          {/* Spacer between teams */}
-          <div className="w-[4%]"></div>
-
-          {/* Team B */}
-          <div className="text-center w-[48%] bg-white text-black p-4 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Team B</h3>
-            <div className="space-y-3">
-              <div className="bg-gray-200 p-3 rounded-lg">
-                <p className="font-medium">L Marcus</p>
-              </div>
-              <div className="bg-gray-200 p-3 rounded-lg">
-                <p className="font-medium">R Marcus</p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-        {/* Bottom Navigation */}
-     <Navbar />
+      </div>
+      {/* Bottom Navigation */}
+      <Navbar />
     </div>
   );
-};
+}
 
 export default Matches;
-

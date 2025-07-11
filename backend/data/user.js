@@ -12,7 +12,7 @@ async function insertUser (data) {
 // Read User
 async function findUser (data) {
     const collection = await getCollection("user");
-    const result = await collection.findOne(data._id)
+    const result = await collection.findOne(data)
     return result
 }
 
