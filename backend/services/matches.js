@@ -1,4 +1,6 @@
 const { insertMatch, findMatch, findAllMatches, updateMatch, deleteMatch } = require('../data/matches')
+const { insertCourt, findCourt, findAllCourts, updateCourt, deleteCourt } = require('../data/courts')
+const { ObjectId } = require('mongodb')
 
 async function startMatch(court) {
     // se partida tiver menos de 4 elementos na queue
@@ -33,18 +35,16 @@ async function startMatch(court) {
     return matchId
 }
 
+
 async function finishMatch (matchId, winningTeam) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
     if (!match || match.status !== "In Progress") {
         throw new Error("Match not found or already finished.")
     }
-    // Atualiza match:
-    match.status = "Finished";
-    match.winningTeam = winningTeam;
-    match.finished = new Date();
-    // Update in the DB
-    await updateMatch({_id: matchId}, match);
+
+    // definir teams
+    const { teamA, teamB, courtId } = match;
 
     // Iniciar variaveis de vitoriosos e derrotados
     let losers = null;
@@ -52,14 +52,25 @@ async function finishMatch (matchId, winningTeam) {
 
     // atribuição de winningTeam
     if (winningTeam === "teamA") {
-        losers = match.teamB;
-        winners = match.teamA;
-    } else if (winningTeam !== "teamA") {
-        losers = match.teamB;
-        winners = match.teamA;
+        losers = teamB;
+        winners = teamA;
+    } else if (winningTeam === "teamB") {
+        losers = teamA;
+        winners = teamB;
     } else {
         throw new Error("Invalid winning team.");
     }
+
+    // Atualiza match:
+    match.status = "Finished";
+    match.winningTeam = winningTeam;
+    match.finished = new Date();
+    // Update in the DB
+    await updateMatch({_id: matchId}, match);
+
+    // importar court específico por ID para consultar a queue
+    const court = await findCourt({_id: new ObjectId(String(courtId))})
+    if (!court) throw new Error("Court not found.")
 
     // Se queue não tiver +2 jogadores para jogar
     if (court.queue.length < 2) {
@@ -67,9 +78,8 @@ async function finishMatch (matchId, winningTeam) {
     }
 
     // ir buscar os 2 próximos jogadores
-    const player1 = court.queue[0];
-    const player2 = court.queue[1];
-    court.queue = court.queue.slice(2);
+    const [player1, player2, ...restQueue] = court.queue;
+    court.queue = restQueue;
 
     // novo jogo com os vencedores do passado
     const newMatch = {
@@ -86,6 +96,8 @@ async function finishMatch (matchId, winningTeam) {
 
     // Atualizar court com nova queue
     await updateCourt({ _id: court._id }, { queue: court.queue });
+
+    return { message: "New match started.", match: newMatch }
 }
 
 module.exports = { startMatch, finishMatch }
