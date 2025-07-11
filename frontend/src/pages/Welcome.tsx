@@ -6,8 +6,6 @@ function Welcome() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState('Home');
 
-  
-
   return (
     <div className="bg-black w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">

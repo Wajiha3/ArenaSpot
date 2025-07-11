@@ -3,33 +3,34 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Components/Navbar'; // Ensure this path is correct
 import Court from '../Components/Court';
 
+interface CourtType {
+  courtName: string;
+  courtLevel: string;
+  queue: any[]; // or a more specific type for players
+}
+
 function Queues() {
     const navigate = useNavigate();
-    const [selectedNav, setSelectedNav] = useState('Queues');
+    const [courts, setCourts] = useState<CourtType[]>([]); // <-- use state for courts
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [inQueue2, setInQueue2] = useState(false);
-    const [inQueue3, setInQueue3] = useState(false);
-
-    const array = [{number: 1, level: "Beginner", queue: [{firstname: "Lucas", lastname: "Smith"}, {firstname: "Marcus", lastname: "Johnson"}, {firstname: "Alice", lastname: "Brown"}, {firstname: "Bob", lastname: "Davis"}]},
-                   {number: 2, level: "Intermediate", queue: [{firstname: "John", lastname: "Doe"}, {firstname: "Jane", lastname: "Doe"}, {firstname: "Alice", lastname: "Smith"}, {firstname: "Bob", lastname: "Johnson"}]},
-                   {number: 3, level: "Advanced", queue: [{firstname: "Charlie ", lastname: "Brown"}]}
-    ];
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3007/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    // body: JSON.stringify(),
+                const response = await fetch('http://localhost:3007/api/allcourts', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
                 });
+                console.log(response)
                 if (response.ok) {
-                    const resData = await response.json();
-                    localStorage.setItem('token', resData.token);
-                    navigate('/welcome');
+                    const data = await response.json();
+                    console.log(data); // Debugging: log the fetched data
+                    setCourts(data); // <-- set state with fetched data
                 } else {
                     const resData = await response.json();
-                    // handle error
+                    if (resData.error === "Unauthorized") {
+                        setErrors({ form: "Unauthorized" });
+                    }
                 }
             } catch (err) {
                 setErrors({ form: "Network error" });
@@ -51,8 +52,8 @@ function Queues() {
             <div className="flex flex-col items-center w-[100%] px-[1rem]">
                 <p className="text-[2rem] font-bold mt-[2rem] mb-[2rem] text-white">Court Queues</p>
 
-                {array.map((court, index) => (
-                    <Court key={index} number={court.number} level={court.level} queue={court.queue} />
+                {courts.map((court, index) => (
+                    <Court key={index} number={court.courtName} level={court.courtLevel} queue={court.queue} />
                 ))}
                 
             </div>

@@ -24,7 +24,7 @@ function Login() {
             });
             if (response.ok) {
                 const resData = await response.json();
-                localStorage.setItem('token', resData.token);
+                sessionStorage.setItem('token', resData.token);
                 navigate('/welcome');
             } else {
                 const resData = await response.json();

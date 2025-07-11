@@ -1,11 +1,16 @@
 import React from 'react';
 import { useState } from 'react';
 
-interface CourtProps {
-  number: number;
-  level: string;
-  queue: {firstname: string; lastname: string }[];
+interface User {
+  firstName: string;
 }
+
+interface CourtProps {
+  number: string;
+  level: string;
+  queue: User[];
+}
+
 
 function Court({ number, level, queue}: CourtProps) {
 const [inQueue, setInQueue] = useState(false);
@@ -34,8 +39,8 @@ const [inQueue, setInQueue] = useState(false);
                   const player2 = queue[i * 2 + 1];
                   return (
                     <div key={i + 1}>
-                      {i + 1}. {player1?.firstname}
-                      {player2 ? ` & ${player2.firstname}` : ''}
+                      {i + 1}. {player1?.firstName}
+                      {player2 ? ` & ${player2.firstName}` : ''}
                     </div>
                   );
                 })}
