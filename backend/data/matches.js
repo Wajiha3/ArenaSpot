@@ -12,20 +12,20 @@ async function insertMatch (data) {
 
 // Read Match
 async function findMatch (data) {
-    const collection = await getCollection("match");
+    const collection = await getCollection("matches");
     const result = await collection.findOne(data)
     return result
 }
 
 // Read All Matches
 async function findAllMatches () {
-    const collection = await getCollection("match");
+    const collection = await getCollection("matches");
     const result = await collection.find().toArray()
     return result
 }
 
 async function findMatchesById (userId) {
-    const collection = await getCollection("match");
+    const collection = await getCollection("matches");
     const id = new ObjectId(String(userId))
     const result = await collection({
         $or: [
@@ -38,14 +38,14 @@ async function findMatchesById (userId) {
 
 // Update Match
 async function updateMatch (filter, update) {
-    const collection = await getCollection("match");
+    const collection = await getCollection("matches");
     const result = await collection.updateOne(filter, { $set: update })
     return result
 }
 
 // Delete User
 async function deleteMatch (data) {
-    const collection = await getCollection("match");
+    const collection = await getCollection("matches");
     await collection.deleteOne(data)
 }
 

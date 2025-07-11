@@ -44,7 +44,7 @@ async function startMatch(court) {
 async function finishMatch (matchId, winningTeam, score) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
-     console.log('Match encontrado:', match)
+     console.log('Match encontrado:', match) // -----> ESTA AQUI O PROBLEMA
     if (!match || match.status !== "In Progress") {
         throw new Error("Match not found or already finished.")
     }
@@ -104,38 +104,27 @@ async function finishMatch (matchId, winningTeam, score) {
     match.score = score
 
     // Update in the DB
-    await updateMatch({_id: matchId}, match);
+    await updateMatch({_id: new ObjectId(String(matchId))}, match);
 
     // importar court específico por ID para consultar a queue
     const court = await findCourt({_id: new ObjectId(String(courtId))})
     if (!court) throw new Error("Court not found.")
+
+    // Colocar vencedores no início da queue
+    court.queue = [winner1, winner2, ...court.queue]
+
+    // Atualizar court com nova queue
+    await updateCourt(
+    { _id: court._id },
+    { queue: court.queue }
+    )
 
     // Se queue não tiver +2 jogadores para jogar
     if (court.queue.length < 2) {
         return { message: "Match finished. Waiting for more players..."}
     }
 
-    // ir buscar os 2 próximos jogadores
-    const [player1, player2, ...restQueue] = court.queue;
-    court.queue = restQueue;
-
-    // novo jogo com os vencedores do passado
-    const newMatch = {
-        courtId: court._id,
-        teamA: winners,
-        teamB: [player1, player2],
-        status: "In Progress",
-        winningTeam: null,
-        started: new Date(),
-        finished: null
-    }
-    // criar novo jogo com os novos dados
-    await insertMatch(newMatch)
-
-    // Atualizar court com nova queue
-    await updateCourt({ _id: court._id }, { queue: court.queue });
-
-    return { message: "New match started.", match: newMatch }
+    return { message: "Match finished. Winners moved to front of queue." }
 }
 
 
