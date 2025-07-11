@@ -15,6 +15,12 @@ async function findUser (data) {
     const result = await collection.findOne(data)
     return result
 }
+// Count users checked-in
+async function countUsersCheckedIn() {
+    const collection = await getCollection("users");
+    const count = await collection.find({ paymentToken: true }).toArray();
+    return count.length;
+}
 
 // Update User
 async function updateUser (filter, update) {
@@ -29,4 +35,4 @@ async function deleteUser (data) {
     await collection.deleteOne(data)
 }
 
-module.exports = { insertUser, findUser, updateUser, deleteUser }
+module.exports = { insertUser, findUser, updateUser, deleteUser, countUsersCheckedIn }

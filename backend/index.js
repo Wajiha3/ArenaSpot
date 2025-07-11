@@ -16,7 +16,7 @@ app.use(cors());
 
 const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
-const { findUser } = require('./data/user')
+const { findUser, countUsersCheckedIn } = require('./data/user')
 const { createCourt, joinQueue } = require('./services/courts')
 const { findAllCourts, findCourt } = require('./data/courts')
 const { findAllMatches, findMatchesById } = require('./data/matches')
@@ -99,7 +99,7 @@ app.post('/api/createcourt', async (req, res) => {
         }  
 })
 
-//POST user join queue
+// POST user join queue
 app.post('/api/courts/:id/join', async (req, res) => {
 
     // court é escolhido em função do id nos parametros
@@ -122,7 +122,17 @@ app.post('/api/courts/:id/join', async (req, res) => {
     }
 })
 
-// get do utilizador específico
+// GET users Checked-In
+app.get('/api/users/checkedin/count', async (req, res) => {
+  try {
+    const count = await countUsersCheckedIn()
+    res.status(200).json(count)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// GET do utilizador específico
 app.get('/api/user/:id', async (req, res) => {
     try {
          // Aceder ao header: Authorization
@@ -160,6 +170,27 @@ app.get('/api/user/:id', async (req, res) => {
     }   
 })
 
+// GET matchReady
+app.get('/api/match/ready/:courtId', async (req, res) => {
+
+    // receber court pelos parametros
+    const courtId = req.params.courtId
+
+    try {
+        // Procurar court pelo courtId
+        const court = await findCourt({ _id: new ObjectId(String(courtId)) })
+        if (!court) {
+            return res.status(404).json({ error: 'Court not found' })
+        }
+        // Confirmar se há pelo menos 4 jogadores na queue
+        const matchReady = court.queue.length >= 4;
+
+        return res.status(200).json({ message: "Match is ready", matchReady })
+    } catch (err) {
+        return res.status(500).json({ error: "Server error" })
+    }
+})
+
 // POST criação de match
 app.post('/api/match/start', async (req, res) => {
     const { courtId } = req.body
@@ -168,12 +199,17 @@ app.post('/api/match/start', async (req, res) => {
         if (!court) {
             return res.status(404).json({ error: 'Court not found' })
         }
-        const matchId = await startMatch( court )
+        // iniciar match como null porque ainda não começou
+        let matchId = null
+        if (court.queue.length >= 4) {
+        // assim que tiver 4 user na queue, start match
+        matchId = await startMatch(court)
+        }   
         if (!matchId) {
             return res.status(400).json({ error: 'Not enough players to start a match.' })
         }
 
-        res.json({ message: 'Match started', matchId})
+        res.status(200).json({ message: 'Match started', matchId})
     } catch (err) {
         return res.status(400).json({ error: err.message })
     }
