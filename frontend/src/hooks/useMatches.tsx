@@ -107,11 +107,14 @@ export function useMatches() {
     });
   };
 
+  const getAllMatches = () => matches;
+
   return {
     getLast3Matches,
     getMatchesToday,
     getMatchesLastWeek,
     getMatchesLastMonth,
     getMatchesLastYear,
+    getAllMatches,
   };
 }
