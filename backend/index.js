@@ -125,7 +125,7 @@ app.post('/api/courts/:id/join', async (req, res) => {
 // POST user leave queue
 app.post('/api/courts/:id/leave', async (req, res) => {
     const courtId = req.params.id
-
+    
    // Aceder ao header: Authorization
     const authHeader = req.headers.authorization;
     // Remove "Bearer" e isola o token
