@@ -191,11 +191,20 @@ app.get('/api/user/:id', async (req, res) => {
 
 // GET matchReady
 app.get('/api/match/ready/:courtId', async (req, res) => {
-
-    // receber court pelos parametros
-    const courtId = req.params.courtId
-
     try {
+         // Aceder ao header: Authorization
+        const authHeader = req.headers.authorization;
+        // Remove "Bearer" e isola o token
+        const token = authHeader
+        // Verificar token e obter o utilizador autenticado
+        const authenticatedUser = await authenticateToken(token);
+        // Se não encontrar o User Autenticado
+        if(!authenticatedUser) {
+            return res.status(401).json({ message: "Unauthorized"})
+        }
+        // receber court pelos parametros
+        const courtId = req.params.courtId
+
         // Procurar court pelo courtId
         const court = await findCourt({ _id: new ObjectId(String(courtId)) })
         if (!court) {
@@ -204,11 +213,27 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
         // Confirmar se há pelo menos 4 jogadores na queue
         const matchReady = court.queue.length >= 4;
 
-        return res.status(200).json({ message: "Match is ready", matchReady })
+        if (!matchReady) {
+            return res.status(200).json({ matchReady: false });
+        }
+
+        // Obter os primeiros 4 jogadores da fila
+        const firstFour = court.queue.slice(0, 4);
+
+        // Verificar se o utilizador está entre os 4 primeiros
+        const isUserPlaying = firstFour.find(e => String(e._id) === String(authenticatedUser._id));
+
+        if (!isUserPlaying) {
+            return res.status(200).json({ matchReady: false });
+        }
+
+        // Se o utilizador for um dos 4 que vão jogar
+        return res.status(200).json({ message: "Match is ready", matchReady: true });
+
     } catch (err) {
-        return res.status(500).json({ error: "Server error" })
+        return res.status(500).json({ error: "Server error" });
     }
-})
+});
 
 // POST criação de match
 app.post('/api/match/start', async (req, res) => {
@@ -242,7 +267,7 @@ app.post('/api/match/:id/finish', async (req, res) => {
     const id = req.params.id
     // chamar função finishMatch
     try {
-        // PROBLEMA ESTÁ NESTA FUNCAO
+        
         const result = await finishMatch(id, winningTeam, score)
         res.status(200).json({ result })
     } catch (err) {
