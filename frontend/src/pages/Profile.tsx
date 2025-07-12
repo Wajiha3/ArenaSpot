@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar";
+import { BrowserRouter as Routes, Route, useNavigate } from "react-router-dom";
+import Navbar from "../Components/Navbar"; // Ensure this path is correct
+import { useUser } from "../hooks/useUser";
 
 function Profile() {
   const navigate = useNavigate();
-  const [selectedNav] = useState("Profile");
+  const [selectedNav, setSelectedNav] = useState("Profile");
+  const [selectedFilter, setSelectedFilter] = useState("Today");
+  const { user } = useUser();
 
   const handleClick = () => {
     sessionStorage.removeItem("token");
@@ -54,7 +57,7 @@ function Profile() {
             />
           </div>
           <div className="ml-4">
-            <h2 className="text-2xl font-bold">LilPaki</h2>
+            <h2 className="text-2xl font-bold">{user?.userName}</h2>
             <p className="text-white/80">Lisbon, Portugal</p>
           </div>
         </div>
@@ -72,26 +75,26 @@ function Profile() {
           <div className="space-y-5">
             <div className="flex justify-between items-center pb-3 border-b border-white/10">
               <span className="text-white/70">Email</span>
-              <span className="font-medium">abc@gmail.com</span>
+              <span className="font-medium">{user?.email}</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b border-white/10">
               <span className="text-white/70">Date of birth</span>
-              <span className="font-medium">05/10/2002</span>
+              <span className="font-medium">{user?.birthDate ? user.birthDate.split("-").reverse().join("/"): ""}</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b border-white/10">
               <span className="text-white/70">Password</span>
-              <span className="font-medium">••••••••</span>
+              <span className="font-medium">{user?.password ? "●".repeat(user.password.length) : ""}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-white/70">Position</span>
-              <span className="font-medium">Left</span>
+              <span className="font-medium">{user?.position}</span>
             </div>
           </div>
 
           {/* Log Out Button */}
           <button
             className="mt-10 bg-gradient-to-bl from-[#800000] from-3% to-[#cc0000] to-77% hover:from-[#990000] hover:to-[#b30000] transition-all duration-300 text-white font-bold py-3 w-full rounded-xl shadow-lg hover:shadow-red-500/30"
-            onClick={() => navigate("/login")}
+            onClick={() => handleClick()}
           >
             Log Out
           </button>

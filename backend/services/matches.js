@@ -2,6 +2,7 @@ const { insertMatch, findMatch, findAllMatches, updateMatch, deleteMatch } = req
 const { insertCourt, findCourt, findAllCourts, updateCourt, deleteCourt } = require('../data/courts')
 const { ObjectId } = require('mongodb')
 const { findUser, updateUser } = require('../data/user')
+const { leaveQueue } = require('./courts')
 
 async function startMatch(court) {
     // se partida tiver menos de 4 elementos na queue
@@ -44,18 +45,21 @@ async function startMatch(court) {
 async function finishMatch (matchId, winningTeam, score) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
-     console.log('Match encontrado:', match) // -----> ESTA AQUI O PROBLEMA
+    /* console.log('Match encontrado:', match) */
     if (!match || match.status !== "In Progress") {
         throw new Error("Match not found or already finished.")
     }
    
-
     // definir teams
     const { teamA, teamB, courtId } = match;
 
     // Iniciar variaveis de vitoriosos e derrotados
     let losers = null;
     let winners = null;
+
+    // importar court específico por ID para consultar a queue
+    const court = await findCourt({_id: new ObjectId(String(courtId))})
+    if (!court) throw new Error("Court not found.")
 
     // validar score
     if (!score || typeof score.teamA !== 'number' || typeof score.teamB !== 'number'
@@ -85,6 +89,7 @@ async function finishMatch (matchId, winningTeam, score) {
     const loser1 = await findUser({ _id: new ObjectId(String(losers[0]._id)) });
     const loser2 = await findUser({ _id: new ObjectId(String(losers[1]._id)) });
 
+
     const winnerUsers = [winner1, winner2];
     const loserUsers = [loser1, loser2];
 
@@ -94,12 +99,12 @@ async function finishMatch (matchId, winningTeam, score) {
 
     // Atualizar pontos vencedores
     for (const winner of winnerUsers) {
-        await updateUserStats(winner._id, true, avgWinnersPoints, avgLosersPoints);
+        await updateUserStats(winner._id, true, avgWinnersPoints, avgLosersPoints, court);
     }
 
     // Atualizar pontos derrotados
     for (const loser of loserUsers) {
-        await updateUserStats(loser._id, false, avgLosersPoints, avgWinnersPoints)
+        await updateUserStats(loser._id, false, avgLosersPoints, avgWinnersPoints, court)
     }
 
     // Buscar novamente os vencedores mas atualizados
@@ -116,9 +121,6 @@ async function finishMatch (matchId, winningTeam, score) {
     // Update in the DB
     await updateMatch({_id: new ObjectId(String(matchId))}, match);
 
-    // importar court específico por ID para consultar a queue
-    const court = await findCourt({_id: new ObjectId(String(courtId))})
-    if (!court) throw new Error("Court not found.")
 
     // Colocar vencedores no início da queue
     court.queue = [...updatedWinners, ...court.queue]
@@ -138,7 +140,7 @@ async function finishMatch (matchId, winningTeam, score) {
 }
 
 
-async function updateUserStats (userId, userWin, teamAvg, opponentAvg) {
+async function updateUserStats (userId, userWin, teamAvg, opponentAvg, court) {
     const user = await findUser({ _id: new ObjectId(String(userId))})
     if (!user) return
 
@@ -164,12 +166,28 @@ async function updateUserStats (userId, userWin, teamAvg, opponentAvg) {
         pointsGained += 2;
     }
 
-    await updateUser (
+    const updatedPlayer = await updateUser (
         { _id: user._id },
         { points: (user.points + pointsGained),
             ...updateProperties
         }
     )
+    
+    // LEVEL UP & LEAVE QUEUE
+    if (updatedPlayer.points > 399 && updatedPlayer.points < 800) {
+        await updateUser(
+            { _id: user._id },
+            { level: "Intermediate" }
+        )
+        await leaveQueue(court, updatedPlayer)
+    // LEVEL UP & LEAVE QUEUE
+    } else if (updatedPlayer.points >= 800) {
+        await updateUser(
+            { _id: user._id },
+            { level: "Advanced" }
+        )
+        await leaveQueue(court, updatedPlayer)
+    }
 }
 
 

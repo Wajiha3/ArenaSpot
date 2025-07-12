@@ -44,6 +44,11 @@ async function joinQueue (courtId, user) {
     if (alreadyInQueue) {
         throw new Error("Player already in queue.")
     }
+    
+    // Confirmar código se funciona
+    if (court.courtLevel !== user.level) {
+        throw new Error("Court level not authorized.")
+    }
 
     // adicionar user à queue
     court.queue.push(user)
@@ -63,4 +68,27 @@ async function joinQueue (courtId, user) {
     return {message: "Player added to queue!", matchReady}
 }
 
-module.exports = { createCourt, joinQueue }
+async function leaveQueue(courtId, user) {
+
+    // selecionar court desejado
+    const court = await findCourt({ _id: new ObjectId(String(courtId)) });
+    // se não encontrares o court
+    if (!court) {
+        throw new Error("Court not found.");
+    }
+    // função para encontrar se algum elemento (user com o seu id) está na queue
+    const alreadyInQueue = court.queue.find(e => String(e._id) === String(user._id))
+    // se user já estiver na queue escolhida
+    let updatedQueue = court.queue
+    if (alreadyInQueue) {
+        updatedQueue = court.queue.filter( (e) => String(e._id) !== String(user._id))
+    }
+
+    await updateCourt(
+        { _id: court._id },
+        { queue: updatedQueue });
+
+    return {message: "Player removed from queue."}
+}
+
+module.exports = { createCourt, joinQueue, leaveQueue }

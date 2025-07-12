@@ -17,9 +17,9 @@ app.use(cors());
 const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
 const { findUser, countUsersCheckedIn } = require('./data/user')
-const { createCourt, joinQueue } = require('./services/courts')
+const { createCourt, joinQueue, leaveQueue } = require('./services/courts')
 const { findAllCourts, findCourt } = require('./data/courts')
-const { findAllMatches, findMatchesById } = require('./data/matches')
+const { findAllMatches, findMatchesById, findInProgressMatchesByCourt } = require('./data/matches')
 const { ObjectId } = require('mongodb')
 const { startMatch, finishMatch } = require('./services/matches')
 
@@ -122,6 +122,27 @@ app.post('/api/courts/:id/join', async (req, res) => {
     }
 })
 
+// POST user leave queue
+app.post('/api/courts/:id/leave', async (req, res) => {
+    const courtId = req.params.id
+    
+   // Aceder ao header: Authorization
+    const authHeader = req.headers.authorization;
+    // Remove "Bearer" e isola o token
+    const token = authHeader
+    // Verificar token e obter o utilizador autenticado
+    const authenticatedUser = await authenticateToken(token);
+    // Escolher utilizador por authenticatedUser
+    const user = await findUser(authenticatedUser)
+
+    try {
+        const result = await leaveQueue(courtId, user)
+        return res.status(200).json(result)
+    } catch (err) {
+        return res.status(400).json({ error: err.message })
+    }
+})
+
 // GET users Checked-In
 app.get('/api/users/checkedin/count', async (req, res) => {
   try {
@@ -139,10 +160,8 @@ app.get('/api/user/:id', async (req, res) => {
         const authHeader = req.headers.authorization;
         // Remove "Bearer" e isola o token
         const token = authHeader;
-        console.log("Token:", token);
         // Verificar token e obter o utilizador autenticado
         const authenticatedUser = await authenticateToken(token);
-        console.log("Authenticated User:", authenticatedUser);
         // Criar variável que mostre o id atual acedido pelos parâmetros
         const requestedId = req.params.id;
 
@@ -153,7 +172,7 @@ app.get('/api/user/:id', async (req, res) => {
         // Obter os dados do utilizador
         const userData = authenticatedUser
         // Remover password antes de retornar
-        delete userData.password;
+        // delete userData.password;
         // Retorna o utilizador sem a password e depois de confirmado que está autenticado
         return res.status(200).json(userData);
 
@@ -172,11 +191,20 @@ app.get('/api/user/:id', async (req, res) => {
 
 // GET matchReady
 app.get('/api/match/ready/:courtId', async (req, res) => {
-
-    // receber court pelos parametros
-    const courtId = req.params.courtId
-
     try {
+         // Aceder ao header: Authorization
+        const authHeader = req.headers.authorization;
+        // Remove "Bearer" e isola o token
+        const token = authHeader
+        // Verificar token e obter o utilizador autenticado
+        const authenticatedUser = await authenticateToken(token);
+        // Se não encontrar o User Autenticado
+        if(!authenticatedUser) {
+            return res.status(401).json({ message: "Unauthorized"})
+        }
+        // receber court pelos parametros
+        const courtId = req.params.courtId
+
         // Procurar court pelo courtId
         const court = await findCourt({ _id: new ObjectId(String(courtId)) })
         if (!court) {
@@ -185,11 +213,27 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
         // Confirmar se há pelo menos 4 jogadores na queue
         const matchReady = court.queue.length >= 4;
 
-        return res.status(200).json({ message: "Match is ready", matchReady })
+        if (!matchReady) {
+            return res.status(200).json({ matchReady: false });
+        }
+
+        // Obter os primeiros 4 jogadores da fila
+        const firstFour = court.queue.slice(0, 4);
+
+        // Verificar se o utilizador está entre os 4 primeiros
+        const isUserPlaying = firstFour.find(e => String(e._id) === String(authenticatedUser._id));
+
+        if (!isUserPlaying) {
+            return res.status(200).json({ matchReady: false });
+        }
+
+        // Se o utilizador for um dos 4 que vão jogar
+        return res.status(200).json({ message: "Match is ready", matchReady: true });
+
     } catch (err) {
-        return res.status(500).json({ error: "Server error" })
+        return res.status(500).json({ error: "Server error" });
     }
-})
+});
 
 // POST criação de match
 app.post('/api/match/start', async (req, res) => {
@@ -223,11 +267,37 @@ app.post('/api/match/:id/finish', async (req, res) => {
     const id = req.params.id
     // chamar função finishMatch
     try {
-        // PROBLEMA ESTÁ NESTA FUNCAO
+        
         const result = await finishMatch(id, winningTeam, score)
         res.status(200).json({ result })
     } catch (err) {
         res.status(400).json({ error: err.message })
+    }
+})
+
+// GET matches de jogos IN PROGRESS por court
+app.get('/api/matches/:courtid', async (req, res) => {
+    try {
+        // Aceder ao header: Authorization
+        const authHeader = req.headers.authorization;
+        // Remove "Bearer" e isola o token
+        const token = authHeader
+        // Verificar token e obter o utilizador autenticado
+        const authenticatedUser = await authenticateToken(token);
+        // Se não encontrar o User Autenticado
+        if(!authenticatedUser) {
+            return res.status(401).json({ message: "Unauthorized"})
+        }
+        const requestedId = req.params.courtid
+        const matchInProgress = await findInProgressMatchesByCourt(requestedId)
+
+        if(!matchInProgress) {
+            return res.status(404).json({ message: "No match in progress on this court."})
+        }
+        return res.status(200).json(matchInProgress)
+
+    } catch (err) {
+        return res.status(500).json({error: "Internal server error."})
     }
 })
 
@@ -255,7 +325,7 @@ app.get('/api/:id/matches', async (req, res) => {
     }
 })
 
-// Get todos os courts da Arena
+// Get todos os courts da Arena (se utilizador tiver pago)
 app.get('/api/allcourts', async (req, res) => {
     try {
          // Aceder ao header: Authorization
@@ -267,6 +337,10 @@ app.get('/api/allcourts', async (req, res) => {
         // Se não encontrar o User Autenticado
         if(!authenticatedUser) {
             return res.status(401).json({ message: "Unauthorized"})
+        }
+        // Mostrar courts se user tiver pago
+        if(authenticatedUser.paymentToken !== true) {
+            return res.status(401).json({ message: "Access denied: User not checked-in"})
         }
         const courts = await findAllCourts()
         console.log(courts)
