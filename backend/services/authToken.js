@@ -9,6 +9,8 @@ async function authenticateToken (token) {
       if (!token) {
         throw new Error("Token not sent");
     }
+    console.log("Token received:", token);
+    console.log("Tokens array:", tokensArr);
     // Verificar se existe sessão com o token recebido
     if (!tokensArr.includes(token)) {
         throw new Error("There isn't a session with the Token!");
@@ -31,6 +33,7 @@ async function authenticateToken (token) {
 // Adicionar tokens ao array de sessão
 function addToken(token) {
     tokensArr.push(token);
+    console.log(tokensArr)
 }
 
 module.exports = { tokensArr, addToken, authenticateToken }

@@ -2,6 +2,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 
+interface UserType {
+  _id: string;
+  userName: string;
+  password: string;
+  email: string;
+  position: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  gamesPlayed: number;
+  wins: number;
+  losses: number;
+  paymentToken: boolean;
+  level: string;
+}
+
 function Welcome() {
   const navigate = useNavigate();
   const [selectedNav] = useState("Home");

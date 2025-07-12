@@ -1,4 +1,5 @@
 const { insertCourt, findCourt, updateCourt, deleteCourt } = require('../data/courts')
+const { startMatch } = require('../services/matches');
 const { ObjectId } = require('mongodb')
 
 async function createCourt (data) {
@@ -52,14 +53,14 @@ async function joinQueue (courtId, user) {
         {_id: court._id},
         {queue: court.queue}
     )
-    // iniciar match como null porque ainda não começou
-    let matchId = null
-    if (court.queue.length >= 4) {
-    // assim que tiver 4 user na queue, start match
-        matchId = await startMatch(court)
-    }   
 
-    return {message: "Player added to queue!", matchId}
+    let matchReady = false
+
+    if (court.queue.length >= 4) {
+        matchReady = true
+    }
+
+    return {message: "Player added to queue!", matchReady}
 }
 
 module.exports = { createCourt, joinQueue }

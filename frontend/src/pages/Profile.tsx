@@ -6,6 +6,11 @@ function Profile() {
   const navigate = useNavigate();
   const [selectedNav] = useState("Profile");
 
+  const handleClick = () => {
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#011937] to-[#003366] text-white pb-24">
       {/* Header with Logo and Notification */}
