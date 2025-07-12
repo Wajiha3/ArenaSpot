@@ -24,6 +24,7 @@ async function findAllMatches () {
     return result
 }
 
+// Find Matches By Id
 async function findMatchesById (userId) {
     const collection = await getCollection("matches");
     const id = new ObjectId(String(userId))
@@ -34,6 +35,17 @@ async function findMatchesById (userId) {
         ]
     }).sort({started: -1}).toArray();
     console.log("Matches found for user ID:", userId, result);
+    return result
+}
+
+// Find Matches In Progress By Court
+async function findInProgressMatchesByCourt (courtId) {
+    const collection = await getCollection("matches");
+    const id = new ObjectId(String(courtId));
+    const result = await collection.findOne({
+        courtId: id,
+        status: "In Progress"
+    })
     return result
 }
 
@@ -50,4 +62,4 @@ async function deleteMatch (data) {
     await collection.deleteOne(data)
 }
 
-module.exports = { insertMatch, findMatch, findAllMatches, findMatchesById, updateMatch, deleteMatch }
+module.exports = { insertMatch, findMatch, findAllMatches, findMatchesById, updateMatch, deleteMatch, findInProgressMatchesByCourt }

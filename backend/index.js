@@ -19,7 +19,7 @@ const { authenticateToken } = require('./services/authToken')
 const { findUser, countUsersCheckedIn } = require('./data/user')
 const { createCourt, joinQueue, leaveQueue } = require('./services/courts')
 const { findAllCourts, findCourt } = require('./data/courts')
-const { findAllMatches, findMatchesById } = require('./data/matches')
+const { findAllMatches, findMatchesById, findInProgressMatchesByCourt } = require('./data/matches')
 const { ObjectId } = require('mongodb')
 const { startMatch, finishMatch } = require('./services/matches')
 
@@ -247,6 +247,32 @@ app.post('/api/match/:id/finish', async (req, res) => {
         res.status(200).json({ result })
     } catch (err) {
         res.status(400).json({ error: err.message })
+    }
+})
+
+// GET matches de jogos IN PROGRESS por court
+app.get('/api/:courtid/matches', async (req, res) => {
+    try {
+        // Aceder ao header: Authorization
+        const authHeader = req.headers.authorization;
+        // Remove "Bearer" e isola o token
+        const token = authHeader
+        // Verificar token e obter o utilizador autenticado
+        const authenticatedUser = await authenticateToken(token);
+        // Se não encontrar o User Autenticado
+        if(!authenticatedUser) {
+            return res.status(401).json({ message: "Unauthorized"})
+        }
+        const requestedId = req.params.courtid
+        const matchInProgress = await findInProgressMatchesByCourt(requestedId)
+
+        if(!matchInProgress) {
+            return res.status(404).json({ message: "No match in progress on this court."})
+        }
+        return res.status(200).json(matchInProgress)
+
+    } catch (err) {
+        return res.status(500).json({error: "Internal server error."})
     }
 })
 
