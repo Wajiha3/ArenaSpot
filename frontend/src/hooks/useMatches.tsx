@@ -2,7 +2,7 @@ import { get } from "http";
 import { useState, useEffect } from "react";
 import Matches from "../pages/Matches";
 
-interface UserType {
+export interface UserType {
   _id: string;
   userName: string;
   password: string;

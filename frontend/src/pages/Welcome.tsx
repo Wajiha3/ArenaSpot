@@ -44,7 +44,7 @@ function Welcome() {
   }
 
   return (
-    <div className="bg-gradient-to-b from-[#011937] to-[#003366] w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
+    <div className="bg-gradient-to-b from-[#011937] to-[#003366] w-screen text-white pt-[2rem] min-h-screen pb-[6rem]">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className="w-[3.6rem] h-[5.4rem]">
           <img src="/logo.png" alt="" />
@@ -111,7 +111,7 @@ function Welcome() {
         </div>
 
         {/* Stats & History Section */}
-        <h2 className="text-2xl font-bold mb-4">Stats & History</h2>
+        <h2 className=" text-2xl font-bold mb-4">Stats & History</h2>
 
         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-lg border border-white/20">
           <div className="space-y-3">
