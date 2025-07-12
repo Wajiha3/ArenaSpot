@@ -251,7 +251,7 @@ app.post('/api/match/:id/finish', async (req, res) => {
 })
 
 // GET matches de jogos IN PROGRESS por court
-app.get('/api/:courtid/matches', async (req, res) => {
+app.get('/api/matches/:courtid', async (req, res) => {
     try {
         // Aceder ao header: Authorization
         const authHeader = req.headers.authorization;
