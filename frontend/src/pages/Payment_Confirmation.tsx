@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { use, useEffect, useState } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 
 function Payment_Confirmation() {
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState('');
 
+    useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/welcome'); // This runs after 5 seconds
+    }, 5000);
+
+    return () => clearTimeout(timer); // Cleanup if component unmounts
+  }, [navigate]);
+
   return (
-    <div className="bg-black min-h-screen text-white p-6 flex flex-col">
+    <div className="min-h-screen text-white p-6 flex flex-col">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className='flex items-center h-[34px]'>
             <button className="text-white text-lg" onClick={() => navigate('/welcome')}>{"< back"}</button>
@@ -47,3 +55,4 @@ function Payment_Confirmation() {
 
 
 export default Payment_Confirmation;
+

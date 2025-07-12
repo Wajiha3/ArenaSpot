@@ -7,7 +7,7 @@ function Save_Match() {
   const [selectedNav, setSelectedNav] = useState('Matches');
 
   return (
-    <div className="bg-black min-h-screen w-screen text-white pt-4">
+    <div className="min-h-screen w-screen text-white pt-4">
 
       {/* Teams Section - moved down */}
       <div className="flex justify-between mb-8 mt-20">

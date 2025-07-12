@@ -16,6 +16,7 @@ interface UserType {
   losses: number;
   paymentToken: boolean;
   level: string;
+  points: number;
 }
 
 export function useUser() {

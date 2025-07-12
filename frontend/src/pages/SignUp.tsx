@@ -66,7 +66,7 @@ function SignUp() {
   };
 
   return (
-    <div className="bg-black h-screen w-screen text-white pt-[2rem]">
+    <div className="h-screen w-screen text-white pt-[2rem]">
       <div className="ml-[2rem] w-[3.6rem] h-[5.4rem]">
         <img src="/logo.png" alt="" />
       </div>

@@ -1,27 +1,79 @@
 import React, { use, useState, useEffect } from "react";
-import { BrowserRouter as Routes, Route, useNavigate} from "react-router-dom";
+import { BrowserRouter as Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import HistoryMatch from "../Components/HistoryMatch";
 import { useUser } from '../hooks/useUser';
 import { useMatches } from '../hooks/useMatches';
+import { useCourts } from "../hooks/useCourts";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ReactBellIcon from "../animations/bell";
 
 function Welcome() {
+  const notify = () => toast.info('Your match is starting hurry up!', {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    transition: Bounce,
+  });
   const navigate = useNavigate();
+  const [bellRing, setbellRing] = useState(false);
   const [selectedNav, setSelectedNav] = useState("Home");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { user } = useUser();
-  const {getLast3Matches } = useMatches(); 
+  const { getLast3Matches } = useMatches();
   const last3Matches = getLast3Matches();
+  const { courts } = useCourts();
+  let progress = 0;
+  if (user && typeof user.points === "number") {
+    if (user.level === "Beginner") progress = (user.points * 100) / 399;
+    else if (user.level === "Intermediate") progress = (user.points * 100) / 799;
+    else if (user.level === "Advanced") progress = 100;
+  }
+
+  const handleBellClick = () => {
+    setbellRing(!bellRing);
+    if (!bellRing) {
+      notify();
+    }
+  }
 
   return (
-    <div className="bg-black w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
+    <div className="w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
       {errors.form && (<div className="text-red-500 text-center">{errors.form}</div>)}
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className="w-[3.6rem] h-[5.4rem]">
           <img src="/logo.png" alt="" />
         </div>
-        <div className="h-[34px] flex gap-2">
-          <img width={"34px"} src="/Icons/notifications.png" alt="" />
+        <div onClick={() => handleBellClick()} className="h-[34px] flex gap-2">
+          {/* <img onClick={notify} width={"34px"} src="/Icons/notifications.png" alt="" /> */}
+          <ReactBellIcon
+          width={"34"}
+          height={"34"}
+          animationSpeed={"0.3"}
+          color={`${bellRing ? "#ff0000" : "#68C46B"}`}
+          animate={bellRing}
+          active={bellRing}
+        />
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            limit={1}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover={false}
+            theme="dark"
+            transition={Bounce}
+          />
         </div>
       </div>
       <div className="flex flex-col items-center w-[100%] px-[1.5rem]">
@@ -33,7 +85,7 @@ function Welcome() {
             Status: <span className="font-normal">Open</span>
           </p>
           <p>
-            Active Courts: <span className="font-normal">6</span>
+            Active Courts: <span className="font-normal">{courts.length}</span>
           </p>
           <p>
             Players Checked In: <span className="font-normal">45</span>
@@ -90,18 +142,17 @@ function Welcome() {
           <div className="w-full bg-[#D9D9D9] rounded-full h-4">
             <div
               className="bg-[#20BF00] h-4 rounded-full"
-              style={{ width: "60%" }}
+              style={{ width: `${progress}%` }}
             ></div>
           </div>
         </div>
         <div className="mt-5 w-full bg-[#74D8BC] rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold mb-[2rem]">
-          {last3Matches.slice(0,3).map((match: any, index: number) => (
-            <HistoryMatch
-              key={index}
-              number={index + 1}
-              result={match.winningTeam}
-            />
-          ))}
+          {last3Matches.length === 0 ? (
+            <div className="text-black">No matches found.</div>
+          ) : (
+            last3Matches.map((match, idx) => (
+              <HistoryMatch key={match._courtId} match={match} idx={idx} />
+            )))}
         </div>
       </div>
       {/* Bottom Navigation */}

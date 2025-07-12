@@ -18,7 +18,7 @@ interface UserType {
   level: string;
 }
 
-interface MatchesType {
+export interface MatchesType {
   _courtId: string;
   teamA: UserType[];
   teamB: UserType[];
@@ -42,12 +42,13 @@ export function useMatches() {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const statsRes = await fetch('http://localhost:3007/api/someOtherEndpoint', {
+        const statsRes = await fetch(`http://localhost:3007/api/${sessionStorage.getItem('token') || ''}/matches`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
         });
         if (statsRes.ok) {
           const statsData = await statsRes.json();
+          console.log('Fetched matches:', statsData);
           setMatches(statsData);
         }
       } catch (err) {
@@ -63,8 +64,7 @@ export function useMatches() {
   const parseDate = (d: Date | string) => new Date(d);
 
   const getLast3Matches = () => {
-    const today = getMatchesToday();
-    return today.length > 3 ? today.slice(0,3) : today;
+    return matches.slice(0,3);
   };
 
   // 1. Matches played today

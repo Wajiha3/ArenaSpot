@@ -3,7 +3,7 @@ import { BrowserRouter as Routes, Route, useNavigate } from 'react-router-dom';
 function Home() {
   const navigate = useNavigate();
   return (
-    <div className='bg-black min-h-screen w-screen flex flex-col justify-center items-center text-white'>
+    <div className='min-h-screen w-screen flex flex-col justify-center items-center text-white'>
       <div className='z-10'>
         <img width={"386px"} src="/home_image.png" alt="Image of tennis" />
       </div>

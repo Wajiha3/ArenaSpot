@@ -29,10 +29,11 @@ async function findMatchesById (userId) {
     const id = new ObjectId(String(userId))
     const result = await collection.find({
         $or: [
-            { teamA: id},
-            { teamB: id}
+            { "teamA._id": id},
+            { "teamB._id": id}
         ]
     }).sort({started: -1}).toArray();
+    console.log("Matches found for user ID:", userId, result);
     return result
 }
 

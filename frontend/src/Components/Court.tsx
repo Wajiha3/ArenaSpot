@@ -1,11 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
+import { useCourts } from '../hooks/useCourts';
 
 interface User {
   firstName: string;
 }
 
 interface CourtProps {
+  _courtId: string;
   number: string;
   level: string;
   queue: User[];
@@ -14,13 +16,15 @@ interface CourtProps {
 }
 
 
-function Court({ number, level, queue, userQueue, setUserQueue}: CourtProps) {
+function Court({ _courtId, number, level, queue, userQueue, setUserQueue}: CourtProps) {
 const inQueue = userQueue === number;
+const { joinCourt} = useCourts();
 
 const handleQueueClick = () => {
   if (inQueue) {
     setUserQueue(null); // Leave queue
   } else {
+    joinCourt(_courtId); // Call the joinCourt function from useCourts
     setUserQueue(number); // Join this queue
   }
 };

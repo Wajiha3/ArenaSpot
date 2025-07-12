@@ -28,7 +28,7 @@ function Check_In() {
   };
 
   return (
-    <div className="bg-black min-h-screen w-screen text-white pt-4">
+    <div className="min-h-screen w-screen text-white pt-4">
 
          <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
        

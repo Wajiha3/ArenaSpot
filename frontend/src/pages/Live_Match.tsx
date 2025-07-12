@@ -7,7 +7,7 @@ function Live_Match() {
   const [selectedNav, setSelectedNav] = useState("Matches");
 
   return (
-    <div className="bg-black min-h-screen w-screen text-white pt-4">
+    <div className="min-h-screen w-screen text-white pt-4">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className="flex items-center h-[34px]">
           <button
