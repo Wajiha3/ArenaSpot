@@ -9,8 +9,30 @@ function Check_In() {
   const [isVerified, setIsVerified] = useState(false);
   const [selectedNav, setSelectedNav] = useState("Home");
 
+  const fetchPayement = async () => {
+    try {
+      const response = await fetch('http://localhost:3007/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Payment successful:", data);
+        navigate("/paymentconfirmation");
+      } else {
+        const resData = await response.json();
+        if (resData.error === "Unauthorized") {
+          console.error("Unauthorized access");
+        }
+      }
+    } catch (err) {
+      console.error("Network error", err);
+    } 
+  }
+
   const handlePaymentSelect = (option: string) => {
-    setSelectedOption(option);
+    setToken("");
+    fetchPayement();
   };
 
   const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +42,7 @@ function Check_In() {
 
   const handleVerifyToken = () => {
     if (token.trim() !== "") {
+      handlePaymentSelect("reception");
       setIsVerified(true);
     }
   };
@@ -55,13 +78,13 @@ function Check_In() {
         </div>
       </div>
 
-      <div className="text-center mb-8 text-2xl font-bold mb-10 mt-8">
+      <div className="text-center text-2xl font-bold mb-10 mt-8">
         <h1 className="text-center font-bold text-[2rem] mt-[1rem] mb-[1rem]">
           Check In
         </h1>
       </div>
 
-      <div className="text-center mb-8 text-lg mb-10 mt-8">
+      <div className="text-center text-lg mb-10 mt-8">
         <p className="text-[#c4dbf3] text-center mb-6">
           You are within 250m of Arena Footvolley. Please select a payment
           method to check in.
@@ -83,10 +106,7 @@ function Check_In() {
             }`}
             onClick={() => handlePaymentSelect("creditCard")}
           >
-            <span
-              className="font-bold"
-              onClick={() => navigate("/paymentconfirmation")}
-            >
+            <span className="font-bold">
               Pay with Credit Card
             </span>
           </div>
@@ -97,9 +117,7 @@ function Check_In() {
             onClick={() => handlePaymentSelect("applePay")}
           >
             <span
-              className="font-bold"
-              onClick={() => navigate("/paymentconfirmation")}
-            >
+              className="font-bold">
               Pay with Apple Pay
             </span>
           </div>
