@@ -2,6 +2,7 @@ const { insertMatch, findMatch, findAllMatches, updateMatch, deleteMatch } = req
 const { insertCourt, findCourt, findAllCourts, updateCourt, deleteCourt } = require('../data/courts')
 const { ObjectId } = require('mongodb')
 const { findUser, updateUser } = require('../data/user')
+const { leaveQueue } = require('./courts')
 
 async function startMatch(court) {
     // se partida tiver menos de 4 elementos na queue
@@ -164,12 +165,32 @@ async function updateUserStats (userId, userWin, teamAvg, opponentAvg) {
         pointsGained += 2;
     }
 
-    await updateUser (
+    const updatedPlayer = await updateUser (
         { _id: user._id },
         { points: (user.points + pointsGained),
             ...updateProperties
         }
     )
+    
+    // LEVEL UP
+    if (updatedPlayer.points > 399 && updatedPlayer.points < 800) {
+        await updateUser(
+            { _id: user._id },
+            { level: "Intermediate" }
+        )
+        // selecionar court
+        const court = await findCourt({ _id: new ObjectId(String(courtId)) });
+        await leaveQueue(court, updatedPlayer)
+    // LEVEL UP
+    } else if (updatedPlayer.points >= 800) {
+        await updateUser(
+            { _id: user._id },
+            { level: "Advanced" }
+        )
+        // selecionar court
+        const court = await findCourt({ _id: new ObjectId(String(courtId)) });
+        await leaveQueue(court, updatedPlayer)
+    }
 }
 
 
