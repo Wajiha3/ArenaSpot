@@ -79,9 +79,15 @@ async function leaveQueue(courtId, user) {
     // função para encontrar se algum elemento (user com o seu id) está na queue
     const alreadyInQueue = court.queue.find(e => String(e._id) === String(user._id))
     // se user já estiver na queue escolhida
+    let updatedQueue = court.queue
     if (alreadyInQueue) {
-        updatedQueue = court.queue.filter( (e) => e != user)
+        updatedQueue = court.queue.filter( (e) => String(e._id) !== String(user._id))
     }
+
+    await updateCourt(
+        { _id: court._id },
+        { queue: updatedQueue });
+
     return {message: "Player removed from queue."}
 }
 
