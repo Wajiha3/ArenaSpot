@@ -72,7 +72,6 @@ function Queues() {
   };
 
   useEffect(() => {
-    // If you want to add real API calls later:
     const fetchData = async () => {
       try {
         // const response = await fetch("your-api-endpoint");
@@ -124,7 +123,6 @@ function Queues() {
               key={index}
               className="bg-[#112240] rounded-xl p-6 border border-[#1e3a8a]/30 shadow-lg hover:shadow-xl transition-shadow"
             >
-              {/* Court card content remains the same */}
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h2 className="text-xl font-bold text-[#64ffda]">
@@ -163,7 +161,7 @@ function Queues() {
                     </div>
                     {court.currentMatch.score && (
                       <span className="text-lg font-bold">
-                        {court.currentMatch.score}
+                        {court.courtName === "1" ? "40 mins" : "25 mins"}
                       </span>
                     )}
                   </div>
@@ -190,6 +188,13 @@ function Queues() {
                   <p className="text-sm text-[#8892b0]">No teams waiting</p>
                 )}
               </div>
+
+              {/* Added status message above the button */}
+              {joinedCourts[court.courtName] && (
+                <div className="mb-2 text-center text-sm text-green-400">
+                  You're in the queue
+                </div>
+              )}
 
               <button
                 onClick={() => toggleQueue(court.courtName)}

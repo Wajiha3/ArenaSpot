@@ -9,7 +9,7 @@ function Profile() {
   const handleClick = () => {
     sessionStorage.removeItem("token");
     navigate("/login");
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#011937] to-[#003366] text-white pb-24">
@@ -22,8 +22,16 @@ function Profile() {
             className="w-full h-full object-contain"
           />
         </div>
-        <button className="p-2">
-          <img width={34} src="/Icons/notifications.png" alt="Notifications" />
+        <button
+          className="p-2 hover:bg-[#1e3a8a]/30 rounded-full transition-colors"
+          onClick={() => navigate("/livematch")}
+        >
+          <img
+            width={24}
+            src="/Icons/notifications.png"
+            alt="Notifications"
+            className="filter brightness-0 invert"
+          />
         </button>
       </div>
 
