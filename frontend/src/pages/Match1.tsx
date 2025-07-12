@@ -1,9 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar"; // Ensure this path is correct
+
+interface UserType {
+  _id: string;
+  userName: string;
+  password: string;
+  email: string;
+  position: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  gamesPlayed: number;
+  wins: number;
+  losses: number;
+  paymentToken: boolean;
+  level: string;
+}
+
+interface MatchesType {
+  _courtId: string;
+  teamA: UserType[];
+  teamB: UserType[];
+  status: string;
+  winningTeam: string;
+  started: Date | string;
+  finished: Date | string;
+}
+
 function Match1() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [match, setMatch] = useState<MatchesType | null>(null);
   const [selectedNav, setSelectedNav] = useState("Matches");
+
+  useEffect(() => {
+    const fetchMatch = async () => {
+      const res = await fetch(`http://localhost:3007/api/matches/${id}`, {
+        headers: { authorization: sessionStorage.getItem("token") || "" },
+      });
+      if (res.ok) {
+        setMatch(await res.json());
+      }
+    };
+    fetchMatch();
+  }, []);
+
+  if (!match) return <div>Loading...</div>;
 
   return (
     <div className="bg-black min-h-screen w-screen text-white pt-4">
@@ -20,7 +64,7 @@ function Match1() {
 
       {/* Match title */}
       <h1 className="mb-16 text-[2rem] font-bold mt-[2rem] text-center text-white">
-        Match 1
+        Match
       </h1>
 
       {/* Teams section */}
@@ -28,20 +72,33 @@ function Match1() {
         {/* Team 1 */}
         <div className="text-center w-[48%] bg-white rounded-lg">
           <div className="p-4 rounded-lg mt-3 mb-3 flex flex-col items-center">
-            <p className="text-2xl font-bold text-black">Joao</p>
-            <p className="text-2xl font-bold text-black">Goncalo</p>
+            {match.teamA.map((player, index) => (
+              <p key={index} className="text-2xl font-bold text-black">
+                {player.userName}
+              </p>
+            ))}
           </div>
+          <img
+            src={match.winningTeam === "teamA" ? "/Icons/trophy.png" : ""}
+            alt="Trophy"
+            width="48"
+            height="38"
+            className="ml-2"
+          />
         </div>
         {/* Team 2 */}
         <div className="text-center w-[48%] bg-white rounded-lg">
           <div className="p-4 rounded-lg mb-3 flex flex-col items-center">
             <div className="flex items-center gap-2 mt-4">
               <div className="flex flex-col items-start">
-                <p className="text-2xl font-bold text-black">Jonny</p>
-                <p className="text-2xl font-bold text-black">Fellipe</p>
+                {match.teamB.map((player, index) => (
+                  <p key={index} className="text-2xl font-bold text-black">
+                    {player.userName}
+                  </p>
+                ))}
               </div>
               <img
-                src="/Icons/trophy.png"
+                src={match.winningTeam === "teamB" ? "/Icons/trophy.png" : ""}
                 alt="Trophy"
                 width="48"
                 height="38"

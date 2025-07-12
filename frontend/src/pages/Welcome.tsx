@@ -1,58 +1,17 @@
 import React, { use, useState, useEffect } from "react";
-import { BrowserRouter as Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter as Routes, Route, useNavigate} from "react-router-dom";
 import Navbar from "../Components/Navbar";
-
-interface UserType {
-  _id: string;
-  userName: string;
-  password: string;
-  email: string;
-  position: string;
-  firstName: string;
-  lastName: string;
-  birthDate: string;
-  gamesPlayed: number;
-  wins: number;
-  losses: number;
-  paymentToken: boolean;
-  level: string;
-}
+import HistoryMatch from "../Components/HistoryMatch";
+import { useUser } from '../hooks/useUser';
+import { useMatches } from '../hooks/useMatches';
 
 function Welcome() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Home");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [user, setUser] = useState<UserType| null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log(sessionStorage.getItem('token'));
-        const response = await fetch('http://localhost:3007/api/user/:id', {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-          console.log("User data fetched successfully:", data);
-        } else {
-          const resData = await response.json();
-          console.log(sessionStorage.getItem('token'));
-          console.error('Error fetching user data:', resData.message);
-        }
-      } catch (err) {
-        setErrors({ form: "Network error" });
-        console.error('Network error:', err);
-      }
-    };
-
-    fetchData(); // Initial fetch
-
-    const interval = setInterval(fetchData, 60000); // Fetch every 3 seconds
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  const { user } = useUser();
+  const {getLast3Matches } = useMatches(); 
+  const last3Matches = getLast3Matches();
 
   return (
     <div className="bg-black w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
@@ -123,7 +82,7 @@ function Welcome() {
             Losses: <span className="font-normal">{user ? user.losses : ""}</span>
           </p>
           <p>
-            Winning percentage: <span className="font-normal">{user ? user.wins * 100 / user.gamesPlayed : ""}</span>
+            Winning percentage: <span className="font-normal">{user && user.gamesPlayed > 0 ? user.wins * 100 / user.gamesPlayed : "0"}</span>
           </p>
           <p>
             Level: <span className="font-normal">{user ? user.level : ""}</span>
@@ -136,18 +95,13 @@ function Welcome() {
           </div>
         </div>
         <div className="mt-5 w-full bg-[#74D8BC] rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold mb-[2rem]">
-          <div className="flex justify-between">
-            <span>Game 1:</span>
-            <span>Won</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Game 2:</span>
-            <span>Lost</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Game 3:</span>
-            <span>Won</span>
-          </div>
+          {last3Matches.slice(0,3).map((match: any, index: number) => (
+            <HistoryMatch
+              key={index}
+              number={index + 1}
+              result={match.winningTeam}
+            />
+          ))}
         </div>
       </div>
       {/* Bottom Navigation */}

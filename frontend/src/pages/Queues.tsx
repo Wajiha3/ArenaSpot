@@ -38,7 +38,7 @@ function Queues() {
 
         fetchData(); // Initial fetch
 
-        const interval = setInterval(fetchData, 3000); // Fetch every 3 seconds
+        const interval = setInterval(fetchData, 15000); // Fetch every 3 seconds
 
         return () => clearInterval(interval); // Cleanup on unmount
     }, []);

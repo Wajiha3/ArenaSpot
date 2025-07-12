@@ -127,10 +127,8 @@ app.get('/api/user/:id', async (req, res) => {
         const authHeader = req.headers.authorization;
         // Remove "Bearer" e isola o token
         const token = authHeader;
-        console.log("Token:", token);
         // Verificar token e obter o utilizador autenticado
         const authenticatedUser = await authenticateToken(token);
-        console.log("Authenticated User:", authenticatedUser);
         // Criar variável que mostre o id atual acedido pelos parâmetros
         const requestedId = req.params.id;
 

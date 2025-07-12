@@ -26,11 +26,11 @@ function App() {
         <Route path="/livematch" element={<Live_Match />} />
          <Route path="/ongoingmatch" element={<Ongoing_Match />} />
          <Route path="/savematch" element={<Save_Match />} />
-         <Route path="/match1" element={<Match1 />} />
          <Route path="/matches" element={<Matches />} />
         <Route path="/paymentconfirmation" element={<Payment_Confirmation />} />
         <Route path="/queues" element={<Queues />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/match/:id" element={<Match1 />} />
         {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>

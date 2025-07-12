@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate, Route } from "react-router-dom";
 import Navbar from "../Components/Navbar"; // Ensure this path is correct
+import { useMatches } from '../hooks/useMatches';
 
 function Matches() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
+  const { getMatchesToday, getMatchesLastWeek, getMatchesLastMonth, getMatchesLastYear } = useMatches();
+  const matches = {
+    "Today": getMatchesToday(),
+    "Last week": getMatchesLastWeek(),
+    "Last month": getMatchesLastMonth(),
+    "Last year": getMatchesLastYear(),
+  };
+
   const filterOptions = [
     "Today",
     "Last week",
@@ -13,39 +22,6 @@ function Matches() {
   ] as const;
   type FilterType = (typeof filterOptions)[number];
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("Today");
-  const matchGroups: Record<
-    FilterType,
-    Array<{ label: string; result: string; link?: string }>
-  > = {
-    Today: [
-      { label: "Match 1:", result: "Won", link: "/match1" },
-      { label: "Match 2:", result: "Lost" },
-      { label: "Match 3:", result: "Won" },
-      { label: "Match 4:", result: "Lost" },
-      { label: "Match 5:", result: "Lost" },
-      { label: "Match 6:", result: "Lost" },
-    ],
-    "Last week": [
-      { label: "Match 1:", result: "Lost", link: "/match1" },
-      { label: "Match 2:", result: "Won" },
-      { label: "Match 3:", result: "Won" },
-      { label: "Match 4:", result: "Lost" },
-    ],
-    "Last month": [
-      { label: "Match 1:", result: "Lost", link: "/match1" },
-      { label: "Match 2:", result: "Won" },
-      { label: "Match 3:", result: "Won" },
-    ],
-    "Last year": [
-      { label: "Match 1:", result: "Lost", link: "/match1" },
-      { label: "Match 2:", result: "Won" },
-      { label: "Match 3:", result: "Lost" },
-      { label: "Match 4:", result: "Won" },
-      { label: "Match 5:", result: "Lost" },
-      { label: "Match 6:", result: "Lost" },
-      { label: "Match 7:", result: "Lost" },
-    ],
-  };
 
   return (
     <div className="bg-black w-screen text-white pt-[2rem] pb-[5rem]">
@@ -73,32 +49,27 @@ function Matches() {
       </div>
 
       <div className="mt-10 w-full flex justify-center">
-        <div className="bg-white rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold mb-[2rem] w-[90%] max-w-xl">
-          {matchGroups[selectedFilter].map((match, idx) => (
-            <div className="flex justify-between" key={idx}>
-              {match.link ? (
-                <span
-                  className="cursor-pointer hover:underline text-black"
-                  onClick={() => match.link && navigate(match.link)}
-                >
-                  {match.label}
+        <div className="bg-white rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold mb-[2rem] w-[90%] max-w-xl max-h-[350px] overflow-y-auto">
+          {matches[selectedFilter].length === 0 ? (
+            <div className="text-black">No matches found.</div>
+          ) : (
+            matches[selectedFilter].map((match, idx) => (
+              <div className="flex justify-between" key={idx} onClick={() => navigate(`/match/${match._courtId}`)}>
+                <span className="text-black">
+                  Match {idx + 1}:
                 </span>
-              ) : (
-                <span className="text-black">{match.label}</span>
-              )}
-              <span
-                className={
-                  match.result === "Won"
-                    ? "text-green-600"
-                    : match.result === "Lost"
-                    ? "text-red-600"
-                    : ""
-                }
-              >
-                {match.result}
-              </span>
-            </div>
-          ))}
+                <span
+                  className={
+                    match.winningTeam === "teamA" && match.teamA.some(player => player._id === sessionStorage.getItem("token"))
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }
+                >
+                  {match.winningTeam === "teamA" && match.teamA.some(player => player._id === sessionStorage.getItem("token")) ? "Won" : "Lost"}
+                </span>
+              </div>
+            ))
+          )}
         </div>
       </div>
       {/* Bottom Navigation */}
