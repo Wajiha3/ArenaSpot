@@ -52,7 +52,7 @@ export function useCourts() {
         const results: { [courtId: string]: MatchesType | null } = {};
         for (const id of courtIds) {
             try {
-                const response = await fetch(`http://localhost:3007/api/courts/${id}/currentmatch`, {
+                const response = await fetch(`http://localhost:3007/api/matches/${id}`, {
                     headers: { 'authorization': sessionStorage.getItem('token') || '' }
                 });
                 if (response.ok) {
@@ -64,6 +64,7 @@ export function useCourts() {
                 results[id] = null;
             }
         }
+        console.log("Current matches fetched:", results);
         setCurrentMatches(results);
     };
 

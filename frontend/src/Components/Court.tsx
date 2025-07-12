@@ -29,8 +29,10 @@ function Court({ _courtId, courtName, level, queue, userQueue, setUserQueue, cur
 const inQueue = userQueue === courtName;
 const { joinCourt , leaveCourt} = useCourts();
 
+  console.log("Current Match:", currentMatch);
 const handleQueueClick = () => {
   if (inQueue) {
+    leaveCourt(_courtId); // Call the leaveCourt function from useCourts
     setUserQueue(null); // Leave queue
   } else {
     joinCourt(_courtId); // Call the joinCourt function from useCourts

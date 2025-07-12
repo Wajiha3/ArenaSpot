@@ -311,13 +311,11 @@ app.get('/api/:id/matches', async (req, res) => {
         // Verificar token e obter o utilizador autenticado
         const authenticatedUser = await authenticateToken(token);
         // Se não encontrar o User Autenticado
-        console.log("Authenticated User:", authenticatedUser);
         if(!authenticatedUser) {
             return res.status(401).json({ message: "Unauthorized"})
         }
         // obter id nos parametros
         const requestedId = req.params.id
-        console.log("Requested ID:", requestedId);
         // encontrar todas as partidas do respetivo id
         const matches = await findMatchesById(requestedId)
         console.log(matches)
