@@ -50,7 +50,7 @@ function Match1() {
   if (!match) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen w-screen text-white pt-4">
+    <div className="bg-[#011937] min-h-screen w-screen text-white pt-4">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center h-[34px]">
         <div className="flex items-center h-[34px]">
           <button
@@ -116,7 +116,7 @@ function Match1() {
             Result
           </h3>
           {/* Grey inner box */}
-          <div className="bg-gray-300 p-5 rounded-lg">
+          <div className="bg-[#B9E7FF] p-5 rounded-lg">
             <div className="space-y-3 text-center">
               <div>
                 <p className="font-bold text-xl text-black">Final Score</p>

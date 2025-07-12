@@ -17,7 +17,7 @@ app.use(cors());
 const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
 const { findUser, countUsersCheckedIn } = require('./data/user')
-const { createCourt, joinQueue } = require('./services/courts')
+const { createCourt, joinQueue, leaveQueue } = require('./services/courts')
 const { findAllCourts, findCourt } = require('./data/courts')
 const { findAllMatches, findMatchesById } = require('./data/matches')
 const { ObjectId } = require('mongodb')
@@ -116,6 +116,27 @@ app.post('/api/courts/:id/join', async (req, res) => {
 
     try {
         const result = await joinQueue (courtId, user)
+        return res.status(200).json(result)
+    } catch (err) {
+        return res.status(400).json({ error: err.message })
+    }
+})
+
+// POST user leave queue
+app.post('/api/courts/:id/leave', async (req, res) => {
+    const courtId = req.params.id
+
+   // Aceder ao header: Authorization
+    const authHeader = req.headers.authorization;
+    // Remove "Bearer" e isola o token
+    const token = authHeader
+    // Verificar token e obter o utilizador autenticado
+    const authenticatedUser = await authenticateToken(token);
+    // Escolher utilizador por authenticatedUser
+    const user = await findUser(authenticatedUser)
+
+    try {
+        const result = await leaveQueue(courtId, user)
         return res.status(200).json(result)
     } catch (err) {
         return res.status(400).json({ error: err.message })

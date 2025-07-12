@@ -7,7 +7,7 @@ import Check_In from './pages/Check_In';
 import Live_Match from './pages/Live_Match';
 import Ongoing_Match from './pages/Ongoing_Match';
 import Save_Match from './pages/Save_Match';
-import Match1 from './pages/Match1'
+import Match1 from './pages/Match1';
 import Matches from './pages/Matches';
 import Payment_Confirmation from './pages/Payment_Confirmation';
 import Queues from './pages/Queues';

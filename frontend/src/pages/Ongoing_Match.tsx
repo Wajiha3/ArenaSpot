@@ -1,58 +1,86 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar"; // Ensure this path is correct
+import Navbar from "../Components/Navbar";
 
 function Ongoing_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
 
   return (
-    <div className="min-h-screen w-screen text-white pt-4">
-      {/* Teams Section - moved down */}
-      <div className="flex justify-between mb-8 mt-20">
-        {/* Team A */}
-        <div className="text-center w-[48%] bg-white text-black p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">Team A</h3>
-          <div className="space-y-3">
-            <div className="bg-gray-200 p-3 rounded-lg">
-              <p className="font-medium">L Marcus</p>
-            </div>
-            <div className="bg-gray-200 p-3 rounded-lg">
-              <p className="font-medium">R Marcus</p>
-            </div>
+    <div className="bg-[#011937] min-h-screen w-screen text-white pt-8 pb-20">
+      {" "}
+      {/* Increased pt-4 to pt-8 */}
+      {/* Teams card - Sand Court Design - Moved down */}
+      <div className="relative mx-auto w-[90%] max-w-[400px] h-[320px] bg-[#edcc9b] rounded-xl shadow-lg border-4 border-[#d2b48c] overflow-hidden mt-10">
+        {" "}
+        {/* Added mt-10 */}
+        {/* Net */}
+        <div className="absolute top-0 bottom-0 left-1/2 w-1 bg-white transform -translate-x-1/2 z-10">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full"></div>
+        </div>
+        {/* Team names */}
+        <div className="absolute top-4 left-4 right-4 flex justify-between">
+          <div className="bg-[#ffffff80] px-6 py-2 rounded-lg shadow-md">
+            <h3 className="text-xl font-bold text-[#0c2461]">TEAM A</h3>
+          </div>
+          <div className="bg-[#ffffff80] px-6 py-2 rounded-lg shadow-md">
+            <h3 className="text-xl font-bold text-[#0c2461]">TEAM B</h3>
           </div>
         </div>
-        {/* Spacer between teams */}
-        <div className="w-[4%]"></div>
-        {/* Team B */}
-        <div className="text-center w-[48%] bg-white text-black p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">Team B</h3>
-          <div className="space-y-3">
-            <div className="bg-gray-200 p-3 rounded-lg">
-              <p className="font-medium">L Marcus</p>
-            </div>
-            <div className="bg-gray-200 p-3 rounded-lg">
-              <p className="font-medium">R Marcus</p>
-            </div>
-          </div>
+        {/* Player positions */}
+        <div className="absolute top-[35%] left-1/4 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#0c2461] rounded-full flex items-center justify-center text-white font-bold">
+          L
+        </div>
+        <div className="absolute top-[35%] left-3/4 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#0c2461] rounded-full flex items-center justify-center text-white font-bold">
+          R
+        </div>
+        <div className="absolute top-3/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#0c2461] rounded-full flex items-center justify-center text-white font-bold">
+          R
+        </div>
+        <div className="absolute top-3/4 left-3/4 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#0c2461] rounded-full flex items-center justify-center text-white font-bold">
+          L
+        </div>
+        {/* Player names */}
+        <div className="absolute top-[40%] left-4 text-center">
+          <p className="text-2xl font-bold text-[#0c2461]">Marcus</p>
+        </div>
+        <div className="absolute top-[55%] left-4 text-center">
+          <p className="text-2xl font-bold text-[#0c2461]">Pedro</p>
+        </div>
+        <div className="absolute top-[40%] right-4 text-center">
+          <p className="text-2xl font-bold text-[#0c2461]">João</p>
+        </div>
+        <div className="absolute top-[55%] right-4 text-center">
+          <p className="text-2xl font-bold text-[#0c2461]">Andre</p>
+        </div>
+        {/* Sand texture elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute w-4 h-4 bg-white rounded-full top-1/4 left-1/4"></div>
+          <div className="absolute w-3 h-3 bg-white rounded-full top-1/3 right-1/3"></div>
         </div>
       </div>
-
-      {/* Centered Time - moved after teams */}
-      <div className="flex justify-center items-center my-10 mb-20">
-        <div className="text-8xl font-bold">08:10</div>
+      {/* Timer - Moved down further */}
+      <div className="flex justify-center mt-16 mb-10">
+        {" "}
+        {/* Increased mt-12 to mt-16 and mb-8 to mb-10 */}
+        <div className="relative">
+          <div className="text-7xl font-bold bg-gradient-to-br from-white to-[#f8c291] text-transparent bg-clip-text tracking-tighter px-1 drop-shadow-[0_2px_8px_rgba(248,194,145,0.4)]">
+            08:10
+          </div>
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-[#0c2461]/10 to-[#0a3d62]/20 pointer-events-none"></div>
+        </div>
       </div>
-
-      {/* Finish Button - moved down */}
-      <div className="flex justify-center mb-24">
+      {/* Finish button - Moved down further */}
+      <div className="mt-16 flex justify-center">
         <button
-          className="bg-red-800 hover:bg-blue-700 text-white font-bold py-2 px-12 rounded-md text-xl"
           onClick={() => navigate("/savematch")}
+          className="relative px-16 py-5 bg-gradient-to-br from-[#ff3e3e] via-[#e74c3c] to-[#c0392b] text-white text-2xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group overflow-hidden"
         >
-          Finish
+          <span className="relative z-10">FINISH</span>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#ff9999] to-[#ff3e3e] opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+          <div className="absolute -bottom-1 left-1/4 right-1/4 h-1 bg-white/50 rounded-full group-hover:bg-white/80 transition-all duration-300"></div>
         </button>
       </div>
-
       {/* Bottom Navigation */}
       <Navbar />
     </div>
