@@ -1,36 +1,77 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-
-interface UserType {
-  _id: string;
-  userName: string;
-  password: string;
-  email: string;
-  position: string;
-  firstName: string;
-  lastName: string;
-  birthDate: string;
-  gamesPlayed: number;
-  wins: number;
-  losses: number;
-  paymentToken: boolean;
-  level: string;
-}
+import HistoryMatch from "../Components/HistoryMatch";
+import { useUser } from '../hooks/useUser';
+import { useMatches } from '../hooks/useMatches';
+import { useCourts } from "../hooks/useCourts";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ReactBellIcon from "../animations/bell";
 
 function Welcome() {
+  const notify = () => toast.info('Your match is starting hurry up!', {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    transition: Bounce,
+  });
   const navigate = useNavigate();
-  const [selectedNav] = useState("Home");
+  const [bellRing, setbellRing] = useState(false);
+  const [selectedNav, setSelectedNav] = useState("Home");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { user } = useUser();
+  const { getLast3Matches } = useMatches();
+  const last3Matches = getLast3Matches();
+  const { courts } = useCourts();
+  let progress = 0;
+  if (user && typeof user.points === "number") {
+    if (user.level === "Beginner") progress = (user.points * 100) / 399;
+    else if (user.level === "Intermediate") progress = (user.points * 100) / 799;
+    else if (user.level === "Advanced") progress = 100;
+  }
+
+  const handleBellClick = () => {
+    setbellRing(!bellRing);
+    if (!bellRing) {
+      notify();
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#011937] to-[#003366] text-white pb-24">
-      {/* Header with Logo and Notification */}
-      <div className="flex justify-between items-center px-6 pt-6">
-        <div className="w-14 h-20">
-          <img
-            src="/logo.png"
-            alt="App Logo"
-            className="w-full h-full object-contain"
+    <div className="bg-gradient-to-b from-[#011937] to-[#003366] w-screen text-black pt-[2rem] min-h-screen pb-[6rem]">
+      <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
+        <div className="w-[3.6rem] h-[5.4rem]">
+          <img src="/logo.png" alt="" />
+        </div>
+        <div onClick={() => handleBellClick()} className="h-[34px] flex gap-2">
+          {/* <img onClick={notify} width={"34px"} src="/Icons/notifications.png" alt="" /> */}
+          <ReactBellIcon
+          width={"34"}
+          height={"34"}
+          animationSpeed={"0.3"}
+          color={`${bellRing ? "#ff0000" : "#68C46B"}`}
+          animate={bellRing}
+          active={bellRing}
+        />
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            limit={1}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover={false}
+            theme="dark"
+            transition={Bounce}
           />
         </div>
         <button className="p-2">
@@ -41,7 +82,7 @@ function Welcome() {
       {/* Main Content */}
       <div className="px-6">
         {/* Welcome Title */}
-        <h1 className="text-3xl font-bold mt-6 mb-8">Welcome, Player</h1>
+        <h1 className="text-3xl font-bold mt-6 mb-8">Welcome, {user ? user.userName : "Player"}</h1>
 
         {/* Status Card */}
         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 shadow-lg border border-white/20">
@@ -52,7 +93,7 @@ function Welcome() {
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Active Courts:</span>
-              <span className="font-medium">6</span>
+              <span className="font-medium">{courts.length}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Players Checked In:</span>
@@ -76,23 +117,23 @@ function Welcome() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-white/80">Games Played:</span>
-              <span className="font-medium">142</span>
+              <span className="font-medium">{user ? user.gamesPlayed : ""}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Wins:</span>
-              <span className="font-medium text-green-400">98</span>
+              <span className="font-medium text-green-400">{user ? user.wins : ""}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Losses:</span>
-              <span className="font-medium text-red-400">44</span>
+              <span className="font-medium text-red-400">{user ? user.losses : ""}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Winning percentage:</span>
-              <span className="font-medium">60%</span>
+              <span className="font-medium">{user && user.gamesPlayed > 0 ? user.wins * 100 / user.gamesPlayed : "0"}%</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Level:</span>
-              <span className="font-medium">Beginner</span>
+              <span className="font-medium">{user ? user.level : ""}</span>
             </div>
           </div>
 
@@ -100,7 +141,7 @@ function Welcome() {
           <div className="mt-6 w-full bg-gray-700 rounded-full h-3">
             <div
               className="bg-green-500 h-3 rounded-full"
-              style={{ width: "60%" }}
+              style={{ width: `${progress}%` }}
             ></div>
           </div>
         </div>
@@ -110,22 +151,12 @@ function Welcome() {
           <h3 className="text-xl font-bold mb-4">Recent Games</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span>Game 1</span>
-              <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
-                Won
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Game 2</span>
-              <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">
-                Lost
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Game 3</span>
-              <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
-                Won
-              </span>
+              {last3Matches.length === 0 ? (
+            <div className="text-black">No matches found.</div>
+          ) : (
+            last3Matches.map((match, idx) => (
+              <HistoryMatch key={match._courtId} match={match} idx={idx} />
+            )))}
             </div>
           </div>
         </div>

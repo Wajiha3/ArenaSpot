@@ -1,9 +1,18 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { use, useEffect, useState } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
+
 
 function Payment_Confirmation() {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("");
+
+    useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/welcome'); // This runs after 5 seconds
+    }, 5000);
+
+    return () => clearTimeout(timer); // Cleanup if component unmounts
+  }, [navigate]);
 
   return (
     <div className="bg-[#011937] min-h-screen text-white p-6 flex flex-col">
@@ -66,4 +75,6 @@ function Payment_Confirmation() {
   );
 }
 
+
 export default Payment_Confirmation;
+

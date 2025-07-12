@@ -1,108 +1,32 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar";
-
-type Match = {
-  id: number;
-  team1: string;
-  team2: string;
-  result: "Won" | "Lost";
-  score: string;
-  duration: string;
-  link?: string;
-};
-
-type FilterOption =
-  | "Today"
-  | "Last week"
-  | "Last month"
-  | "Last year"
-  | "All time";
+import { useNavigate, Route } from "react-router-dom";
+import Navbar from "../Components/Navbar"; // Ensure this path is correct
+import { useMatches } from '../hooks/useMatches';
+import HistoryMatch from "../Components/HistoryMatch"; // Ensure this path is correct
 
 function Matches() {
   const navigate = useNavigate();
-  const [selectedFilter, setSelectedFilter] = useState<FilterOption>("Today");
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const filterOptions: FilterOption[] = [
+  const [selectedNav, setSelectedNav] = useState("Matches");
+  const { getMatchesToday, getMatchesLastWeek, getMatchesLastMonth, getMatchesLastYear, getAllMatches } = useMatches();
+const filterOptions = [
     "Today",
     "Last week",
     "Last month",
     "Last year",
-    "All time",
-  ];
+    "All Time",
+  ] as const;
+  type FilterType = (typeof filterOptions)[number];
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>("Today");
 
-  const matchGroups: Record<FilterOption, Match[]> = {
-    Today: [
-      {
-        id: 1,
-        team1: "João & Gonçalo",
-        team2: "Jonny & André",
-        result: "Won",
-        score: "21-18",
-        duration: "45 min",
-        link: "/match/1",
-      },
-      {
-        id: 2,
-        team1: "Lucas & Marcus",
-        team2: "André & Felipe",
-        result: "Lost",
-        score: "18-21",
-        duration: "42 min",
-      },
-    ],
-    "Last week": [
-      {
-        id: 1,
-        team1: "Team A",
-        team2: "Team B",
-        result: "Won",
-        score: "21-16",
-        duration: "44 min",
-        link: "/match/2",
-      },
-    ],
-    "Last month": [
-      {
-        id: 1,
-        team1: "Team C",
-        team2: "Team D",
-        result: "Lost",
-        score: "20-22",
-        duration: "42 min",
-        link: "/match/3",
-      },
-    ],
-    "Last year": [
-      {
-        id: 1,
-        team1: "Team E",
-        team2: "Team F",
-        result: "Lost",
-        score: "18-21",
-        duration: "39 min",
-        link: "/match/4",
-      },
-    ],
-    "All time": [
-      {
-        id: 1,
-        team1: "Team G",
-        team2: "Team H",
-        result: "Won",
-        score: "21-19",
-        duration: "40 min",
-        link: "/match/5",
-      },
-    ],
-  };
 
-  const handleMatchClick = (match: Match) => {
-    if (match.link) {
-      navigate(match.link);
-    }
+  const matches = {
+    "Today": getMatchesToday(),
+    "Last week": getMatchesLastWeek(),
+    "Last month": getMatchesLastMonth(),
+    "Last year": getMatchesLastYear(),
+    "All Time": getAllMatches(),
   };
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -193,59 +117,10 @@ function Matches() {
         </div>
       </div>
 
-      {/* Match Cards */}
-      {/* Match Cards */}
-      <div className="px-4 space-y-4 mb-20">
-        {matchGroups[selectedFilter].map((match) => (
-          <div
-            key={match.id}
-            className={`bg-white/10 rounded-xl p-4 border ${
-              match.result === "Won"
-                ? "border-green-400/30"
-                : "border-red-400/30"
-            } shadow-md hover:shadow-lg transition-all ${
-              match.link ? "cursor-pointer hover:bg-white/15" : ""
-            }`}
-            onClick={() => handleMatchClick(match)}
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="flex items-start space-x-2">
-                  <div
-                    className={`h-5 w-5 flex items-center justify-center rounded-full ${
-                      match.result === "Won" ? "bg-yellow-400" : "bg-red-500"
-                    }`}
-                  >
-                    <span className="text-xs font-bold text-white">
-                      {match.result === "Won" ? "W" : "L"}
-                    </span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-semibold">{match.team1}</span>
-                    <span className="text-lg font-semibold">
-                      vs {match.team2}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-2 flex items-center space-x-4 text-sm text-white/80">
-                  <span>Score: {match.score}</span>
-                  <span>{match.duration}</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <span
-                  className={`text-lg font-bold ${
-                    match.result === "Won" ? "text-green-400" : "text-red-400"
-                  }`}
-                >
-                  {match.result}
-                </span>
-                {match.link && (
-                  <div className="text-white/50 text-right mt-1">&gt;</div>
-                )}
-              </div>
-            </div>
-          </div>
+      {/* Matches List */}
+      <div className="px-6">
+        {matches[selectedFilter].map((match, idx) => (
+          <HistoryMatch key={match._courtId} match={match} idx={idx} />
         ))}
       </div>
 

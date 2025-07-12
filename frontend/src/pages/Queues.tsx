@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCourts } from "../hooks/useCourts";
 import Navbar from "../Components/Navbar";
 
 interface Team {
@@ -204,6 +205,21 @@ function Queues() {
             </div>
           ))}
         </div>
+
+          <>
+                        {/* {courts.map((court, index) => (
+                            <Court
+                                _courtId={court._id} 
+                                key={index}
+                                number={court.courtName}
+                                level={court.courtLevel}
+                                queue={court.queue}
+                                userQueue={userQueue}
+                                setUserQueue={setUserQueue}                            
+                            />
+                        ))} */}
+                    </>
+
       </main>
 
       <Navbar />

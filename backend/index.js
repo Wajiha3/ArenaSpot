@@ -160,10 +160,8 @@ app.get('/api/user/:id', async (req, res) => {
         const authHeader = req.headers.authorization;
         // Remove "Bearer" e isola o token
         const token = authHeader;
-        console.log("Token:", token);
         // Verificar token e obter o utilizador autenticado
         const authenticatedUser = await authenticateToken(token);
-        console.log("Authenticated User:", authenticatedUser);
         // Criar variável que mostre o id atual acedido pelos parâmetros
         const requestedId = req.params.id;
 
@@ -174,7 +172,7 @@ app.get('/api/user/:id', async (req, res) => {
         // Obter os dados do utilizador
         const userData = authenticatedUser
         // Remover password antes de retornar
-        delete userData.password;
+        // delete userData.password;
         // Retorna o utilizador sem a password e depois de confirmado que está autenticado
         return res.status(200).json(userData);
 
@@ -262,11 +260,13 @@ app.get('/api/:id/matches', async (req, res) => {
         // Verificar token e obter o utilizador autenticado
         const authenticatedUser = await authenticateToken(token);
         // Se não encontrar o User Autenticado
+        console.log("Authenticated User:", authenticatedUser);
         if(!authenticatedUser) {
             return res.status(401).json({ message: "Unauthorized"})
         }
         // obter id nos parametros
         const requestedId = req.params.id
+        console.log("Requested ID:", requestedId);
         // encontrar todas as partidas do respetivo id
         const matches = await findMatchesById(requestedId)
         console.log(matches)
