@@ -1,94 +1,94 @@
 import React, { useState } from "react";
-import { BrowserRouter as Routes, Route, useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar"; // Ensure this path is correct
+import { useNavigate } from "react-router-dom";
+import Navbar from "../Components/Navbar";
 
 function Profile() {
   const navigate = useNavigate();
-  const [selectedNav, setSelectedNav] = useState("Profile");
-  const [selectedFilter, setSelectedFilter] = useState("Today");
-  // Each filter shows a different subset of matches
-  const matchGroups: Record<
-    string,
-    Array<{ label: string; result: string; link?: string }>
-  > = {
-    Today: [
-      { label: "Match 1:", result: "Won", link: "/match1" },
-      { label: "Match 2:", result: "Lost" },
-      { label: "Match 3:", result: "Won" },
-    ],
-    "Last week": [
-      { label: "Match 4:", result: "Lost" },
-      { label: "Match 5:", result: "Won" },
-      { label: "Match 6:", result: "Won" },
-      { label: "Match 7:", result: "Lost" },
-    ],
-    "Last month": [
-      { label: "Match 8:", result: "Lost" },
-      { label: "Match 9:", result: "Won" },
-      { label: "Match 10:", result: "Won" },
-    ],
-    "Last year": [
-      { label: "Match 11:", result: "Lost" },
-      { label: "Match 12:", result: "Won" },
-      { label: "Match 13:", result: "Lost" },
-      { label: "Match 14:", result: "Won" },
-    ],
-  };
+  const [selectedNav] = useState("Profile");
 
   return (
-    <div className="bg-black w-screen text-white pt-[2rem] pb-[5rem]">
-      <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-        <div className="w-[3.6rem] h-[5.4rem]">
-          <img src="/logo.png" alt="" />
+    <div className="min-h-screen bg-gradient-to-b from-[#011937] to-[#003366] text-white pb-24">
+      {/* Header with Logo and Notification */}
+      <div className="flex justify-between items-center px-8 pt-8">
+        <div className="w-14 h-20">
+          <img
+            src="/logo.png"
+            alt="App Logo"
+            className="w-full h-full object-contain"
+          />
         </div>
-        <div className="h-[34px] flex gap-2">
-          <img width={"34px"} src="/Icons/notifications.png" alt="" />
-        </div>
+        <button className="p-2">
+          <img width={34} src="/Icons/notifications.png" alt="Notifications" />
+        </button>
       </div>
-      <div className="flex flex-col items-center w-[100%] px-[1rem]">
-        <p className="text-[2rem] font-bold mt-[2rem] mb-[2rem] text-white">
-          My Profile
-        </p>
-        <div className="flex items-center self-start ml-[2rem]">
-          <img width={"70px"} src="/Icons/profile_picture.png" alt="" />
-          <div className="ml-[1rem]">
-            <p className="text-[2rem] font-bold">LilPaki</p>
-            <p className="text-[1.25rem]">Lisbon, Portugal</p>
+
+      {/* Profile Content */}
+      <div className="px-6">
+        {/* Profile Title */}
+        <h1 className="text-3xl font-bold text-center mt-6 mb-8">My Profile</h1>
+
+        {/* Profile Header */}
+        <div className="flex items-center mb-8">
+          <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+            <img
+              src="/Icons/profile_picture.png"
+              alt="Profile"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  "/Icons/default_profile.png";
+              }}
+            />
+          </div>
+          <div className="ml-4">
+            <h2 className="text-2xl font-bold">LilPaki</h2>
+            <p className="text-white/80">Lisbon, Portugal</p>
           </div>
         </div>
-        <div className="mt-5 flex items-center justify-between self-start w-full">
-          <p className="text-[2rem] font-bold">Personal Details</p>
-          <img width={"34px"} src="/Icons/settings.png" alt="" />
-        </div>
 
-        <div className="mt-5 w-full text-[1.5rem]">
-          <div className="flex justify-between">
-            <span>Email</span>
-            <span>abc@gmail.com</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Date of birth</span>
-            <span>05/10/2002</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Password</span>
-            <span>********</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Position</span>
-            <span>Left</span>
+        {/* Personal Details Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold">Personal Details</h3>
+            <button className="p-2">
+              <img width={28} src="/Icons/settings.png" alt="Settings" />
+            </button>
           </div>
 
+          {/* Details Grid */}
+          <div className="space-y-5">
+            <div className="flex justify-between items-center pb-3 border-b border-white/10">
+              <span className="text-white/70">Email</span>
+              <span className="font-medium">abc@gmail.com</span>
+            </div>
+            <div className="flex justify-between items-center pb-3 border-b border-white/10">
+              <span className="text-white/70">Date of birth</span>
+              <span className="font-medium">05/10/2002</span>
+            </div>
+            <div className="flex justify-between items-center pb-3 border-b border-white/10">
+              <span className="text-white/70">Password</span>
+              <span className="font-medium">••••••••</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-white/70">Position</span>
+              <span className="font-medium">Left</span>
+            </div>
+          </div>
+
+          {/* Log Out Button */}
           <button
-            className="mt-14 bg-[#C34447] text-[1.5rem] text-white rounded-[25px] font-bold w-[100%] h-[3.3rem]"
+            className="mt-10 bg-gradient-to-bl from-[#800000] from-3% to-[#cc0000] to-77% hover:from-[#990000] hover:to-[#b30000] transition-all duration-300 text-white font-bold py-3 w-full rounded-xl shadow-lg hover:shadow-red-500/30"
             onClick={() => navigate("/login")}
           >
             Log Out
           </button>
         </div>
       </div>
+
       {/* Bottom Navigation */}
-      <Navbar />
+      <div className="fixed bottom-0 left-0 right-0">
+        <Navbar />
+      </div>
     </div>
   );
 }

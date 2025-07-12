@@ -1,108 +1,258 @@
-import React, { useState } from "react";
-import { useNavigate, Route } from "react-router-dom";
-import Navbar from "../Components/Navbar"; // Ensure this path is correct
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../Components/Navbar";
+
+type Match = {
+  id: number;
+  team1: string;
+  team2: string;
+  result: "Won" | "Lost";
+  score: string;
+  duration: string;
+  link?: string;
+};
+
+type FilterOption =
+  | "Today"
+  | "Last week"
+  | "Last month"
+  | "Last year"
+  | "All time";
 
 function Matches() {
   const navigate = useNavigate();
-  const [selectedNav, setSelectedNav] = useState("Matches");
-  const filterOptions = [
+  const [selectedFilter, setSelectedFilter] = useState<FilterOption>("Today");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const filterOptions: FilterOption[] = [
     "Today",
     "Last week",
     "Last month",
     "Last year",
-  ] as const;
-  type FilterType = (typeof filterOptions)[number];
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>("Today");
-  const matchGroups: Record<
-    FilterType,
-    Array<{ label: string; result: string; link?: string }>
-  > = {
+    "All time",
+  ];
+
+  const matchGroups: Record<FilterOption, Match[]> = {
     Today: [
-      { label: "Match 1:", result: "Won", link: "/match1" },
-      { label: "Match 2:", result: "Lost" },
-      { label: "Match 3:", result: "Won" },
-      { label: "Match 4:", result: "Lost" },
-      { label: "Match 5:", result: "Lost" },
-      { label: "Match 6:", result: "Lost" },
+      {
+        id: 1,
+        team1: "João & Gonçalo",
+        team2: "Jonny & André",
+        result: "Won",
+        score: "21-18",
+        duration: "45 min",
+        link: "/match/1",
+      },
+      {
+        id: 2,
+        team1: "Lucas & Marcus",
+        team2: "André & Felipe",
+        result: "Lost",
+        score: "18-21",
+        duration: "42 min",
+      },
     ],
     "Last week": [
-      { label: "Match 1:", result: "Lost", link: "/match1" },
-      { label: "Match 2:", result: "Won" },
-      { label: "Match 3:", result: "Won" },
-      { label: "Match 4:", result: "Lost" },
+      {
+        id: 1,
+        team1: "Team A",
+        team2: "Team B",
+        result: "Won",
+        score: "21-16",
+        duration: "44 min",
+        link: "/match/2",
+      },
     ],
     "Last month": [
-      { label: "Match 1:", result: "Lost", link: "/match1" },
-      { label: "Match 2:", result: "Won" },
-      { label: "Match 3:", result: "Won" },
+      {
+        id: 1,
+        team1: "Team C",
+        team2: "Team D",
+        result: "Lost",
+        score: "20-22",
+        duration: "42 min",
+        link: "/match/3",
+      },
     ],
     "Last year": [
-      { label: "Match 1:", result: "Lost", link: "/match1" },
-      { label: "Match 2:", result: "Won" },
-      { label: "Match 3:", result: "Lost" },
-      { label: "Match 4:", result: "Won" },
-      { label: "Match 5:", result: "Lost" },
-      { label: "Match 6:", result: "Lost" },
-      { label: "Match 7:", result: "Lost" },
+      {
+        id: 1,
+        team1: "Team E",
+        team2: "Team F",
+        result: "Lost",
+        score: "18-21",
+        duration: "39 min",
+        link: "/match/4",
+      },
+    ],
+    "All time": [
+      {
+        id: 1,
+        team1: "Team G",
+        team2: "Team H",
+        result: "Won",
+        score: "21-19",
+        duration: "40 min",
+        link: "/match/5",
+      },
     ],
   };
 
+  const handleMatchClick = (match: Match) => {
+    if (match.link) {
+      navigate(match.link);
+    }
+  };
+
+  const handleScroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === "left" ? -200 : 200;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="bg-black w-screen text-white pt-[2rem] pb-[5rem]">
-      <div className="mt-10 flex items-center justify-between w-full px-8">
-        <p className="text-[2rem] font-bold text-center mb-2 flex-1 ml-8">
-          My Matches
-        </p>
-        <img width={"34px"} src="/Icons/filter.png" alt="" className="mb-2" />
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-[#011937] to-[#003366] text-white pb-24">
+      {/* Header */}
+      <div className="pt-12 px-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">My Matches</h1>
+          <button className="p-2 rounded-full bg-white/10">
+            <img
+              width={24}
+              src="/Icons/filter.png"
+              alt="Filter"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = "none";
+              }}
+            />
+          </button>
+        </div>
 
-      <div className="mt-10 flex justify-center w-full">
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 w-[80%]">
-          {filterOptions.map((filter) => (
-            <button
-              key={filter}
-              className={`w-[10rem] h-12 px-8 ${
-                selectedFilter === filter ? "bg-[#264879]" : "bg-[#68C46B]"
-              } text-[1.25rem] font-bold rounded-[20px] whitespace-nowrap`}
-              onClick={() => setSelectedFilter(filter)}
+        {/* Filter Buttons with Swipe Controls */}
+        <div className="mb-8 flex items-center space-x-2">
+          {/* Left Arrow */}
+          <button
+            onClick={() => handleScroll("left")}
+            className="p-2 rounded-full bg-white/10 flex-shrink-0 hover:bg-white/20 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              {filter}
-            </button>
-          ))}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+
+          {/* Scrollable Filter Buttons */}
+          <div
+            ref={scrollRef}
+            className="flex-1 flex space-x-3 overflow-x-auto scrollbar-hide px-2"
+          >
+            {filterOptions.map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setSelectedFilter(filter)}
+                className={`px-5 py-2 rounded-full whitespace-nowrap flex-shrink-0 transition-colors ${
+                  selectedFilter === filter
+                    ? "bg-gradient-to-r from-[#FFA500] to-[#FF6347]"
+                    : "bg-white/10 hover:bg-white/20"
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={() => handleScroll("right")}
+            className="p-2 rounded-full bg-white/10 flex-shrink-0 hover:bg-white/20 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
         </div>
       </div>
 
-      <div className="mt-10 w-full flex justify-center">
-        <div className="bg-white rounded-[20px] p-[1.5rem] text-[1.25rem] font-bold mb-[2rem] w-[90%] max-w-xl">
-          {matchGroups[selectedFilter].map((match, idx) => (
-            <div className="flex justify-between" key={idx}>
-              {match.link ? (
+      {/* Match Cards */}
+      {/* Match Cards */}
+      <div className="px-4 space-y-4 mb-20">
+        {matchGroups[selectedFilter].map((match) => (
+          <div
+            key={match.id}
+            className={`bg-white/10 rounded-xl p-4 border ${
+              match.result === "Won"
+                ? "border-green-400/30"
+                : "border-red-400/30"
+            } shadow-md hover:shadow-lg transition-all ${
+              match.link ? "cursor-pointer hover:bg-white/15" : ""
+            }`}
+            onClick={() => handleMatchClick(match)}
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <div className="flex items-start space-x-2">
+                  <div
+                    className={`h-5 w-5 flex items-center justify-center rounded-full ${
+                      match.result === "Won" ? "bg-yellow-400" : "bg-red-500"
+                    }`}
+                  >
+                    <span className="text-xs font-bold text-white">
+                      {match.result === "Won" ? "W" : "L"}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-semibold">{match.team1}</span>
+                    <span className="text-lg font-semibold">
+                      vs {match.team2}
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center space-x-4 text-sm text-white/80">
+                  <span>Score: {match.score}</span>
+                  <span>{match.duration}</span>
+                </div>
+              </div>
+              <div className="text-right">
                 <span
-                  className="cursor-pointer hover:underline text-black"
-                  onClick={() => match.link && navigate(match.link)}
+                  className={`text-lg font-bold ${
+                    match.result === "Won" ? "text-green-400" : "text-red-400"
+                  }`}
                 >
-                  {match.label}
+                  {match.result}
                 </span>
-              ) : (
-                <span className="text-black">{match.label}</span>
-              )}
-              <span
-                className={
-                  match.result === "Won"
-                    ? "text-green-600"
-                    : match.result === "Lost"
-                    ? "text-red-600"
-                    : ""
-                }
-              >
-                {match.result}
-              </span>
+                {match.link && (
+                  <div className="text-white/50 text-right mt-1">&gt;</div>
+                )}
+              </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
+
       {/* Bottom Navigation */}
-      <Navbar />
+      <div className="fixed bottom-0 left-0 right-0">
+        <Navbar />
+      </div>
     </div>
   );
 }

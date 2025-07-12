@@ -1,235 +1,211 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar"; // Ensure this path is correct
+import Navbar from "../Components/Navbar";
 
-function Queues() {
-  const navigate = useNavigate();
-  const [selectedNav, setSelectedNav] = useState("Queues");
-  const [inQueue1, setInQueue1] = useState(false);
-  const [inQueue2, setInQueue2] = useState(false);
-  const [inQueue3, setInQueue3] = useState(false);
-
-  return (
-    <div className="bg-black w-screen text-black pt-[2rem] min-h-screen">
-      <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-        <div></div>
-        <div className="h-[34px] flex gap-2">
-          <img
-            width={"34px"}
-            src="/Icons/notifications.png"
-            alt="Notifications"
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/livematch")}
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") navigate("/livematch");
-            }}
-          />
-        </div>
-      </div>
-      <div className="flex flex-col items-center w-[100%] px-[1rem]">
-        <p className="text-[2rem] font-bold mt-[2rem] mb-[2rem] text-white">
-          Court Queues
-        </p>
-        <p className="text-[2rem] font-bold text-white mb-4">
-          Court 1 (Futvolley)
-        </p>
-        <div className="flex flex-col items-center rounded-[20px] bg-[#2d2d2d] w-[100%] text-[1.25rem] p-[2rem] mb-10">
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap text-green-600">
-              BEGINNER
-            </span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold text-white mr-2 whitespace-nowrap">
-              Status:
-            </span>
-            <span className="whitespace-nowrap text-white">
-              Match in Progress
-            </span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap text-white">
-              Current Match:
-            </span>
-            <span className="whitespace-nowrap text-white">
-              Team A vs Team B
-            </span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap text-white">
-              Queue Length:
-            </span>
-            <span className="whitespace-nowrap text-white">3 Teams</span>
-          </div>
-          <p className="font-bold mt-5 text-white">Queue</p>
-          <ol className="text-[1.25rem] list-decimal mt-3 text-white">
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-          </ol>
-          <button
-            className={`text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] mt-5 transition-colors duration-200 ${
-              inQueue1 ? "bg-[#C34447] text-white" : "bg-[#264879] text-white"
-            }`}
-            onClick={() => setInQueue1(!inQueue1)}
-          >
-            {inQueue1 ? "Leave Queue" : "Join Queue"}
-          </button>
-=======
-import React, { use, useState , useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../Components/Navbar'; // Ensure this path is correct
-import Court from '../Components/Court';
+interface Team {
+  player1: string;
+  player2: string;
+}
 
 interface CourtType {
   courtName: string;
   courtLevel: string;
-  queue: any[]; // or a more specific type for players
+  status: "Match In Progress" | "Available" | "Maintenance";
+  currentMatch?: {
+    team1: Team;
+    team2: Team;
+    score?: string;
+  };
+  queue: Team[];
 }
 
 function Queues() {
-    const navigate = useNavigate();
-    const [courts, setCourts] = useState<CourtType[]>([]); // <-- use state for courts
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const fakecourts: CourtType[] = [
+    {
+      courtName: "1",
+      courtLevel: "Beginner",
+      status: "Match In Progress",
+      currentMatch: {
+        team1: { player1: "André", player2: "João" },
+        team2: { player1: "Marcus", player2: "Felipe" },
+        score: "21-18",
+      },
+      queue: [
+        { player1: "Carlos", player2: "Lili" },
+        { player1: "Laura", player2: "Bill" },
+      ],
+    },
+    {
+      courtName: "2",
+      courtLevel: "Intermediate",
+      status: "Available",
+      queue: [
+        { player1: "Ana", player2: "Maria" },
+        { player1: "Pedro", player2: "Tiago" },
+      ],
+    },
+    {
+      courtName: "3",
+      courtLevel: "Advanced",
+      status: "Match In Progress",
+      currentMatch: {
+        team1: { player1: "Rui", player2: "Sofia" },
+        team2: { player1: "Miguel", player2: "Inês" },
+        score: "15-12",
+      },
+      queue: [],
+    },
+  ];
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('http://localhost:3007/api/allcourts', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
-                });
-                console.log(response)
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data); // Debugging: log the fetched data
-                    setCourts(data); // <-- set state with fetched data
-                } else {
-                    const resData = await response.json();
-                    if (resData.error === "Unauthorized") {
-                        setErrors({ form: "Unauthorized" });
-                    }
-                }
-            } catch (err) {
-                setErrors({ form: "Network error" });
-            }
-        };
-        fetchData();
-    }, []);
+  const navigate = useNavigate();
+  const [courts, setCourts] = useState<CourtType[]>(fakecourts);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [joinedCourts, setJoinedCourts] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
-    return (
-        <div className="bg-black w-screen text-black pt-[2rem] min-h-screen">
-            <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-                <div className='flex items-center h-[34px]'>
-                    <button className="text-white text-lg" onClick={() => navigate('/welcome')}>{"< back"}</button>
-                </div>
-                <div className="h-[34px] flex gap-2">
-                    <img width={"34px"} src="/Icons/notifications.png" alt="" />
-                </div>
-            </div>
-            <div className="flex flex-col items-center w-[100%] px-[1rem]">
-                <p className="text-[2rem] font-bold mt-[2rem] mb-[2rem] text-white">Court Queues</p>
+  const toggleQueue = (courtName: string) => {
+    setJoinedCourts((prev) => ({
+      ...prev,
+      [courtName]: !prev[courtName],
+    }));
+  };
 
-                {courts.map((court, index) => (
-                    <Court key={index} number={court.courtName} level={court.courtLevel} queue={court.queue} />
-                ))}
-                
-            </div>
-            <Navbar />
->>>>>>> 8a4a3328079c0aa023e5fa290fda08e958385f4e
-        </div>
+  useEffect(() => {
+    // If you want to add real API calls later:
+    const fetchData = async () => {
+      try {
+        // const response = await fetch("your-api-endpoint");
+        // const data = await response.json();
+        // setCourts(data);
+      } catch (err) {
+        setErrors({ form: "Network error" });
+      }
+    };
+    fetchData();
+  }, []);
 
-        <p className="text-[2rem] font-bold text-white mb-4">
-          Court 2 (Futvolley)
-        </p>
-        <div className="flex flex-col items-center rounded-[20px] bg-[#FFF] w-[100%] text-[1.25rem] p-[2rem] mb-10">
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap text-green-600">
-              INTERMIDIATE
-            </span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap">Status:</span>
-            <span className="whitespace-nowrap">Match in Progress</span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap">
-              Current Match:
-            </span>
-            <span className="whitespace-nowrap">Team A vs Team B</span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap">
-              Queue Length:
-            </span>
-            <span className="whitespace-nowrap">3 Teams</span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-2 text-[#68C46B] mt-3 mb-3 font-bold">
-            <span className="whitespace-nowrap">You are in this queue</span>
-            <span className="whitespace-nowrap">(Position: 1)</span>
-          </div>
-          <p className="font-bold mt-5">Queue</p>
-          <ol className="text-[1.25rem] list-decimal mt-3">
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-          </ol>
+  return (
+    <div className="bg-[#0a192f] min-h-screen text-white pb-20">
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-[#0a192f]/90 py-4 px-6 border-b border-[#1e3a8a]">
+        <div className="flex justify-between items-center max-w-6xl mx-auto">
           <button
-            className={`text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] mt-5 transition-colors duration-200 ${
-              inQueue2 ? "bg-[#264879] text-white" : "bg-[#C34447] text-white"
-            }`}
-            onClick={() => setInQueue2(!inQueue2)}
+            onClick={() => navigate("/welcome")}
+            className="text-white hover:text-[#64ffda] transition-colors"
           >
-            {inQueue2 ? "Join Queue" : "Leave Queue"}
+            ← Back
           </button>
-        </div>
-
-        <p className="text-[2rem] font-bold text-white mb-4">
-          Court 3 (Futvolley)
-        </p>
-        <div className="flex flex-col items-center rounded-[20px] bg-[#FFF] w-[100%] text-[1.25rem] p-[2rem] mb-20">
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap text-green-600">
-              ADVANCE
-            </span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap">Status:</span>
-            <span className="whitespace-nowrap">Match in Progress</span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap">
-              Current Match:
-            </span>
-            <span className="whitespace-nowrap">Team A vs Team B</span>
-          </div>
-          <div className="flex flex-row flex-nowrap items-center gap-1">
-            <span className="font-bold mr-2 whitespace-nowrap">
-              Queue Length:
-            </span>
-            <span className="whitespace-nowrap">3 Teams</span>
-          </div>
-          <p className="font-bold mt-5">Queue</p>
-          <ol className="text-[1.25rem] list-decimal mt-3">
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-            <li className="">Lucas & Marcus</li>
-          </ol>
+          <div className="text-[#64ffda] font-medium">Court Queues</div>
           <button
-            className={`text-[1.5rem] rounded-[25px] font-bold w-[100%] h-[3rem] mt-5 transition-colors duration-200 ${
-              inQueue3 ? "bg-[#C34447] text-white" : "bg-[#264879] text-white"
-            }`}
-            onClick={() => setInQueue3(!inQueue3)}
+            className="p-2 hover:bg-[#1e3a8a]/30 rounded-full transition-colors"
+            onClick={() => navigate("/livematch")}
           >
-            {inQueue3 ? "Leave Queue" : "Join Queue"}
+            <img
+              width={24}
+              src="/Icons/notifications.png"
+              alt="Notifications"
+              className="filter brightness-0 invert"
+            />
           </button>
         </div>
       </div>
+
+      <main className="px-4 py-6 max-w-6xl mx-auto">
+        {errors.form && (
+          <div className="bg-red-900/20 text-red-400 p-2 rounded text-center text-sm mb-4">
+            ⚠️ {errors.form}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courts.map((court, index) => (
+            <div
+              key={index}
+              className="bg-[#112240] rounded-xl p-6 border border-[#1e3a8a]/30 shadow-lg hover:shadow-xl transition-shadow"
+            >
+              {/* Court card content remains the same */}
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-[#64ffda]">
+                    Court {court.courtName}
+                  </h2>
+                  <p className="text-sm text-[#8892b0]">{court.courtLevel}</p>
+                </div>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    court.status === "Match In Progress"
+                      ? "bg-red-900/30 text-red-400"
+                      : court.status === "Available"
+                      ? "bg-green-900/30 text-green-400"
+                      : "bg-yellow-900/30 text-yellow-400"
+                  }`}
+                >
+                  {court.status}
+                </span>
+              </div>
+
+              {court.currentMatch && (
+                <div className="mb-4 bg-[#1e3a8a]/20 p-3 rounded-lg">
+                  <h3 className="text-sm font-semibold text-[#ccd6f6] mb-1">
+                    Current Match:
+                  </h3>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-[#64ffda]">
+                        {court.currentMatch.team1.player1} &{" "}
+                        {court.currentMatch.team1.player2}
+                      </p>
+                      <p className="text-[#64ffda]">
+                        vs {court.currentMatch.team2.player1} &{" "}
+                        {court.currentMatch.team2.player2}
+                      </p>
+                    </div>
+                    {court.currentMatch.score && (
+                      <span className="text-lg font-bold">
+                        {court.currentMatch.score}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold text-[#ccd6f6] mb-2">
+                  Queue ({court.queue.length}{" "}
+                  {court.queue.length === 1 ? "team" : "teams"}):
+                </h3>
+                {court.queue.length > 0 ? (
+                  <ul className="space-y-2">
+                    {court.queue.map((team, i) => (
+                      <li key={i} className="flex items-center text-[#8892b0]">
+                        <span className="w-5 text-[#64ffda]">{i + 1}.</span>
+                        <span>
+                          {team.player1} & {team.player2}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-[#8892b0]">No teams waiting</p>
+                )}
+              </div>
+
+              <button
+                onClick={() => toggleQueue(court.courtName)}
+                className={`w-full py-2 rounded-md font-medium transition-all ${
+                  joinedCourts[court.courtName]
+                    ? "bg-gradient-to-r from-[#ff5555] to-[#ff6b6b] hover:from-[#ff6b6b] hover:to-[#ff5555]"
+                    : "bg-gradient-to-r from-[#1e3a8a] to-[#3b82f6] hover:from-[#3b82f6] hover:to-[#1e3a8a]"
+                }`}
+              >
+                {joinedCourts[court.courtName] ? "Leave Queue" : "Join Queue"}
+              </button>
+            </div>
+          ))}
+        </div>
+      </main>
+
       <Navbar />
     </div>
   );
