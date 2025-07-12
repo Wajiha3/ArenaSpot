@@ -6,6 +6,25 @@ function Live_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
 
+  const handleClick = async () => {
+     try {
+            const response = await fetch(`http://localhost:3007/api/match/start`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.error("Created match successfully", data);
+                navigate("/ongoingmatch");
+            } else {
+                const resData = await response.json();
+                console.error("Failed to create match:", resData);
+            }
+        } catch (err) {
+            console.error('Error creating match:', err);
+        }
+  };
+
   return (
     <div className="bg-gradient-to-b from-[#0a3d62] to-[#0c2461] min-h-screen w-screen text-white pt-4 pb-20">
       {/* Header with back button only */}
@@ -92,7 +111,7 @@ function Live_Match() {
       {/* Start button - Beach vibe */}
       <div className="mt-12 flex justify-center">
         <button
-          onClick={() => navigate("/ongoingmatch")}
+          onClick={() => handleClick()}
           className="px-12 py-4 bg-gradient-to-r from-[#f8c291] to-[#e58e26] text-[#0c2461] text-2xl font-bold rounded-full shadow-lg hover:shadow-xl hover:from-[#f9b76b] hover:to-[#e67e22] transition-all duration-300 transform hover:scale-105"
         >
           START
