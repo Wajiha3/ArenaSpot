@@ -24,8 +24,9 @@ export interface MatchesType {
   teamB: UserType[];
   status: string;
   winningTeam: string;
-  started: Date | string;
-  finished: Date | string;
+  started: Date;
+  finished: Date;
+  score: {teamA: number; teamB: number} | null;
 }
 
 function isSameDay(date1: Date, date2: Date) {

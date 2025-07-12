@@ -22,8 +22,13 @@ function HistoryMatch({ match, idx }: HistoryMatchesProps) {
   const teamBName = match.teamB.map(p => p.userName).join(" & ");
 
   // Example: score and duration (customize as needed)
-  // const score = match.score || "-";
-  // const duration = match.duration || "";
+  const score = match.score || { teamA: 0, teamB: 0 };
+  const start = new Date(match.started).getTime();
+const finish = new Date(match.finished).getTime();
+const diff = Math.max(0, finish - start); // milliseconds
+const minutes = Math.floor(diff / 60000);
+const seconds = Math.floor((diff % 60000) / 1000);
+const duration = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
   return (
     <div
@@ -50,8 +55,8 @@ function HistoryMatch({ match, idx }: HistoryMatchesProps) {
             </div>
           </div>
           <div className="mt-2 flex items-center space-x-4 text-sm text-white/80">
-            <span>Score: 0-0</span>
-            <span>0 minutes</span>
+            <span>Score: {score.teamA}-{score.teamB}</span>
+            <span>{duration}</span>
           </div>
         </div>
         <div className="text-right">

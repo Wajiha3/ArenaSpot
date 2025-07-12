@@ -52,7 +52,7 @@ export function useCourts() {
         const results: { [courtId: string]: MatchesType | null } = {};
         for (const id of courtIds) {
             try {
-                const response = await fetch(`http://localhost:3007/api/${id}/matches`, {
+                const response = await fetch(`http://localhost:3007/api/matches/${id}`, {
                     headers: { 'authorization': sessionStorage.getItem('token') || '' }
                 });
                 if (response.ok) {
