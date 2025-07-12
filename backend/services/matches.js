@@ -28,7 +28,11 @@ async function startMatch(court) {
         status: "In Progress",
         winningTeam: null,
         started: new Date(),
-        finished: null
+        finished: null,
+        score: {
+            teamA: null,
+            teamB: null
+        }
     }
     // Inserir match na DB com os dados recebidos
     const matchId = await insertMatch(matchData)
@@ -37,12 +41,14 @@ async function startMatch(court) {
 }
 
 
-async function finishMatch (matchId, winningTeam) {
+async function finishMatch (matchId, winningTeam, score) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
+     console.log('Match encontrado:', match) // -----> ESTA AQUI O PROBLEMA
     if (!match || match.status !== "In Progress") {
         throw new Error("Match not found or already finished.")
     }
+   
 
     // definir teams
     const { teamA, teamB, courtId } = match;
@@ -50,6 +56,17 @@ async function finishMatch (matchId, winningTeam) {
     // Iniciar variaveis de vitoriosos e derrotados
     let losers = null;
     let winners = null;
+
+    // validar score
+    if (!score || typeof score.teamA !== 'number' || typeof score.teamB !== 'number'
+        || score.teamA < 0 || score.teamA > 2 || score.teamB < 0 || score.teamB > 2 ||
+        score.teamA === score.teamB || (score.teamA !== 2 && score.teamB !== 2)
+        ) throw new Error ("Invalid Score")
+
+    if ((winningTeam === "teamA" && score.teamA < score.teamB) ||
+        (winningTeam === "teamB" && score.teamB < score.teamA)) {
+        throw new Error ("Invalid Score: winning team doesn't match score.");
+        }
 
     // atribuição de winningTeam
     if (winningTeam === "teamA") {
@@ -63,10 +80,10 @@ async function finishMatch (matchId, winningTeam) {
     }
 
     // Buscar os dados dos users vencedores e derrotados
-    const winner1 = await findUser({ _id: new ObjectId(String(winners[0])) });
-    const winner2 = await findUser({ _id: new ObjectId(String(winners[1])) });
-    const loser1 = await findUser({ _id: new ObjectId(String(losers[0])) });
-    const loser2 = await findUser({ _id: new ObjectId(String(losers[1])) });
+    const winner1 = await findUser({ _id: new ObjectId(String(winners[0]._id)) });
+    const winner2 = await findUser({ _id: new ObjectId(String(winners[1]._id)) });
+    const loser1 = await findUser({ _id: new ObjectId(String(losers[0]._id)) });
+    const loser2 = await findUser({ _id: new ObjectId(String(losers[1]._id)) });
 
     const winnerUsers = [winner1, winner2];
     const loserUsers = [loser1, loser2];
@@ -85,43 +102,39 @@ async function finishMatch (matchId, winningTeam) {
         await updateUserStats(loser._id, false, avgLosersPoints, avgWinnersPoints)
     }
 
+    // Buscar novamente os vencedores mas atualizados
+    const updatedWinner1 = await findUser({ _id: winner1._id });
+    const updatedWinner2 = await findUser({ _id: winner2._id });
+    const updatedWinners = [updatedWinner1, updatedWinner2];
+
     // Atualiza match:
     match.status = "Finished";
     match.winningTeam = winningTeam;
     match.finished = new Date();
+    match.score = score
+
     // Update in the DB
-    await updateMatch({_id: matchId}, match);
+    await updateMatch({_id: new ObjectId(String(matchId))}, match);
 
     // importar court específico por ID para consultar a queue
     const court = await findCourt({_id: new ObjectId(String(courtId))})
     if (!court) throw new Error("Court not found.")
+
+    // Colocar vencedores no início da queue
+    court.queue = [...updatedWinners, ...court.queue]
+
+    // Atualizar court com nova queue
+    await updateCourt(
+    { _id: court._id },
+    { queue: court.queue }
+    )
 
     // Se queue não tiver +2 jogadores para jogar
     if (court.queue.length < 2) {
         return { message: "Match finished. Waiting for more players..."}
     }
 
-    // ir buscar os 2 próximos jogadores
-    const [player1, player2, ...restQueue] = court.queue;
-    court.queue = restQueue;
-
-    // novo jogo com os vencedores do passado
-    const newMatch = {
-        courtId: court._id,
-        teamA: winners,
-        teamB: [player1, player2],
-        status: "In Progress",
-        winningTeam: null,
-        started: new Date(),
-        finished: null
-    }
-    // criar novo jogo com os novos dados
-    await insertMatch(newMatch)
-
-    // Atualizar court com nova queue
-    await updateCourt({ _id: court._id }, { queue: court.queue });
-
-    return { message: "New match started.", match: newMatch }
+    return { message: "Match finished. Winners moved to front of queue." }
 }
 
 
