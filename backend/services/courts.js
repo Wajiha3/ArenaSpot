@@ -46,7 +46,7 @@ async function joinQueue (courtId, user) {
     }
     
     // Confirmar código se funciona
-    if (court.level !== user.level) {
+    if (court.courtLevel !== user.level) {
         throw new Error("Court level not authorized.")
     }
 
