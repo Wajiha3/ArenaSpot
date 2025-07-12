@@ -302,7 +302,7 @@ app.get('/api/:id/matches', async (req, res) => {
     }
 })
 
-// Get todos os courts da Arena
+// Get todos os courts da Arena (se utilizador tiver pago)
 app.get('/api/allcourts', async (req, res) => {
     try {
          // Aceder ao header: Authorization
@@ -314,6 +314,10 @@ app.get('/api/allcourts', async (req, res) => {
         // Se não encontrar o User Autenticado
         if(!authenticatedUser) {
             return res.status(401).json({ message: "Unauthorized"})
+        }
+        // Mostrar courts se user tiver pago
+        if(authenticatedUser.paymentToken !== true) {
+            return res.status(401).json({ message: "Access denied: User not checked-in"})
         }
         const courts = await findAllCourts()
         console.log(courts)
