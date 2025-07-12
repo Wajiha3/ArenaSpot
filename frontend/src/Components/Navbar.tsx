@@ -1,11 +1,11 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const navItems = [
-  { label: 'Home', path: '/welcome' },
-  { label: 'Queues', path: '/queues' },
-  { label: 'Matches', path: '/matches' },
-  { label: 'Profile', path: '/profile' },
+  { label: "Home", path: "/welcome" },
+  { label: "Queues", path: "/queues" },
+  { label: "Matches", path: "/matches" },
+  { label: "Profile", path: "/profile" },
 ];
 
 const Navbar = () => {
@@ -19,7 +19,9 @@ const Navbar = () => {
         return (
           <button
             key={item.label}
-            className={`text-center ${isActive ? 'text-blue-400 font-bold' : 'text-white'}`}
+            className={`text-center ${
+              isActive ? "text-blue-400 font-bold" : "text-white"
+            }`}
             onClick={() => navigate(item.path)}
           >
             <span className="block">{item.label}</span>
