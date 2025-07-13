@@ -230,7 +230,7 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
         }
         // Confirmar se há pelo menos 4 jogadores na queue
         const matchReady = court.queue.length >= 4;
-        
+
         if (!matchReady) {
             return res.status(200).json({ matchReady: false });
         }
@@ -246,7 +246,7 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
         }
 
         // Se o utilizador for um dos 4 que vão jogar
-        return res.status(200).json({ message: "Match is ready", matchReady: true });
+        return res.status(200).json({ message: "Match is ready", matchReady: true, firstFour });
 
     } catch (err) {
         return res.status(500).json({ error: "Server error" });
