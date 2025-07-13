@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useCourts } from '../hooks/useCourts';
 import { MatchesType, UserType } from '../hooks/useMatches';
-import { FaLock } from "react-icons/fa";
 import { useBell } from "../context/BellContext";
 
 interface User {
@@ -94,8 +93,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
       {/* Overlay lock if above level */}
       {isAboveLevel && (
         <div className="opacity-80 absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#112240]/80 backdrop-blur-sm rounded-xl">
-          {/* <img width={"100px"} src="/Icons/lock.png" alt="" /> */}
-          <FaLock className="text-5xl text-white mb-4" />
+          <img width={"80px"} src="/Icons/lock.png" alt="" />
           <span className="text-lg text-white font-bold">Locked Court</span>
           <span className="text-[1rem] text-[#64ffda] mt-2">Level required: {level}</span>
         </div>
