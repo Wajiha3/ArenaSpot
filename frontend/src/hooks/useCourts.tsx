@@ -43,7 +43,7 @@ export function useCourts() {
 
         fetchData(); // Initial fetch
 
-        const interval = setInterval(fetchData, 15000); // Fetch every 15 seconds
+        const interval = setInterval(fetchData, 1000); // Fetch every 15 seconds
 
         return () => clearInterval(interval); // Cleanup on unmount
     }, []);

@@ -47,6 +47,7 @@ function Queues() {
               _courtId={court._id}
               key={index}
               courtName={court.courtName}
+              courtStatus={court.status}
               level={court.courtLevel}
               queue={court.queue}
               userQueue={userQueue}

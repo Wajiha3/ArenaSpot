@@ -16,7 +16,7 @@ function InputBox({ icon, type, placeholder, value, onChange, error, errorMessag
       <div className={`flex items-center bg-[#F0F0F0] rounded-[20px] h-[3.5rem] pr-5 w-full ${error ? 'border-2 border-red-500' : ''}`}>
         <img className="ml-[1rem]" width={34} src={icon} alt="" />
         <input
-          className="ml-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[90%]"
+          className="ml-[1rem] text-black text-[20px] bg-transparent h-full outline-none placeholder-black placeholder:text-[20px] w-[90%]"
           type={type}
           placeholder={placeholder}
           required
