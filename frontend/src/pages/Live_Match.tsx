@@ -152,7 +152,7 @@ function Live_Match() {
       {/* Start button - Beach vibe */}
       <div className="mt-12 flex justify-center">
         <button
-          onClick={() => navigate("/ongoingmatch")}
+          onClick={() => handleClick()}
           className="px-12 py-4 bg-gradient-to-r from-[#f8c291] to-[#e58e26] text-[#0c2461] text-2xl font-bold rounded-full shadow-lg hover:shadow-xl hover:from-[#f9b76b] hover:to-[#e67e22] transition-all duration-300 transform hover:scale-105"
         >
           START
