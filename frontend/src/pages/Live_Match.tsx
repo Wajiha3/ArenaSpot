@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import { useBell } from "../context/BellContext";
-import { useOnGoingMatch } from "../hooks/useOnGoingMatch";
+import { useOnGoingMatch } from '../context/OngoingMatchContext';
+import { match } from "assert";
+import { on } from "events";
 
 function Live_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
   const {setBellRing, setNotified} = useBell();
-  const { courtId, fourPlayers} = useOnGoingMatch();
-  
+  const { courtId, fourPlayers, setOngoingMatch, ongoingMatch} = useOnGoingMatch();
 
   const handleClick = async () => {
     try {
@@ -20,9 +21,10 @@ function Live_Match() {
       });
       if (response.ok) {
         const data = await response.json();
+        setOngoingMatch(data.match); // Assuming the response contains the match data
         setBellRing(false);
         setNotified(false);
-        navigate("/ongoingmatch");
+        navigate(`/ongoingmatch`);
       } else {
         const resData = await response.json();
         console.error("Failed to create match:", resData);

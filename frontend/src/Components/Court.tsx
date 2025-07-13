@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useCourts } from '../hooks/useCourts';
 import { MatchesType, UserType } from '../hooks/useMatches';
 import { useBell } from "../context/BellContext";
-import { useOnGoingMatch } from '../hooks/useOnGoingMatch';
+import { useOnGoingMatch } from '../context/OngoingMatchContext';
 
 interface User {
   _id: string;
@@ -34,7 +34,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
   const isAboveLevel = userLevel !== level
   const { joinCourt, leaveCourt } = useCourts();
   const { bellRing, setBellRing, setNotified, notified, notify} = useBell();
-  const { setCourtId, setfourPlayers} = useOnGoingMatch();
+  const { fourPlayers, courtId, setCourtId, setfourPlayers} = useOnGoingMatch();
   
 
   useEffect(() => {
@@ -46,8 +46,12 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
       });
       const data = await response.json();
-      setfourPlayers(data.firstFour); // Assuming data.fourPlayers is an array of UserType
+      console.log("Match is ready:", _courtId);
+      console.log("First four players:", data.firstFour);
       setCourtId(_courtId); // Set the court ID in the Bell context
+      setfourPlayers(data.firstFour); // Assuming data.firstFour is an array of UserType
+      console.log(fourPlayers);
+      console.log(courtId);
       if (data.matchReady && !notified) {
         notify();
         setBellRing(true);
@@ -61,7 +65,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
 
 
     return () => clearInterval(interval);
-  }, [inQueue, _courtId, notified, notify, setBellRing]);
+  }, [inQueue, _courtId, notified, notify, setBellRing, setfourPlayers]);
 
   const handleQueueClick = () => {
     if (inQueue) {

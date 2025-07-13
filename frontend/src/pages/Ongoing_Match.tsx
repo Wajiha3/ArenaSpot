@@ -1,13 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import { useOnGoingMatch } from "../hooks/useOnGoingMatch";
+import { useOnGoingMatch } from '../context/OngoingMatchContext';
 
 function Ongoing_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
-  const {courtId, fourPlayers} = useOnGoingMatch();
+  const [matchDuration, setMatchDuration] = useState("");
+  const {courtId, fourPlayers, ongoingMatch} = useOnGoingMatch();
 
+  useEffect(() => {
+    if (ongoingMatch && ongoingMatch.started) {
+      const interval = setInterval(() => {
+        const start = new Date(ongoingMatch.started).getTime();
+        const now = Date.now();
+        const diff = Math.max(0, now - start); // milliseconds
+        const minutes = Math.floor(diff / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        setMatchDuration(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+      }, 1000);
+
+      // Initial set
+      const start = new Date(ongoingMatch.started).getTime();
+      const now = Date.now();
+      const diff = Math.max(0, now - start);
+      const minutes = Math.floor(diff / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      setMatchDuration(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+
+      return () => clearInterval(interval);
+    }
+  }, [ongoingMatch]);
+  
   return (
     <div className="bg-[#011937] min-h-screen w-screen text-white pt-8 pb-20">
       {" "}
@@ -67,7 +91,7 @@ function Ongoing_Match() {
         {/* Increased mt-12 to mt-16 and mb-8 to mb-10 */}
         <div className="relative">
           <div className="text-7xl font-bold bg-gradient-to-br from-white to-[#f8c291] text-transparent bg-clip-text tracking-tighter px-1 drop-shadow-[0_2px_8px_rgba(248,194,145,0.4)]">
-            08:10
+            {matchDuration && `(${matchDuration})`}
           </div>
           <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-[#0c2461]/10 to-[#0a3d62]/20 pointer-events-none"></div>
         </div>

@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
 import BellPagesWrapper from './Components/BellPagesWrapper';
 import { ToastContainer, Bounce } from 'react-toastify';
+import { OngoingMatchProvider } from './context/OngoingMatchContext';
 
 function App() {
   return (
@@ -39,12 +40,12 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<BellPagesWrapper><Welcome /></BellPagesWrapper>} />
         <Route path="/checkin" element={<Check_In />} />
-        <Route path="/livematch" element={<BellPagesWrapper><Live_Match /></BellPagesWrapper>} />
-         <Route path="/ongoingmatch" element={<Ongoing_Match />} />
-         <Route path="/savematch" element={<Save_Match />} />
+        <Route path="/livematch" element={<OngoingMatchProvider><BellPagesWrapper><Live_Match /></BellPagesWrapper></OngoingMatchProvider>} />
+         <Route path="/ongoingmatch" element={<OngoingMatchProvider><Ongoing_Match /></OngoingMatchProvider>} />
+         <Route path="/savematch" element={<OngoingMatchProvider><Save_Match /></OngoingMatchProvider>} />
          <Route path="/matches" element={<Matches />} />
         <Route path="/paymentconfirmation" element={<Payment_Confirmation />} />
-        <Route path="/queues" element={<BellPagesWrapper><Queues /></BellPagesWrapper>} />
+        <Route path="/queues" element={<OngoingMatchProvider><BellPagesWrapper><Queues /></BellPagesWrapper></OngoingMatchProvider>} />
         <Route path="/profile" element={<BellPagesWrapper><Profile /></BellPagesWrapper>} />
         <Route path="/match/:id" element={<Match1 />} />
         {/* Add more routes as needed */}
