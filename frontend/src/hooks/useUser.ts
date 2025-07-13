@@ -2,7 +2,7 @@ import { error } from "console";
 import { useState, useEffect } from "react";
 import { useMatches } from "react-router-dom";
 
-interface UserType {
+export interface UserType {
   _id: string;
   userName: string;
   password: string;

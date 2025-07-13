@@ -65,7 +65,7 @@ export function useCourts() {
                 results[id] = null;
             }
         }
-        console.log("Current matches fetched:", results);
+        
         setCurrentMatches(results);
     };
 
@@ -85,7 +85,7 @@ export function useCourts() {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log("Joined court successfully:", data);
+                
             } else {
                 const resData = await response.json();
                 console.error("Failed to join court:", resData);
@@ -105,7 +105,7 @@ export function useCourts() {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log("Left court successfully:", data);
+                
             } else {
                 const resData = await response.json();
                 console.error("Failed to leave court:", resData);

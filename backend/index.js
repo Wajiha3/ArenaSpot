@@ -164,7 +164,7 @@ app.post('/api/courts/:id/leave', async (req, res) => {
 app.get('/api/users/checkedin/count', async (req, res) => {
   try {
     const count = await countUsersCheckedIn()
-    console.log("Number of users checked in:", count);
+    
     return res.status(200).json(count)
   } catch (err) {
     return res.status(500).json({ error: err.message })
@@ -336,7 +336,7 @@ app.get('/api/:id/matches', async (req, res) => {
         const requestedId = req.params.id
         // encontrar todas as partidas do respetivo id
         const matches = await findMatchesById(requestedId)
-        console.log(matches)
+        
         return res.status(200).json(matches)
     } catch (err) {
         return res.status(400).json({ error: err.message })
@@ -386,5 +386,5 @@ app.get('/api/allcourts', async (req, res) => {
 
 // Assumir porta
 app.listen(port, () => {
-    console.log(`Está na porta http://localhost:${port}`)
+    
 })

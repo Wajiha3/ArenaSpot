@@ -6,26 +6,26 @@ import { useBell } from "../context/BellContext";
 function Live_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
-  const {setBellRing, setNotified} = useBell();
+  const {setBellRing, setNotified, fourPlayers} = useBell();
 
   const handleClick = async () => {
-     try {
-            const response = await fetch(`http://localhost:3007/api/match/start`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setBellRing(false); 
-                setNotified(false);
-                navigate("/ongoingmatch");
-            } else {
-                const resData = await response.json();
-                console.error("Failed to create match:", resData);
-            }
-        } catch (err) {
-            console.error('Error creating match:', err);
-        }
+    try {
+      const response = await fetch(`http://localhost:3007/api/match/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setBellRing(false);
+        setNotified(false);
+        navigate("/ongoingmatch");
+      } else {
+        const resData = await response.json();
+        console.error("Failed to create match:", resData);
+      }
+    } catch (err) {
+      console.error('Error creating match:', err);
+    }
   };
 
   return (
@@ -89,19 +89,18 @@ function Live_Match() {
         <div className="absolute top-3/4 left-3/4 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#0c2461] rounded-full flex items-center justify-center text-white font-bold">
           L
         </div>
-
-        {/* Player names - Adjusted to match new positions */}
-        <div className="absolute top-[40%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Marcus</p>
+        
+        <div className="absolute top-[40%] left-4 text-center" >
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[0] ? fourPlayers[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Pedro</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[1] ? fourPlayers[1].firstName : ""}</p>
         </div>
         <div className="absolute top-[40%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">João</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[2] ? fourPlayers[2].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Andre</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[3] ? fourPlayers[3].firstName : ""}</p>
         </div>
 
         {/* Sand texture elements */}
@@ -109,6 +108,19 @@ function Live_Match() {
           <div className="absolute w-4 h-4 bg-white rounded-full top-1/4 left-1/4"></div>
           <div className="absolute w-3 h-3 bg-white rounded-full top-1/3 right-1/3"></div>
         </div>
+      </div>
+
+      <div className="flex justify-center mt-8 space-x-8">
+        <p>
+          {fourPlayers && fourPlayers[0] && fourPlayers[1]
+            ? Math.round((fourPlayers[0].points + fourPlayers[1].points) / 2)
+            : ""}
+        </p>
+        <p>
+          {fourPlayers && fourPlayers[2] && fourPlayers[3]
+            ? Math.round((fourPlayers[2].points + fourPlayers[3].points) / 2)
+            : ""}
+        </p>
       </div>
 
       {/* Start button - Beach vibe */}

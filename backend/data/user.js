@@ -13,7 +13,7 @@ async function insertUser (data) {
 async function findUser (data) {
     const collection = await getCollection("user");
     const result = await collection.findOne(data)
-    console.log("User found:", result);
+    
     return result
 }
 // Count users checked-in

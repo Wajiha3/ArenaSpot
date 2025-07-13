@@ -32,7 +32,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
   const inQueue = userQueue === courtName;
   const isAboveLevel = userLevel !== level
   const { joinCourt, leaveCourt } = useCourts();
-  const { bellRing, setBellRing, setNotified, notified, notify} = useBell();
+  const { bellRing, setBellRing, setNotified, notified, notify, setfourPlayers} = useBell();
   
 
   useEffect(() => {
@@ -44,6 +44,8 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
       });
       const data = await response.json();
+      setfourPlayers(data.firstFour); // Assuming data.fourPlayers is an array of UserType
+      
       if (data.matchReady && !notified) {
         notify();
         setBellRing(true);

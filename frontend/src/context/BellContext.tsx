@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { UserType } from "../hooks/useUser";
 
 interface BellContextType {
   bellRing: boolean;
@@ -9,6 +10,8 @@ interface BellContextType {
   notify: () => void;
   notified: boolean;
   setNotified: React.Dispatch<React.SetStateAction<boolean>>;
+  setfourPlayers: React.Dispatch<React.SetStateAction<UserType[] | null>>;
+  fourPlayers: UserType[] | null;
 }
 
 const BellContext = createContext<BellContextType | undefined>(undefined);
@@ -16,6 +19,7 @@ const BellContext = createContext<BellContextType | undefined>(undefined);
 export const BellProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [bellRing, setBellRing] = useState(false);
   const [notified, setNotified] = useState(false);
+  const [fourPlayers, setfourPlayers] = useState<UserType[] | null>(null);
   const navigate = useNavigate();
 
   const notify = () => toast.info('Your match is starting hurry up!', {
@@ -36,7 +40,7 @@ export const BellProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <BellContext.Provider value={{ bellRing, setBellRing, handleBellClick, notify , setNotified, notified }}>
+    <BellContext.Provider value={{ bellRing, setBellRing, handleBellClick, notify , setNotified, notified, setfourPlayers, fourPlayers }}>
       {children}
     </BellContext.Provider>
   );

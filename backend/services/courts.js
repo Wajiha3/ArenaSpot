@@ -52,7 +52,7 @@ async function joinQueue (courtId, user) {
             }
         }
     }
-    console.log("User trying to join court:", user._id, "Court ID:", courtId);
+    
     court = await findCourt({ _id: new ObjectId(String(courtId)) });
 
     // função para encontrar se algum elemento (user com o seu id) está na queue
@@ -72,7 +72,7 @@ async function joinQueue (courtId, user) {
     // adicionar user à queue
     court.queue.push(user)
 
-    console.log("Fila atualizada:", court.queue.map(p => p._id));
+    
 
     // update court queue
     await updateCourt(
