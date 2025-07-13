@@ -11,9 +11,9 @@ async function insertMatch (data) {
 }
 
 // Read Match
-async function findMatch (data) {
+async function findMatch (matchId) {
     const collection = await getCollection("matches");
-    const result = await collection.findOne(data)
+    const result = await collection.findOne(matchId)
     return result
 }
 
