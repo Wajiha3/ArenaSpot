@@ -1,5 +1,4 @@
 const { insertCourt, findCourt, updateCourt, deleteCourt } = require('../data/courts')
-const { startMatch } = require('../services/matches');
 const { ObjectId } = require('mongodb')
 
 async function createCourt (data) {

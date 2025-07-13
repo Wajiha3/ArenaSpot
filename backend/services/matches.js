@@ -1,8 +1,8 @@
 const { insertMatch, findMatch, findAllMatches, updateMatch, deleteMatch } = require('../data/matches')
-const { insertCourt, findCourt, findAllCourts, updateCourt, deleteCourt } = require('../data/courts')
+const { findCourt, updateCourt } = require('../data/courts')
 const { ObjectId } = require('mongodb')
 const { findUser, updateUser } = require('../data/user')
-const { leaveQueue } = require('./courts')
+const { leaveQueue } = require('./courts')  
 
 async function startMatch(court) {
     // se partida tiver menos de 4 elementos na queue
