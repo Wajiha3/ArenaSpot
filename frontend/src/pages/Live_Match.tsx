@@ -7,22 +7,25 @@ function Live_Match() {
   const [selectedNav, setSelectedNav] = useState("Matches");
 
   const handleClick = async () => {
-     try {
-            const response = await fetch(`http://localhost:3007/api/match/start`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                console.error("Created match successfully", data);
-                navigate("/ongoingmatch");
-            } else {
-                const resData = await response.json();
-                console.error("Failed to create match:", resData);
-            }
-        } catch (err) {
-            console.error('Error creating match:', err);
-        }
+    try {
+      const response = await fetch(`http://localhost:3007/api/match/start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("token") || "",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.error("Created match successfully", data);
+        navigate("/ongoingmatch");
+      } else {
+        const resData = await response.json();
+        console.error("Failed to create match:", resData);
+      }
+    } catch (err) {
+      console.error("Error creating match:", err);
+    }
   };
 
   return (
@@ -108,10 +111,39 @@ function Live_Match() {
         </div>
       </div>
 
+      {/* Scores Section */}
+      <div className="flex flex-col items-center mt-6 mb-6">
+        {/* Heading with beach volleyball aesthetic */}
+        <div className="mb-4 px-6 py-2 bg-[#0c2461] rounded-full shadow-lg border-2 border-[#f8c291]">
+          <h3 className="text-xl font-bold text-[#f8c291] text-center">
+            TEAM AVERAGE POINTS
+          </h3>
+        </div>
+
+        {/* Score circles with improved spacing and visual hierarchy */}
+        <div className="flex space-x-16">
+          {/* Team A Score */}
+          <div className="flex flex-col items-center">
+            <p className="text-[#f8c291] font-medium mb-2">TEAM A</p>
+            <div className="bg-[#0c2461] w-20 h-20 rounded-full border-4 border-[#f8c291] flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+              <span className="text-4xl font-bold text-[#f8c291]">24</span>
+            </div>
+          </div>
+
+          {/* Team B Score */}
+          <div className="flex flex-col items-center">
+            <p className="text-[#f8c291] font-medium mb-2">TEAM B</p>
+            <div className="bg-[#0a3d62] w-20 h-20 rounded-full border-4 border-[#f8c291] flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+              <span className="text-4xl font-bold text-[#f8c291]">49</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Start button - Beach vibe */}
       <div className="mt-12 flex justify-center">
         <button
-          onClick={() => handleClick()}
+          onClick={() => navigate("/ongoingmatch")}
           className="px-12 py-4 bg-gradient-to-r from-[#f8c291] to-[#e58e26] text-[#0c2461] text-2xl font-bold rounded-full shadow-lg hover:shadow-xl hover:from-[#f9b76b] hover:to-[#e67e22] transition-all duration-300 transform hover:scale-105"
         >
           START

@@ -4,7 +4,6 @@ import { useCourts } from "../hooks/useCourts";
 import Navbar from "../Components/Navbar";
 import Court from "../Components/Court";
 
-
 function Queues() {
   const navigate = useNavigate();
   const { courts, currentMatches } = useCourts();
