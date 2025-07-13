@@ -31,7 +31,7 @@ async function authenticateToken (token) {
 // Adicionar tokens ao array de sessão
 function addToken(token) {
     tokensArr.push(token);
-    console.log(tokensArr)
+    
 }
 
 module.exports = { tokensArr, addToken, authenticateToken }

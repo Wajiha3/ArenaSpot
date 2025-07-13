@@ -34,7 +34,7 @@ async function findMatchesById (userId) {
             { "teamB._id": id}
         ]
     }).sort({started: -1}).toArray();
-    console.log("Matches found for user ID:", userId, result);
+    
     return result
 }
 

@@ -45,7 +45,7 @@ async function startMatch(court) {
 async function finishMatch (matchId, winningTeam, score) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
-    /* console.log('Match encontrado:', match) */
+     
     if (!match || match.status !== "In Progress") {
         throw new Error("Match not found or already finished.")
     }

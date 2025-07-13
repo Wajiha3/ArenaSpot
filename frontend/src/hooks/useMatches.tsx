@@ -49,7 +49,7 @@ export function useMatches() {
         });
         if (statsRes.ok) {
           const statsData = await statsRes.json();
-          console.log('Fetched matches:', statsData);
+          
           setMatches(statsData);
         }
       } catch (err) {
