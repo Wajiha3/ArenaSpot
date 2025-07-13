@@ -44,15 +44,15 @@ async function joinQueue (courtId, user) {
         throw new Error("Player already in queue.")
     }
 
-    /* // Se faz joinQueue, deve sair das outras queues
+    // Se faz joinQueue, deve sair das outras queues
     const allCourts = await findAllCourts()
     for (let i = 0; allCourts.length; i++) {
         const currentCourt = allCourts[i]
         const isInQueue = currentCourt.queue.find( (e) => String(e._id) === String(user._id))
         if(isInQueue && String(currentCourt._id !== String(court._id))) {
-            leaveQueue(currentCourt, user)
+            await leaveQueue(currentCourt, user)
         }
-    } */
+    }
     
     // Só pode fazer join em campos que é do seu level
     if (court.courtLevel !== user.level) {
