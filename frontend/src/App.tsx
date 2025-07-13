@@ -13,7 +13,7 @@ import Payment_Confirmation from './pages/Payment_Confirmation';
 import Queues from './pages/Queues';
 import Profile from './pages/Profile';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
-import BellPagesWrapper from './pages/BellPagesWrapper';
+import BellPagesWrapper from './Components/BellPagesWrapper';
 import { ToastContainer, Bounce } from 'react-toastify';
 
 function App() {

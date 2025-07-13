@@ -15,7 +15,7 @@ function Welcome() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Home");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const { user } = useUser();
+  const { user, checkInUsers } = useUser();
   const { getLast3Matches } = useMatches();
   const last3Matches = getLast3Matches();
   const { courts } = useCourts();
@@ -55,7 +55,7 @@ function Welcome() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-white/80">Status:</span>
-              <span className="font-medium text-green-400">Open</span>
+              <span className="font-medium text-green-400">{checkInUsers === 0 ? "Closed" : "Open"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Active Courts:</span>
@@ -63,7 +63,7 @@ function Welcome() {
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Players Checked In:</span>
-              <span className="font-medium">45</span>
+              <span className="font-medium">{checkInUsers}</span>
             </div>
           </div>
 
