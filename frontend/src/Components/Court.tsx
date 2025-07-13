@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCourts } from '../hooks/useCourts';
 import { MatchesType, UserType } from '../hooks/useMatches';
 import { FaLock } from "react-icons/fa";
@@ -35,6 +34,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
   const isAboveLevel = userLevel !== level
   const { joinCourt, leaveCourt } = useCourts();
   const { bellRing, setBellRing, handleBellClick, notify} = useBell();
+  const [notified, setNotified] = useState(false);
 
   useEffect(() => {
     if (!inQueue) return; // Only poll if user is in queue
@@ -45,15 +45,20 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
       });
       const data = await response.json();
-      if (data.matchReady) {
-        notify()
+      if (data.matchReady && !notified) {
+        notify();
         setBellRing(true);
+        setNotified(true); // Only notify once
+      }
+      // Optionally, reset notified if matchReady becomes false
+      if (!data.matchReady && notified) {
+        setNotified(false);
       }
     }, 1000);
 
 
     return () => clearInterval(interval);
-  }, [inQueue, _courtId]);
+  }, [inQueue, _courtId, notified, notify, setBellRing]);
 
   const handleQueueClick = () => {
     if (inQueue) {

@@ -25,11 +25,11 @@ export const BellProvider: React.FC<{ children: React.ReactNode }> = ({ children
     progress: undefined,
     theme: "dark",
     transition: Bounce,
-    onClick: () => navigate("/LiveMatch"),
+    onClick: () => navigate("/livematch"),
   });
 
   const handleBellClick = () => {
-    navigate("/LiveMatch");
+    navigate("/livematch");
   };
 
   return (
