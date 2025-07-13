@@ -147,9 +147,10 @@ app.post('/api/courts/:id/leave', async (req, res) => {
 app.get('/api/users/checkedin/count', async (req, res) => {
   try {
     const count = await countUsersCheckedIn()
-    res.status(200).json(count)
+    console.log("Number of users checked in:", count);
+    return res.status(200).json(count)
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: err.message })
   }
 })
 

@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { BrowserRouter as Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar"; // Ensure this path is correct
 import { useUser } from "../hooks/useUser";
+import { useBell } from "../context/BellContext";
+import ReactBellIcon from "../animations/bell";
 
 function Profile() {
+  const { handleBellClick, bellRing } = useBell();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Profile");
   const [selectedFilter, setSelectedFilter] = useState("Today");
@@ -12,7 +15,7 @@ function Profile() {
   const handleClick = () => {
     sessionStorage.removeItem("token");
     navigate("/login");
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#011937] to-[#003366] text-white pb-24">
@@ -25,9 +28,15 @@ function Profile() {
             className="w-full h-full object-contain"
           />
         </div>
-        <button className="p-2">
-          <img width={34} src="/Icons/notifications.png" alt="Notifications" />
-        </button>
+        <ReactBellIcon
+            width={"24"}
+            height={"24"}
+            animationSpeed={"0.3"}
+            color={`${bellRing ? "#ff0000" : "#fff"}`}
+            animate={bellRing}
+            active={bellRing}
+            onClick={() => handleBellClick()}
+          />
       </div>
 
       {/* Profile Content */}
