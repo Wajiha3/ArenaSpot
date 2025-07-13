@@ -7,12 +7,15 @@ interface BellContextType {
   setBellRing: React.Dispatch<React.SetStateAction<boolean>>;
   handleBellClick: () => void;
   notify: () => void;
+  notified: boolean;
+  setNotified: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const BellContext = createContext<BellContextType | undefined>(undefined);
 
 export const BellProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [bellRing, setBellRing] = useState(false);
+  const [notified, setNotified] = useState(false);
   const navigate = useNavigate();
 
   const notify = () => toast.info('Your match is starting hurry up!', {
@@ -33,7 +36,7 @@ export const BellProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <BellContext.Provider value={{ bellRing, setBellRing, handleBellClick, notify }}>
+    <BellContext.Provider value={{ bellRing, setBellRing, handleBellClick, notify , setNotified, notified }}>
       {children}
     </BellContext.Provider>
   );
