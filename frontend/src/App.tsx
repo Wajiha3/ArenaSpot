@@ -39,7 +39,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<BellPagesWrapper><Welcome /></BellPagesWrapper>} />
         <Route path="/checkin" element={<Check_In />} />
-        <Route path="/livematch" element={<Live_Match />} />
+        <Route path="/livematch" element={<BellPagesWrapper><Live_Match /></BellPagesWrapper>} />
          <Route path="/ongoingmatch" element={<Ongoing_Match />} />
          <Route path="/savematch" element={<Save_Match />} />
          <Route path="/matches" element={<Matches />} />
