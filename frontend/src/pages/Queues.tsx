@@ -12,12 +12,12 @@ function Queues() {
   const { user } = useUser();
   const { courts, currentMatches } = useCourts();
   const [userQueue, setUserQueue] = useState<string | null>(null);
-  const { bellRing, handleBellClick } = useBell();
+  const { bellRing, handleBellClick, bellAnimate, bellColor } = useBell();
 
   return (
     <div className="bg-[#0a192f] min-h-screen text-white pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#0a192f]/90 py-4 px-6 border-b border-[#1e3a8a]">
+      <div className="sticky top-0 z-20 bg-[#0a192f]/90 py-4 px-6 border-b border-[#1e3a8a]">
         <div className="flex justify-between items-center max-w-6xl mx-auto">
           <button
             onClick={() => navigate("/welcome")}
@@ -28,12 +28,12 @@ function Queues() {
           <div className="text-[#64ffda] font-medium">Court Queues</div>
           <div className="flex items-center space-x-4">
             <ReactBellIcon
-              width={20}
-              height={20}
+              width={"24"}
+              height={"24"}
               animationSpeed={"0.3"}
-              color={bellRing ? "#ff0000" : "#fff"}
-              animate={bellRing}
-              active={bellRing}
+              color={bellColor}
+              animate={bellAnimate}
+              active={bellAnimate}
               onClick={() => handleBellClick()}
             />
             </div>

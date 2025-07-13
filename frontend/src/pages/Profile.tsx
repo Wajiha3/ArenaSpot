@@ -6,7 +6,7 @@ import { useBell } from "../context/BellContext";
 import ReactBellIcon from "../animations/bell";
 
 function Profile() {
-  const { handleBellClick, bellRing } = useBell();
+  const { handleBellClick, bellRing, bellColor, bellAnimate } = useBell();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Profile");
   const [selectedFilter, setSelectedFilter] = useState("Today");
@@ -32,9 +32,9 @@ function Profile() {
             width={"24"}
             height={"24"}
             animationSpeed={"0.3"}
-            color={`${bellRing ? "#ff0000" : "#fff"}`}
-            animate={bellRing}
-            active={bellRing}
+            color={bellColor}
+            animate={bellAnimate}
+            active={bellAnimate}
             onClick={() => handleBellClick()}
           />
       </div>

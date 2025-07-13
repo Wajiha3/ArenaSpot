@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useCourts } from '../hooks/useCourts';
 import { MatchesType, UserType } from '../hooks/useMatches';
 import { useBell } from "../context/BellContext";
-import { useOnGoingMatch } from '../context/OngoingMatchContext';
 
 interface User {
   _id: string;
@@ -30,15 +29,13 @@ function groupIntoTeams(users: User[]) {
 }
 
 function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setUserQueue, currentMatch, userLevel }: CourtProps) {
-  const inQueue = userQueue === courtName;
+  const [userInQueue, setUserInQueue] = useState(false);
   const isAboveLevel = userLevel !== level
   const { joinCourt, leaveCourt } = useCourts();
-  const { bellRing, setBellRing, setNotified, notified, notify} = useBell();
-  const { fourPlayers, courtId, setCourtId, setfourPlayers} = useOnGoingMatch();
-  
+  const { bellTarget, setBellTarget, bellRing, setBellRing, setNotified, notified, notify, setCourtId} = useBell();  
 
   useEffect(() => {
-    if (!inQueue) return; // Only poll if user is in queue
+    if (!userInQueue) return;
 
     const interval = setInterval(async () => {
       const response = await fetch(`http://localhost:3007/api/match/ready/${_courtId}`, {
@@ -46,34 +43,27 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
       });
       const data = await response.json();
-      console.log("Match is ready:", _courtId);
-      console.log("First four players:", data.firstFour);
-      setCourtId(_courtId); // Set the court ID in the Bell context
-      setfourPlayers(data.firstFour); // Assuming data.firstFour is an array of UserType
-      console.log(fourPlayers);
-      console.log(courtId);
+
       if (data.matchReady && !notified) {
-        notify();
-        setBellRing(true);
-        setNotified(true); // Only notify once
+        notify(_courtId);
+        setBellTarget({ type: "ready", courtId: _courtId });
+        setNotified(true);
       }
-      // Optionally, reset notified if matchReady becomes false
       if (!data.matchReady && notified) {
         setNotified(false);
+        setBellTarget(null); // Reset bell if not ready
       }
     }, 1000);
 
 
     return () => clearInterval(interval);
-  }, [inQueue, _courtId, notified, notify, setBellRing, setfourPlayers]);
+  }, [userInQueue, _courtId, notified, notify, setBellTarget]);
 
   const handleQueueClick = () => {
-    if (inQueue) {
-      leaveCourt(_courtId); // Call the leaveCourt function from useCourts
-      setUserQueue(null); // Leave queue
+    if (userInQueue) {
+      leaveCourt(_courtId);
     } else {
-      joinCourt(_courtId); // Call the joinCourt function from useCourts
-      setUserQueue(courtName); // Join this queue
+      joinCourt(_courtId);
     }
   };
 
@@ -95,6 +85,11 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
   } else {
     status = "Unavailable";
   }
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token');
+    setUserInQueue(queue.some(p => p._id === token));
+  }, [queue]);
 
   return (
     <div className="relative bg-[#112240] rounded-xl p-6 border border-[#1e3a8a]/30 shadow-lg hover:shadow-xl transition-shadow">
@@ -148,7 +143,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
         )}
 
         <div className="mb-4">
-          {inQueue && (
+          {userInQueue && (
             <h2 className="text-sm font-semibold text-[#38fb32] mb-2">
               Your position is: {Math.floor(queue.findIndex(u => u._id === sessionStorage.getItem('token')) / 2) + 1}
             </h2>
@@ -192,13 +187,14 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
         </div>
 
         <button
-          onClick={() => handleQueueClick()}
-          className={`w-full py-2 rounded-md font-medium transition-all ${inQueue
-            ? "bg-gradient-to-r from-[#ff5555] to-[#ff6b6b] hover:from-[#ff6b6b] hover:to-[#ff5555]"
-            : "bg-gradient-to-r from-[#1e3a8a] to-[#3b82f6] hover:from-[#3b82f6] hover:to-[#1e3a8a]"
-            }`}
+          onClick={handleQueueClick}
+          className={`w-full py-2 rounded-md font-medium transition-all ${
+            userInQueue
+              ? "bg-gradient-to-r from-[#ff5555] to-[#ff6b6b] hover:from-[#ff6b6b] hover:to-[#ff5555]"
+              : "bg-gradient-to-r from-[#1e3a8a] to-[#3b82f6] hover:from-[#3b82f6] hover:to-[#1e3a8a]"
+          }`}
         >
-          {inQueue ? "Leave Queue" : "Join Queue"}
+          {userInQueue ? "Leave Queue" : "Join Queue"}
         </button>
       </div>
     </div>

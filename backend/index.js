@@ -255,10 +255,10 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
 
 // POST criação de match
 app.post('/api/match/start', async (req, res) => {
-    const { courtId } = req.body
-    console.log("Court ID received:", courtId)
+    const { _courtId } = req.body
+    console.log("Court ID:", _courtId)
     try {
-        const court = await findCourt({ _id: new ObjectId(String(courtId)) })
+        const court = await findCourt({ _id: new ObjectId(String(_courtId)) })
         if (!court) {
             return res.status(404).json({ error: 'Court not found' })
         }
