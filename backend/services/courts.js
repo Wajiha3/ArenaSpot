@@ -1,4 +1,4 @@
-const { insertCourt, findCourt, updateCourt, deleteCourt } = require('../data/courts')
+const { insertCourt, findCourt, updateCourt, deleteCourt, findAllCourts } = require('../data/courts')
 const { ObjectId } = require('mongodb')
 
 async function createCourt (data) {
@@ -43,8 +43,18 @@ async function joinQueue (courtId, user) {
     if (alreadyInQueue) {
         throw new Error("Player already in queue.")
     }
+
+    // Se faz joinQueue, deve sair das outras queues
+    const allCourts = await findAllCourts()
+    for (let i = 0; allCourts.length; i++) {
+        const currentCourt = allCourts[i]
+        const isInQueue = currentCourt.queue.find( (e) => String(e._id) === String(user._id))
+        if(isInQueue && String(currentCourt._id !== String(court._id))) {
+            leaveQueue(currentCourt, user)
+        }
+    }
     
-    // Confirmar código se funciona
+    // Só pode fazer join em campos que é do seu level
     if (court.courtLevel !== user.level) {
         throw new Error("Court level not authorized.")
     }

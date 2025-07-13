@@ -230,7 +230,7 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
         }
         // Confirmar se há pelo menos 4 jogadores na queue
         const matchReady = court.queue.length >= 4;
-
+        
         if (!matchReady) {
             return res.status(200).json({ matchReady: false });
         }
