@@ -8,21 +8,11 @@ import { useCourts } from "../hooks/useCourts";
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactBellIcon from "../animations/bell";
+import { useBell } from "../context/BellContext";
 
 function Welcome() {
-  const notify = () => toast.info('Your match is starting hurry up!', {
-    position: "top-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Bounce,
-  });
+  const { handleBellClick, bellRing } = useBell();
   const navigate = useNavigate();
-  const [bellRing, setbellRing] = useState(false);
   const [selectedNav, setSelectedNav] = useState("Home");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { user } = useUser();
@@ -36,55 +26,23 @@ function Welcome() {
     else if (user.level === "Advanced") progress = 100;
   }
 
-  const handleBellClick = () => {
-    setbellRing(!bellRing);
-    if (!bellRing) {
-      notify();
-    }
-  }
-
   return (
     <div className="bg-gradient-to-b from-[#011937] to-[#003366] w-screen text-white pt-[2rem] min-h-screen pb-[6rem]">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
         <div className="w-[3.6rem] h-[5.4rem]">
           <img src="/logo.png" alt="" />
         </div>
-        <div onClick={() => handleBellClick()} className="h-[34px] flex gap-2">
-          {/* <img onClick={notify} width={"34px"} src="/Icons/notifications.png" alt="" /> */}
+        <div className="h-[34px] flex gap-2">
           <ReactBellIcon
-          width={"34"}
-          height={"34"}
-          animationSpeed={"0.3"}
-          color={`${bellRing ? "#ff0000" : "#68C46B"}`}
-          animate={bellRing}
-          active={bellRing}
-        />
-          <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            limit={1}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover={false}
-            theme="dark"
-            transition={Bounce}
+            width={"24"}
+            height={"24"}
+            animationSpeed={"0.3"}
+            color={`${bellRing ? "#ff0000" : "#fff"}`}
+            animate={bellRing}
+            active={bellRing}
+            onClick={() => handleBellClick()}
           />
         </div>
-        <button
-          className="p-2 hover:bg-[#1e3a8a]/30 rounded-full transition-colors"
-          onClick={() => navigate("/livematch")}
-        >
-          <img
-            width={24}
-            src="/Icons/notifications.png"
-            alt="Notifications"
-            className="filter brightness-0 invert"
-          />
-        </button>
       </div>
 
       {/* Main Content */}
