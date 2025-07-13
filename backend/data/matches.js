@@ -11,9 +11,9 @@ async function insertMatch (data) {
 }
 
 // Read Match
-async function findMatch (data) {
+async function findMatch (matchId) {
     const collection = await getCollection("matches");
-    const result = await collection.findOne(data)
+    const result = await collection.findOne(matchId)
     return result
 }
 
@@ -34,7 +34,7 @@ async function findMatchesById (userId) {
             { "teamB._id": id}
         ]
     }).sort({started: -1}).toArray();
-    console.log("Matches found for user ID:", userId, result);
+    
     return result
 }
 

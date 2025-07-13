@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useMatches } from "react-router-dom";
 import { MatchesType, UserType } from "./useMatches";
+import { useUser } from "./useUser";
 
 interface CourtType {
     _id: string;
@@ -42,7 +43,7 @@ export function useCourts() {
 
         fetchData(); // Initial fetch
 
-        const interval = setInterval(fetchData, 15000); // Fetch every 15 seconds
+        const interval = setInterval(fetchData, 1000); // Fetch every 15 seconds
 
         return () => clearInterval(interval); // Cleanup on unmount
     }, []);
@@ -64,7 +65,7 @@ export function useCourts() {
                 results[id] = null;
             }
         }
-        console.log("Current matches fetched:", results);
+        
         setCurrentMatches(results);
     };
 
@@ -84,7 +85,7 @@ export function useCourts() {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log("Joined court successfully:", data);
+                
             } else {
                 const resData = await response.json();
                 console.error("Failed to join court:", resData);
@@ -104,7 +105,7 @@ export function useCourts() {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log("Left court successfully:", data);
+                
             } else {
                 const resData = await response.json();
                 console.error("Failed to leave court:", resData);

@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { BrowserRouter as Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar"; // Ensure this path is correct
 import { useUser } from "../hooks/useUser";
+import { useBell } from "../context/BellContext";
+import ReactBellIcon from "../animations/bell";
 
 function Profile() {
+  const { handleBellClick, bellRing } = useBell();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Profile");
   const [selectedFilter, setSelectedFilter] = useState("Today");
@@ -25,17 +28,15 @@ function Profile() {
             className="w-full h-full object-contain"
           />
         </div>
-        <button
-          className="p-2 hover:bg-[#1e3a8a]/30 rounded-full transition-colors"
-          onClick={() => navigate("/livematch")}
-        >
-          <img
-            width={24}
-            src="/Icons/notifications.png"
-            alt="Notifications"
-            className="filter brightness-0 invert"
+        <ReactBellIcon
+            width={"24"}
+            height={"24"}
+            animationSpeed={"0.3"}
+            color={`${bellRing ? "#ff0000" : "#fff"}`}
+            animate={bellRing}
+            active={bellRing}
+            onClick={() => handleBellClick()}
           />
-        </button>
       </div>
 
       {/* Profile Content */}

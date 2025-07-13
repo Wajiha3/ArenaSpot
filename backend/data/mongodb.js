@@ -16,7 +16,7 @@ async function getConnection() {
         try {
             client = await MongoClient.connect(url)
         } catch (err) {
-            console.log(err)
+            
         }
     }
     return client;
@@ -25,7 +25,7 @@ async function getConnection() {
 // Fechar conexão à db
 async function closeConnection() {
     const client = await getConnection();
-    console.log(client);
+    
     return await client.close()
 }
 

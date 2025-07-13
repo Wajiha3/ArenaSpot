@@ -1,23 +1,27 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
+import { useBell } from "../context/BellContext";
+import { useOnGoingMatch } from "../hooks/useOnGoingMatch";
 
 function Live_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
+  const {setBellRing, setNotified} = useBell();
+  const { courtId, fourPlayers} = useOnGoingMatch();
+  
 
   const handleClick = async () => {
     try {
       const response = await fetch(`http://localhost:3007/api/match/start`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: sessionStorage.getItem("token") || "",
-        },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' },
+        body: JSON.stringify({courtId}),
       });
       if (response.ok) {
         const data = await response.json();
-        console.error("Created match successfully", data);
+        setBellRing(false);
+        setNotified(false);
         navigate("/ongoingmatch");
       } else {
         const resData = await response.json();
@@ -89,19 +93,18 @@ function Live_Match() {
         <div className="absolute top-3/4 left-3/4 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#0c2461] rounded-full flex items-center justify-center text-white font-bold">
           L
         </div>
-
-        {/* Player names - Adjusted to match new positions */}
-        <div className="absolute top-[40%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Marcus</p>
+        
+        <div className="absolute top-[40%] left-4 text-center" >
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[0] ? fourPlayers[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Pedro</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[1] ? fourPlayers[1].firstName : ""}</p>
         </div>
         <div className="absolute top-[40%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">João</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[2] ? fourPlayers[2].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Andre</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[3] ? fourPlayers[3].firstName : ""}</p>
         </div>
 
         {/* Sand texture elements */}
@@ -126,7 +129,9 @@ function Live_Match() {
           <div className="flex flex-col items-center">
             <p className="text-[#f8c291] font-medium mb-2">TEAM A</p>
             <div className="bg-[#0c2461] w-20 h-20 rounded-full border-4 border-[#f8c291] flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
-              <span className="text-4xl font-bold text-[#f8c291]">24</span>
+              <span className="text-4xl font-bold text-[#f8c291]">{fourPlayers && fourPlayers[0] && fourPlayers[1]
+            ? Math.round((fourPlayers[0].points + fourPlayers[1].points) / 2)
+            : ""}</span>
             </div>
           </div>
 
@@ -134,7 +139,9 @@ function Live_Match() {
           <div className="flex flex-col items-center">
             <p className="text-[#f8c291] font-medium mb-2">TEAM B</p>
             <div className="bg-[#0a3d62] w-20 h-20 rounded-full border-4 border-[#f8c291] flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
-              <span className="text-4xl font-bold text-[#f8c291]">49</span>
+              <span className="text-4xl font-bold text-[#f8c291]">{fourPlayers && fourPlayers[2] && fourPlayers[3]
+            ? Math.round((fourPlayers[2].points + fourPlayers[3].points) / 2)
+            : ""}</span>
             </div>
           </div>
         </div>

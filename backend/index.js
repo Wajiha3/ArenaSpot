@@ -16,10 +16,10 @@ app.use(cors());
 
 const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
-const { findUser, countUsersCheckedIn } = require('./data/user')
+const { findUser, countUsersCheckedIn, updateUser } = require('./data/user')
 const { createCourt, joinQueue, leaveQueue } = require('./services/courts')
 const { findAllCourts, findCourt } = require('./data/courts')
-const { findAllMatches, findMatchesById, findInProgressMatchesByCourt } = require('./data/matches')
+const { findAllMatches, findMatchesById, findInProgressMatchesByCourt, findMatch } = require('./data/matches')
 const { ObjectId } = require('mongodb')
 const { startMatch, finishMatch } = require('./services/matches')
 
@@ -57,6 +57,23 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(200).json({ message: "Logged in", token: result });
 });
 
+// POST de update User
+app.post('/api/auth/update', async (req, res) => {
+    try {
+        const data = req.body
+        // Aceder ao header Authorization
+        const token = req.headers.authorization;
+        const authenticatedUser = await authenticateToken(token);
+        // Após encontrar o user autenticado
+        if(!authenticatedUser) {
+            return res.status(401).json({ message: "Unauthorized. "})
+        }
+        const updatedUser = await updateUser(authenticatedUser._id, data)
+        return res.status(200).json({message: "User updated", updatedUser})
+    } catch (err) {
+        return res.status(500).json({ error: err.message })
+    }
+})
 
 // POST do Check-In
 app.post('/api/checkin', async (req, res) => {
@@ -147,9 +164,10 @@ app.post('/api/courts/:id/leave', async (req, res) => {
 app.get('/api/users/checkedin/count', async (req, res) => {
   try {
     const count = await countUsersCheckedIn()
-    res.status(200).json(count)
+    
+    return res.status(200).json(count)
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: err.message })
   }
 })
 
@@ -228,7 +246,7 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
         }
 
         // Se o utilizador for um dos 4 que vão jogar
-        return res.status(200).json({ message: "Match is ready", matchReady: true });
+        return res.status(200).json({ message: "Match is ready", matchReady: true, firstFour });
 
     } catch (err) {
         return res.status(500).json({ error: "Server error" });
@@ -238,6 +256,7 @@ app.get('/api/match/ready/:courtId', async (req, res) => {
 // POST criação de match
 app.post('/api/match/start', async (req, res) => {
     const { courtId } = req.body
+    console.log("Court ID received:", courtId)
     try {
         const court = await findCourt({ _id: new ObjectId(String(courtId)) })
         if (!court) {
@@ -253,7 +272,9 @@ app.post('/api/match/start', async (req, res) => {
             return res.status(400).json({ error: 'Not enough players to start a match.' })
         }
 
-        res.status(200).json({ message: 'Match started', matchId})
+        const match = await findMatch(matchId)
+
+        res.status(200).json({ message: 'Match started', match})
     } catch (err) {
         return res.status(400).json({ error: err.message })
     }
@@ -318,7 +339,7 @@ app.get('/api/:id/matches', async (req, res) => {
         const requestedId = req.params.id
         // encontrar todas as partidas do respetivo id
         const matches = await findMatchesById(requestedId)
-        console.log(matches)
+        
         return res.status(200).json(matches)
     } catch (err) {
         return res.status(400).json({ error: err.message })
@@ -342,9 +363,23 @@ app.get('/api/allcourts', async (req, res) => {
         if(authenticatedUser.paymentToken !== true) {
             return res.status(401).json({ message: "Access denied: User not checked-in"})
         }
-        const courts = await findAllCourts()
-        console.log(courts)
-        return res.status(200).json(courts)
+        const courts = await findAllCourts();
+
+        const levelOrder = ["Beginner", "Intermediate", "Advanced"];
+        const userLevelIndex = levelOrder.indexOf(authenticatedUser.level);
+
+        // Create a new order array starting from user's level
+        const orderedLevels = [
+            levelOrder[userLevelIndex],
+            ...levelOrder.filter(lvl => lvl !== levelOrder[userLevelIndex])
+        ];
+
+        // Sort courts by this order
+        const sortedCourts = orderedLevels.flatMap(lvl =>
+            courts.filter(court => court.courtLevel === lvl)
+        );
+
+        return res.status(200).json(sortedCourts);
     } catch (err) {
         return res.status(400).json({ error: err.message })
     }
@@ -354,5 +389,5 @@ app.get('/api/allcourts', async (req, res) => {
 
 // Assumir porta
 app.listen(port, () => {
-    console.log(`Está na porta http://localhost:${port}`)
+    
 })

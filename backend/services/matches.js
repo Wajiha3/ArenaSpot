@@ -1,8 +1,8 @@
 const { insertMatch, findMatch, findAllMatches, updateMatch, deleteMatch } = require('../data/matches')
-const { insertCourt, findCourt, findAllCourts, updateCourt, deleteCourt } = require('../data/courts')
+const { findCourt, updateCourt } = require('../data/courts')
 const { ObjectId } = require('mongodb')
 const { findUser, updateUser } = require('../data/user')
-const { leaveQueue } = require('./courts')
+const { leaveQueue } = require('./courts')  
 
 async function startMatch(court) {
     // se partida tiver menos de 4 elementos na queue
@@ -45,7 +45,7 @@ async function startMatch(court) {
 async function finishMatch (matchId, winningTeam, score) {
     // find match por ID
     const match = await findMatch({ _id: new ObjectId(String(matchId)) })
-    /* console.log('Match encontrado:', match) */
+     
     if (!match || match.status !== "In Progress") {
         throw new Error("Match not found or already finished.")
     }

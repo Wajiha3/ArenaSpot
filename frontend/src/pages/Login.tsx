@@ -77,7 +77,7 @@ function Login() {
               alt=""
             />
             <input
-              className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[100%]"
+              className="ml-[1rem] mr-[1rem] text-black text-[20px] bg-transparent placeholder-black placeholder:text-[20px] w-[100%] h-full outline-none"
               type={noSee ? "password" : "text"}
               placeholder="Password"
               required

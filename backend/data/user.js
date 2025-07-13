@@ -13,12 +13,12 @@ async function insertUser (data) {
 async function findUser (data) {
     const collection = await getCollection("user");
     const result = await collection.findOne(data)
-    console.log("User found:", result);
+    
     return result
 }
 // Count users checked-in
 async function countUsersCheckedIn() {
-    const collection = await getCollection("users");
+    const collection = await getCollection("user");
     const count = await collection.find({ paymentToken: true }).toArray();
     return count.length;
 }

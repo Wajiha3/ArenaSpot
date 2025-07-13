@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
+import { useOnGoingMatch } from "../hooks/useOnGoingMatch";
 
 function Save_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
+  const { courtId, fourPlayers } = useOnGoingMatch();
   const [teamAScore, setTeamAScore] = useState(2);
   const [teamBScore, setTeamBScore] = useState(0);
 
@@ -59,16 +61,16 @@ function Save_Match() {
 
         {/* Player names */}
         <div className="absolute top-[40%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Marcus</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[0] ? fourPlayers[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Pedro</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[1] ? fourPlayers[1].firstName : ""}</p>
         </div>
         <div className="absolute top-[40%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">João</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[2] ? fourPlayers[2].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">Andre</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[3] ? fourPlayers[3].firstName : ""}</p>
         </div>
 
         {/* Sand texture elements */}

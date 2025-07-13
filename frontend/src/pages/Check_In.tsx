@@ -17,7 +17,7 @@ function Check_In() {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Payment successful:", data);
+        
         navigate("/paymentconfirmation");
       } else {
         const resData = await response.json();
