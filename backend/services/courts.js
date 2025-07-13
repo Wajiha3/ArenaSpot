@@ -32,7 +32,7 @@ async function createCourt (data) {
 async function joinQueue (courtId, user) {
 
     // selecionar court desejado
-    const court = await findCourt({ _id: new ObjectId(String(courtId)) });
+    let court = await findCourt({ _id: new ObjectId(String(courtId)) });
     // se não encontrares o court
     if (!court) {
         throw new Error("Court not found.");
@@ -52,7 +52,7 @@ async function joinQueue (courtId, user) {
             }
         }
     }
-
+    console.log("User trying to join court:", user._id, "Court ID:", courtId);
     court = await findCourt({ _id: new ObjectId(String(courtId)) });
     
     // função para encontrar se algum elemento (user com o seu id) está na queue
