@@ -46,7 +46,7 @@ async function joinQueue (courtId, user) {
         const isDifferenteCourt = String(currentCourt._id) !== String(court._id)
         if(isInQueue && isDifferenteCourt) {
             try {
-                await leaveQueue(currentCourt, user);
+                await leaveQueue(currentCourt._id, user);
             } catch (err) {
                 console.error("Erro ao sair da fila de outro campo:", err);
             }
@@ -54,7 +54,7 @@ async function joinQueue (courtId, user) {
     }
     console.log("User trying to join court:", user._id, "Court ID:", courtId);
     court = await findCourt({ _id: new ObjectId(String(courtId)) });
-    
+
     // função para encontrar se algum elemento (user com o seu id) está na queue
     const alreadyInQueue = court.queue.find(e => String(e._id) === String(user._id))
     // se user já estiver na queue escolhida
@@ -71,6 +71,8 @@ async function joinQueue (courtId, user) {
 
     // adicionar user à queue
     court.queue.push(user)
+
+    console.log("Fila atualizada:", court.queue.map(p => p._id));
 
     // update court queue
     await updateCourt(
@@ -103,7 +105,7 @@ async function leaveQueue(courtId, user) {
     if (alreadyInQueue) {
         updatedQueue = court.queue.filter( (e) => String(e._id) !== String(user._id))
     }
-
+    
     await updateCourt(
         { _id: court._id },
         { queue: updatedQueue });
