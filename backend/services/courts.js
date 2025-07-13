@@ -46,14 +46,15 @@ async function joinQueue (courtId, user) {
 
     // Se faz joinQueue, deve sair das outras queues
     const allCourts = await findAllCourts()
-    for (let i = 0; allCourts.length; i++) {
+    for (let i = 0; i < allCourts.length; i++) {
         const currentCourt = allCourts[i]
         const isInQueue = currentCourt.queue.find( (e) => String(e._id) === String(user._id))
-        if(isInQueue && String(currentCourt._id !== String(court._id))) {
+        const isDifferenteCourt = String(currentCourt._id) !== String(court._id)
+        if(isInQueue && isDifferenteCourt) {
             await leaveQueue(currentCourt, user)
         }
     }
-    
+
     // Só pode fazer join em campos que é do seu level
     if (court.courtLevel !== user.level) {
         throw new Error("Court level not authorized.")
