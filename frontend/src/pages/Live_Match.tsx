@@ -30,7 +30,7 @@ function Live_Match() {
         console.error("Failed to create match:", resData);
       }
     } catch (err) {
-      console.error('Error creating match:', err);
+      console.error("Error creating match:", err);
     }
   };
 
@@ -116,23 +116,43 @@ function Live_Match() {
         </div>
       </div>
 
-      <div className="flex justify-center mt-8 space-x-8">
-        <p>
-          {fourPlayers && fourPlayers[0] && fourPlayers[1]
+      {/* Scores Section */}
+      <div className="flex flex-col items-center mt-6 mb-6">
+        {/* Heading with beach volleyball aesthetic */}
+        <div className="mb-4 px-6 py-2 bg-[#0c2461] rounded-full shadow-lg border-2 border-[#f8c291]">
+          <h3 className="text-xl font-bold text-[#f8c291] text-center">
+            TEAM AVERAGE POINTS
+          </h3>
+        </div>
+
+        {/* Score circles with improved spacing and visual hierarchy */}
+        <div className="flex space-x-16">
+          {/* Team A Score */}
+          <div className="flex flex-col items-center">
+            <p className="text-[#f8c291] font-medium mb-2">TEAM A</p>
+            <div className="bg-[#0c2461] w-20 h-20 rounded-full border-4 border-[#f8c291] flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+              <span className="text-4xl font-bold text-[#f8c291]">{fourPlayers && fourPlayers[0] && fourPlayers[1]
             ? Math.round((fourPlayers[0].points + fourPlayers[1].points) / 2)
-            : ""}
-        </p>
-        <p>
-          {fourPlayers && fourPlayers[2] && fourPlayers[3]
+            : ""}</span>
+            </div>
+          </div>
+
+          {/* Team B Score */}
+          <div className="flex flex-col items-center">
+            <p className="text-[#f8c291] font-medium mb-2">TEAM B</p>
+            <div className="bg-[#0a3d62] w-20 h-20 rounded-full border-4 border-[#f8c291] flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+              <span className="text-4xl font-bold text-[#f8c291]">{fourPlayers && fourPlayers[2] && fourPlayers[3]
             ? Math.round((fourPlayers[2].points + fourPlayers[3].points) / 2)
-            : ""}
-        </p>
+            : ""}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Start button - Beach vibe */}
       <div className="mt-12 flex justify-center">
         <button
-          onClick={() => handleClick()}
+          onClick={() => navigate("/ongoingmatch")}
           className="px-12 py-4 bg-gradient-to-r from-[#f8c291] to-[#e58e26] text-[#0c2461] text-2xl font-bold rounded-full shadow-lg hover:shadow-xl hover:from-[#f9b76b] hover:to-[#e67e22] transition-all duration-300 transform hover:scale-105"
         >
           START
