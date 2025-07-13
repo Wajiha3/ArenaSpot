@@ -37,12 +37,6 @@ async function joinQueue (courtId, user) {
     if (!court) {
         throw new Error("Court not found.");
     }
-    // função para encontrar se algum elemento (user com o seu id) está na queue
-    const alreadyInQueue = court.queue.find(e => String(e._id) === String(user._id))
-    // se user já estiver na queue escolhida
-    if (alreadyInQueue) {
-        throw new Error("Player already in queue.")
-    }
 
     // Se faz joinQueue, deve sair das outras queues
     const allCourts = await findAllCourts()
@@ -51,9 +45,24 @@ async function joinQueue (courtId, user) {
         const isInQueue = currentCourt.queue.find( (e) => String(e._id) === String(user._id))
         const isDifferenteCourt = String(currentCourt._id) !== String(court._id)
         if(isInQueue && isDifferenteCourt) {
-            await leaveQueue(currentCourt, user)
+            try {
+                await leaveQueue(currentCourt, user);
+            } catch (err) {
+                console.error("Erro ao sair da fila de outro campo:", err);
+            }
         }
     }
+
+    court = await findCourt({ _id: new ObjectId(String(courtId)) });
+    
+    // função para encontrar se algum elemento (user com o seu id) está na queue
+    const alreadyInQueue = court.queue.find(e => String(e._id) === String(user._id))
+    // se user já estiver na queue escolhida
+    if (alreadyInQueue) {
+        throw new Error("Player already in queue.")
+    }
+
+    
 
     // Só pode fazer join em campos que é do seu level
     if (court.courtLevel !== user.level) {
@@ -86,6 +95,7 @@ async function leaveQueue(courtId, user) {
     if (!court) {
         throw new Error("Court not found.");
     }
+
     // função para encontrar se algum elemento (user com o seu id) está na queue
     const alreadyInQueue = court.queue.find(e => String(e._id) === String(user._id))
     // se user já estiver na queue escolhida
