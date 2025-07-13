@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useCourts } from '../hooks/useCourts';
 import { MatchesType, UserType } from '../hooks/useMatches';
 import { useBell } from "../context/BellContext";
+import { useOnGoingMatch } from '../hooks/useOnGoingMatch';
 
 interface User {
   _id: string;
@@ -32,7 +33,8 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
   const inQueue = userQueue === courtName;
   const isAboveLevel = userLevel !== level
   const { joinCourt, leaveCourt } = useCourts();
-  const { bellRing, setBellRing, setNotified, notified, notify, setfourPlayers} = useBell();
+  const { bellRing, setBellRing, setNotified, notified, notify} = useBell();
+  const { setCourtId, setfourPlayers} = useOnGoingMatch();
   
 
   useEffect(() => {
@@ -45,7 +47,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
       });
       const data = await response.json();
       setfourPlayers(data.firstFour); // Assuming data.fourPlayers is an array of UserType
-      
+      setCourtId(_courtId); // Set the court ID in the Bell context
       if (data.matchReady && !notified) {
         notify();
         setBellRing(true);

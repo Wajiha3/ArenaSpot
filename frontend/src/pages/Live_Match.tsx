@@ -2,17 +2,21 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import { useBell } from "../context/BellContext";
+import { useOnGoingMatch } from "../hooks/useOnGoingMatch";
 
 function Live_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
-  const {setBellRing, setNotified, fourPlayers} = useBell();
+  const {setBellRing, setNotified} = useBell();
+  const { courtId, fourPlayers} = useOnGoingMatch();
+  
 
   const handleClick = async () => {
     try {
       const response = await fetch(`http://localhost:3007/api/match/start`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+        headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' },
+        body: JSON.stringify({courtId}),
       });
       if (response.ok) {
         const data = await response.json();
