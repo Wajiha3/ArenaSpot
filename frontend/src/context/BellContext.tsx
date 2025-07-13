@@ -1,15 +1,19 @@
 import React, { createContext, useContext, useState } from "react";
 import { toast, Bounce } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 interface BellContextType {
   bellRing: boolean;
+  setBellRing: React.Dispatch<React.SetStateAction<boolean>>;
   handleBellClick: () => void;
+  notify: () => void;
 }
 
 const BellContext = createContext<BellContextType | undefined>(undefined);
 
 export const BellProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [bellRing, setBellRing] = useState(false);
+  const navigate = useNavigate();
 
   const notify = () => toast.info('Your match is starting hurry up!', {
     position: "top-center",
@@ -21,15 +25,15 @@ export const BellProvider: React.FC<{ children: React.ReactNode }> = ({ children
     progress: undefined,
     theme: "dark",
     transition: Bounce,
+    onClick: () => navigate("/LiveMatch"),
   });
 
   const handleBellClick = () => {
-    setBellRing(!bellRing);
-    notify();
+    navigate("/LiveMatch");
   };
 
   return (
-    <BellContext.Provider value={{ bellRing, handleBellClick }}>
+    <BellContext.Provider value={{ bellRing, setBellRing, handleBellClick, notify }}>
       {children}
     </BellContext.Provider>
   );

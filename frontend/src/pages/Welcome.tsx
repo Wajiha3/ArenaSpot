@@ -95,7 +95,7 @@ function Welcome() {
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Winning percentage:</span>
-              <span className="font-medium">{user && user.gamesPlayed > 0 ? user.wins * 100 / user.gamesPlayed : "0"}%</span>
+              <span className="font-medium">{user && user.gamesPlayed > 0 ? Math.round(user.wins * 100 / user.gamesPlayed * 100) /100 : "0"}%</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Level:</span>

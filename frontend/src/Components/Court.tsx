@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useCourts } from '../hooks/useCourts';
 import { MatchesType, UserType } from '../hooks/useMatches';
 import { FaLock } from "react-icons/fa";
+import { useBell } from "../context/BellContext";
 
 interface User {
+  _id: string;
   firstName: string;
 }
 
 interface CourtProps {
   _courtId: string;
   courtName: string;
+  courtStatus: boolean;
   level: string;
   queue: User[];
   userQueue: string | null;
@@ -27,31 +30,59 @@ function groupIntoTeams(users: User[]) {
   return teams;
 }
 
-function Court({ _courtId, courtName, level, queue, userQueue, setUserQueue, currentMatch, userLevel}: CourtProps) {
-const inQueue = userQueue === courtName;
-const isAboveLevel = userLevel !== level
-const { joinCourt , leaveCourt} = useCourts();
+function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setUserQueue, currentMatch, userLevel }: CourtProps) {
+  const inQueue = userQueue === courtName;
+  const isAboveLevel = userLevel !== level
+  const { joinCourt, leaveCourt } = useCourts();
+  const { bellRing, setBellRing, handleBellClick, notify} = useBell();
 
-  console.log("Current Match:", currentMatch);
-const handleQueueClick = () => {
-  if (inQueue) {
-    leaveCourt(_courtId); // Call the leaveCourt function from useCourts
-    setUserQueue(null); // Leave queue
-  } else {
-    joinCourt(_courtId); // Call the joinCourt function from useCourts
-    setUserQueue(courtName); // Join this queue
+  useEffect(() => {
+    if (!inQueue) return; // Only poll if user is in queue
+
+    const interval = setInterval(async () => {
+      const response = await fetch(`http://localhost:3007/api/match/ready/${_courtId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+      });
+      const data = await response.json();
+      if (data.matchReady) {
+        notify()
+        setBellRing(true);
+      }
+    }, 1000);
+
+
+    return () => clearInterval(interval);
+  }, [inQueue, _courtId]);
+
+  const handleQueueClick = () => {
+    if (inQueue) {
+      leaveCourt(_courtId); // Call the leaveCourt function from useCourts
+      setUserQueue(null); // Leave queue
+    } else {
+      joinCourt(_courtId); // Call the joinCourt function from useCourts
+      setUserQueue(courtName); // Join this queue
+    }
+  };
+
+  let matchDuration = "";
+  if (currentMatch && currentMatch.started) {
+    const start = new Date(currentMatch.started).getTime();
+    const now = Date.now();
+    const diff = Math.max(0, now - start); // milliseconds
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    matchDuration = `${minutes}:${seconds.toString().padStart(2, "0")}`;
   }
-};
 
-let matchDuration = "";
-if (currentMatch && currentMatch.started) {
-  const start = new Date(currentMatch.started).getTime();
-  const now = Date.now();
-  const diff = Math.max(0, now - start); // milliseconds
-  const minutes = Math.floor(diff / 60000);
-  const seconds = Math.floor((diff % 60000) / 1000);
-  matchDuration = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-}
+  let status = "";
+  if (currentMatch) {
+    status = "Match In Progress";
+  } else if (courtStatus) {
+    status = "Available";
+  } else {
+    status = "Unavailable";
+  }
 
   return (
     <div className="relative bg-[#112240] rounded-xl p-6 border border-[#1e3a8a]/30 shadow-lg hover:shadow-xl transition-shadow">
@@ -75,13 +106,12 @@ if (currentMatch && currentMatch.started) {
             <p className="text-sm text-[#8892b0]">{level}</p>
           </div>
           <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
-              status === "Match In Progress"
-                ? "bg-red-900/30 text-red-400"
-                : status === "Available"
+            className={`px-2 py-1 rounded-full text-xs font-medium ${status === "Match In Progress"
+              ? "bg-red-900/30 text-red-400"
+              : status === "Available"
                 ? "bg-green-900/30 text-green-400"
                 : "bg-yellow-900/30 text-yellow-400"
-            }`}
+              }`}
           >
             {status}
           </span>
@@ -107,12 +137,35 @@ if (currentMatch && currentMatch.started) {
         )}
 
         <div className="mb-4">
+          {inQueue && (
+            <h2 className="text-sm font-semibold text-[#38fb32] mb-2">
+              Your position is: {Math.floor(queue.findIndex(u => u._id === sessionStorage.getItem('token')) / 2) + 1}
+            </h2>
+          )}
           <h3 className="text-sm font-semibold text-[#ccd6f6] mb-2">
-            Queue ({queue.length} {queue.length === 1 ? "player" : "players"}):
+            {(() => {
+              const teams = groupIntoTeams(queue);
+              const numTeams = teams.length;
+              const numPlayers = queue.length % 2; // 1 if odd, 0 if even
+
+              if (queue.length === 0) {
+                return "No teams waiting";
+              }
+              if (numTeams === 1 && numPlayers === 1) {
+                return "1 Player waiting";
+              }
+              if (numTeams > 0 && numPlayers === 1) {
+                return `Queue (${numTeams - 1} ${numTeams === 1 ? "Team" : "Teams"} and 1 Player waiting)`;
+              }
+              if (numTeams > 0 && numPlayers === 0) {
+                return `Queue (${numTeams} ${numTeams === 1 ? "Team" : "Teams"}):`;
+              }
+              return "";
+            })()}
           </h3>
           {queue.length > 0 ? (
             <ul className="space-y-2">
-              {groupIntoTeams(queue).slice(0,3).map((team, i) => (
+              {groupIntoTeams(queue).slice(0, 3).map((team, i) => (
                 <li key={i} className="flex items-center text-[#8892b0]">
                   <span className="w-5 text-[#64ffda]">{i + 1}.</span>
                   <span>
@@ -129,11 +182,10 @@ if (currentMatch && currentMatch.started) {
 
         <button
           onClick={() => handleQueueClick()}
-          className={`w-full py-2 rounded-md font-medium transition-all ${
-            inQueue
-              ? "bg-gradient-to-r from-[#ff5555] to-[#ff6b6b] hover:from-[#ff6b6b] hover:to-[#ff5555]"
-              : "bg-gradient-to-r from-[#1e3a8a] to-[#3b82f6] hover:from-[#3b82f6] hover:to-[#1e3a8a]"
-          }`}
+          className={`w-full py-2 rounded-md font-medium transition-all ${inQueue
+            ? "bg-gradient-to-r from-[#ff5555] to-[#ff6b6b] hover:from-[#ff6b6b] hover:to-[#ff5555]"
+            : "bg-gradient-to-r from-[#1e3a8a] to-[#3b82f6] hover:from-[#3b82f6] hover:to-[#1e3a8a]"
+            }`}
         >
           {inQueue ? "Leave Queue" : "Join Queue"}
         </button>

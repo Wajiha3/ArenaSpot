@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
+import { useBell } from "../context/BellContext";
 
 function Live_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
+  const{setBellRing} = useBell();
 
   const handleClick = async () => {
      try {
@@ -14,7 +16,7 @@ function Live_Match() {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.error("Created match successfully", data);
+                setBellRing(false); 
                 navigate("/ongoingmatch");
             } else {
                 const resData = await response.json();
