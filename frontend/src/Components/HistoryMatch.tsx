@@ -32,7 +32,7 @@ const duration = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
   return (
     <div
-      className={`bg-white/10 rounded-xl p-4 border shadow-md hover:shadow-lg transition-all mb-4 cursor-pointer ${
+      className={`w-full bg-white/10 rounded-xl p-4 border shadow-md hover:shadow-lg transition-all mb-4 cursor-pointer ${
         userWon ? "border-green-400/30" : "border-red-400/30"
       } hover:bg-white/15`}
       onClick={() => navigate(`/match/${match._courtId}`)}

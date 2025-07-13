@@ -113,16 +113,17 @@ function Welcome() {
         </div>
 
         {/* Recent Games */}
-        <div className="bg-gradient-to-tr from-[#00ffcc]/20 from-47% to-[#009999]/20 to-98% rounded-xl p-6 shadow-lg border border-teal-400/30">
+        <div className="w-full mx-auto bg-gradient-to-tr from-[#00ffcc]/20 from-47% to-[#009999]/20 to-98% rounded-xl p-4 shadow-lg border border-teal-400/30">
           <h3 className="text-xl font-bold mb-4">Recent Games</h3>
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col justify-between items-center w-full">
               {last3Matches.length === 0 ? (
-            <div className="text-black">No matches found.</div>
-          ) : (
-            last3Matches.map((match, idx) => (
-              <HistoryMatch key={match._courtId} match={match} idx={idx} />
-            )))}
+                <div className="text-black">No matches found.</div>
+              ) : (
+                last3Matches.map((match, idx) => (
+                  <HistoryMatch key={match._courtId} match={match} idx={idx} />
+                ))
+              )}
             </div>
           </div>
         </div>
