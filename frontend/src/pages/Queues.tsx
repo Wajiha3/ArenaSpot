@@ -5,10 +5,11 @@ import Navbar from "../Components/Navbar";
 import Court from "../Components/Court";
 import ReactBellIcon from "../animations/bell";
 import { useBell } from "../context/BellContext";
-import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { useUser } from "../hooks/useUser";
 
 function Queues() {
   const navigate = useNavigate();
+  const { user } = useUser();
   const { courts, currentMatches } = useCourts();
   const [userQueue, setUserQueue] = useState<string | null>(null);
   const { bellRing, handleBellClick } = useBell();
@@ -51,6 +52,7 @@ function Queues() {
               userQueue={userQueue}
               setUserQueue={setUserQueue}
               currentMatch={currentMatches[court._id]}
+              userLevel={user?.level}
             />
           ))}
         </div>

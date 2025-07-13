@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useMatches } from "react-router-dom";
 import { MatchesType, UserType } from "./useMatches";
+import { useUser } from "./useUser";
 
 interface CourtType {
     _id: string;

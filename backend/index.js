@@ -360,9 +360,23 @@ app.get('/api/allcourts', async (req, res) => {
         if(authenticatedUser.paymentToken !== true) {
             return res.status(401).json({ message: "Access denied: User not checked-in"})
         }
-        const courts = await findAllCourts()
-        console.log(courts)
-        return res.status(200).json(courts)
+        const courts = await findAllCourts();
+
+        const levelOrder = ["Beginner", "Intermediate", "Advanced"];
+        const userLevelIndex = levelOrder.indexOf(authenticatedUser.level);
+
+        // Create a new order array starting from user's level
+        const orderedLevels = [
+            levelOrder[userLevelIndex],
+            ...levelOrder.filter(lvl => lvl !== levelOrder[userLevelIndex])
+        ];
+
+        // Sort courts by this order
+        const sortedCourts = orderedLevels.flatMap(lvl =>
+            courts.filter(court => court.courtLevel === lvl)
+        );
+
+        return res.status(200).json(sortedCourts);
     } catch (err) {
         return res.status(400).json({ error: err.message })
     }
