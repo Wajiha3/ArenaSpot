@@ -16,7 +16,7 @@ app.use(cors());
 
 const { createUser, loginUser, checkInUser } = require('./services/user')
 const { authenticateToken } = require('./services/authToken')
-const { findUser, countUsersCheckedIn } = require('./data/user')
+const { findUser, countUsersCheckedIn, updateUser } = require('./data/user')
 const { createCourt, joinQueue, leaveQueue } = require('./services/courts')
 const { findAllCourts, findCourt } = require('./data/courts')
 const { findAllMatches, findMatchesById, findInProgressMatchesByCourt } = require('./data/matches')
@@ -57,6 +57,23 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(200).json({ message: "Logged in", token: result });
 });
 
+// POST de update User
+app.post('/api/auth/update', async (req, res) => {
+    try {
+        const data = req.body
+        // Aceder ao header Authorization
+        const token = req.headers.authorization;
+        const authenticatedUser = await authenticateToken(token);
+        // Após encontrar o user autenticado
+        if(!authenticatedUser) {
+            return res.status(401).json({ message: "Unauthorized. "})
+        }
+        const updatedUser = await updateUser(authenticatedUser._id, data)
+        return res.status(200).json({message: "User updated", updatedUser})
+    } catch (err) {
+        return res.status(500).json({ error: err.message })
+    }
+})
 
 // POST do Check-In
 app.post('/api/checkin', async (req, res) => {
