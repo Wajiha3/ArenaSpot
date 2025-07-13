@@ -32,8 +32,8 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
   const inQueue = userQueue === courtName;
   const isAboveLevel = userLevel !== level
   const { joinCourt, leaveCourt } = useCourts();
-  const { bellRing, setBellRing, handleBellClick, notify} = useBell();
-  const [notified, setNotified] = useState(false);
+  const { bellRing, setBellRing, setNotified, notified, notify} = useBell();
+  
 
   useEffect(() => {
     if (!inQueue) return; // Only poll if user is in queue

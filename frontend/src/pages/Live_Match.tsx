@@ -6,7 +6,7 @@ import { useBell } from "../context/BellContext";
 function Live_Match() {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
-  const{setBellRing} = useBell();
+  const {setBellRing, setNotified} = useBell();
 
   const handleClick = async () => {
      try {
@@ -17,6 +17,7 @@ function Live_Match() {
             if (response.ok) {
                 const data = await response.json();
                 setBellRing(false); 
+                setNotified(false);
                 navigate("/ongoingmatch");
             } else {
                 const resData = await response.json();
