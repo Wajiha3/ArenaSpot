@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import HistoryMatch from "../Components/HistoryMatch";
@@ -11,7 +11,7 @@ import ReactBellIcon from "../animations/bell";
 import { useBell } from "../context/BellContext";
 
 function Welcome() {
-  const { handleBellClick, bellRing } = useBell();
+  const { setBellTarget, handleBellClick, bellRing, bellColor, bellAnimate } = useBell();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Home");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -37,9 +37,9 @@ function Welcome() {
             width={"24"}
             height={"24"}
             animationSpeed={"0.3"}
-            color={`${bellRing ? "#ff0000" : "#fff"}`}
-            animate={bellRing}
-            active={bellRing}
+            color={bellColor}
+            animate={bellAnimate}
+            active={bellAnimate}
             onClick={() => handleBellClick()}
           />
         </div>

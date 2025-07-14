@@ -1,14 +1,34 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import { useOnGoingMatch } from '../context/OngoingMatchContext';
+import { MatchesType } from "../hooks/useMatches";
+import { useBell } from "../context/BellContext";
 
 function Save_Match() {
+  const { _courtId } = useParams();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
-  const { courtId, fourPlayers, ongoingMatch } = useOnGoingMatch();
   const [teamAScore, setTeamAScore] = useState(2);
   const [teamBScore, setTeamBScore] = useState(0);
+  const [match, setMatch] = useState<MatchesType | null>(null);
+  const { setBellTarget } = useBell();
+  
+  useEffect(() => {
+    const fetchMacthData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3007/api/matches/${_courtId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+        });
+        const data = await response.json();
+        setMatch(data);
+      } catch (err) {
+        console.error("Network error:", err);
+      }
+    };
+
+    fetchMacthData(); // Initial fetch
+  }, []);
 
   const incrementScore = (team: "A" | "B") => {
     if (team === "A" && teamAScore < 2) {
@@ -28,7 +48,7 @@ function Save_Match() {
 
   const clickSaveHandler = async () => {
     try {
-      const response = await fetch(`http://localhost:3007/api/match/${ongoingMatch?._id}/finish`, {
+      const response = await fetch(`http://localhost:3007/api/match/${match?._id}/finish`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' },
         body: JSON.stringify({
@@ -38,6 +58,7 @@ function Save_Match() {
       });
       if (response.ok) {
         const data = await response.json();
+        setBellTarget(null);
         navigate("/welcome");
       } 
     } catch (err) {
@@ -80,16 +101,16 @@ function Save_Match() {
 
         {/* Player names */}
         <div className="absolute top-[40%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[0] ? fourPlayers[0].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamA[0] ? match.teamA[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[1] ? fourPlayers[1].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamA[1] ? match.teamA[1].firstName : ""}</p>
         </div>
         <div className="absolute top-[40%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[2] ? fourPlayers[2].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamB[0] ? match.teamB[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[3] ? fourPlayers[3].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamB[1] ? match.teamB[1].firstName : ""}</p>
         </div>
 
         {/* Sand texture elements */}
