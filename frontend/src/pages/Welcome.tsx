@@ -29,8 +29,8 @@ function Welcome() {
   return (
     <div className="bg-gradient-to-b from-[#011937] to-[#003366] w-screen text-white pt-[2rem] min-h-screen pb-[6rem]">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-        <div className="w-[3.6rem] h-[5.4rem]">
-          <img src="/logo.png" alt="" />
+        <div className="w-[4rem] h-[5.4rem] flex items-center">
+          <img src="/logo1.png" alt="" />
         </div>
         <div className="h-[34px] flex gap-2">
           <ReactBellIcon
