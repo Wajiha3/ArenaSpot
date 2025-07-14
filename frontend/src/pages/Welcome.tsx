@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import HistoryMatch from "../Components/HistoryMatch";
@@ -11,7 +11,7 @@ import ReactBellIcon from "../animations/bell";
 import { useBell } from "../context/BellContext";
 
 function Welcome() {
-  const { handleBellClick, bellRing } = useBell();
+  const { setBellTarget, handleBellClick, bellRing, bellColor, bellAnimate } = useBell();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Home");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -30,17 +30,17 @@ function Welcome() {
   return (
     <div className="bg-gradient-to-b from-[#011937] to-[#003366] w-screen text-white pt-[2rem] min-h-screen pb-[6rem]">
       <div className="ml-[2rem] mr-[2rem] flex justify-between items-center">
-        <div className="w-[3.6rem] h-[5.4rem]">
-          <img src="/logo.png" alt="" />
+        <div className="w-[4rem] h-[5.4rem] flex items-center">
+          <img src="/logo1.png" alt="" />
         </div>
         <div className="h-[34px] flex gap-2">
           <ReactBellIcon
             width={"24"}
             height={"24"}
             animationSpeed={"0.3"}
-            color={`${bellRing ? "#ff0000" : "#fff"}`}
-            animate={bellRing}
-            active={bellRing}
+            color={bellColor}
+            animate={bellAnimate}
+            active={bellAnimate}
             onClick={() => handleBellClick()}
           />
         </div>
@@ -106,13 +106,7 @@ function Welcome() {
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Winning percentage:</span>
-              <span className="font-medium">
-                {user && user.gamesPlayed > 0
-                  ? Math.round(((user.wins * 100) / user.gamesPlayed) * 100) /
-                    100
-                  : "0"}
-                %
-              </span>
+              <span className="font-medium">{user && user.gamesPlayed > 0 ? Math.round(user.wins * 100 / user.gamesPlayed * 10) / 10 : "0"}%</span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Level:</span>

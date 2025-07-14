@@ -39,10 +39,10 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<BellPagesWrapper><Welcome /></BellPagesWrapper>} />
         <Route path="/checkin" element={<Check_In />} />
-        <Route path="/livematch" element={<BellPagesWrapper><Live_Match /></BellPagesWrapper>} />
-         <Route path="/ongoingmatch" element={<Ongoing_Match />} />
-         <Route path="/savematch" element={<Save_Match />} />
-         <Route path="/matches" element={<Matches />} />
+        <Route path="/livematch/:_courtId" element={<BellPagesWrapper><Live_Match /></BellPagesWrapper>} />
+         <Route path="/ongoingmatch/:_courtId" element={<BellPagesWrapper><Ongoing_Match /></BellPagesWrapper>} />
+         <Route path="/savematch/:_courtId" element={<BellPagesWrapper><Save_Match /></BellPagesWrapper>} />
+         <Route path="/matches" element={<BellPagesWrapper><Matches /></BellPagesWrapper>} />
         <Route path="/paymentconfirmation" element={<Payment_Confirmation />} />
         <Route path="/queues" element={<BellPagesWrapper><Queues /></BellPagesWrapper>} />
         <Route path="/profile" element={<BellPagesWrapper><Profile /></BellPagesWrapper>} />

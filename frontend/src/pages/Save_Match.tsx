@@ -1,19 +1,39 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import { useOnGoingMatch } from "../hooks/useOnGoingMatch";
+import { MatchesType } from "../hooks/useMatches";
+import { useBell } from "../context/BellContext";
 
 function Save_Match() {
+  const { _courtId } = useParams();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Matches");
-  const { courtId, fourPlayers } = useOnGoingMatch();
   const [teamAScore, setTeamAScore] = useState(2);
   const [teamBScore, setTeamBScore] = useState(0);
+  const [match, setMatch] = useState<MatchesType | null>(null);
+  const { setBellTarget } = useBell();
+  
+  useEffect(() => {
+    const fetchMacthData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3007/api/matches/${_courtId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+        });
+        const data = await response.json();
+        setMatch(data);
+      } catch (err) {
+        console.error("Network error:", err);
+      }
+    };
+
+    fetchMacthData(); // Initial fetch
+  }, []);
 
   const incrementScore = (team: "A" | "B") => {
-    if (team === "A") {
+    if (team === "A" && teamAScore < 2) {
       setTeamAScore((prev) => prev + 1);
-    } else {
+    } else if(team === "B" && teamBScore < 2) {
       setTeamBScore((prev) => prev + 1);
     }
   };
@@ -23,6 +43,26 @@ function Save_Match() {
       setTeamAScore((prev) => prev - 1);
     } else if (team === "B" && teamBScore > 0) {
       setTeamBScore((prev) => prev - 1);
+    }
+  };
+
+  const clickSaveHandler = async () => {
+    try {
+      const response = await fetch(`http://localhost:3007/api/match/${match?._id}/finish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' },
+        body: JSON.stringify({
+          winningTeam: teamAScore > teamBScore ? "teamA" : "teamB",
+          score: { teamA: teamAScore, teamB: teamBScore}
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setBellTarget(null);
+        navigate("/welcome");
+      } 
+    } catch (err) {
+      console.error('Error saving match:', err);
     }
   };
 
@@ -61,16 +101,16 @@ function Save_Match() {
 
         {/* Player names */}
         <div className="absolute top-[40%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[0] ? fourPlayers[0].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamA[0] ? match.teamA[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[1] ? fourPlayers[1].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamA[1] ? match.teamA[1].firstName : ""}</p>
         </div>
         <div className="absolute top-[40%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[2] ? fourPlayers[2].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamB[0] ? match.teamB[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[3] ? fourPlayers[3].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamB[1] ? match.teamB[1].firstName : ""}</p>
         </div>
 
         {/* Sand texture elements */}
@@ -132,7 +172,7 @@ function Save_Match() {
           {/* Teams - Below scores but above player names */}
           <div className="flex justify-center mb-4 space-x-8">
             <div>
-              <p className="text-xl font-bold text-[#0c2461] bg-[#f8c291] px-3 py-1 rounded-lg">
+              <p className="text-xl font-bold text-[#0c2461] px-3 py-1 rounded-lg">
                 TEAM A
               </p>
             </div>
@@ -148,7 +188,7 @@ function Save_Match() {
       {/* Save Button */}
       <div className="mt-12 flex justify-center">
         <button
-          onClick={() => navigate("/queues")}
+          onClick={() => clickSaveHandler()}
           className="relative px-16 py-5 bg-gradient-to-br from-[#48c774] via-[#2ecc71] to-[#27ae60] text-white text-2xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group overflow-hidden"
         >
           <span className="relative z-10">SAVE</span>

@@ -1,13 +1,67 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import { useOnGoingMatch } from "../hooks/useOnGoingMatch";
+import { UserType } from "../hooks/useUser";
+import { MatchesType } from "../hooks/useMatches";
+import { useBell } from "../context/BellContext";
+import { on } from "events";
 
 function Ongoing_Match() {
+  const { _courtId } = useParams();
   const navigate = useNavigate();
+  const { setBellTarget } = useBell();
   const [selectedNav, setSelectedNav] = useState("Matches");
-  const {courtId, fourPlayers} = useOnGoingMatch();
+  const [matchDuration, setMatchDuration] = useState("");
+  const [match, setMatch] = useState<MatchesType | null>(null);
 
+  useEffect(() => {
+      const fetchMacthData = async () => {
+        try {
+          const response = await fetch(`http://localhost:3007/api/matches/${_courtId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
+          });
+          const data = await response.json();
+          setMatch(data);
+        } catch (err) {
+          console.error("Network error:", err);
+        }
+      };
+  
+      fetchMacthData(); // Initial fetch
+    }, []);
+
+
+  useEffect(() => {
+    if (match && match.started) {
+      const interval = setInterval(() => {
+        const start = new Date(match.started).getTime();
+        const now = Date.now();
+        const diff = Math.max(0, now - start); // milliseconds
+        const minutes = Math.floor(diff / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        setMatchDuration(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+      }, 1000);
+
+      // Initial set
+      const start = new Date(match.started).getTime();
+      const now = Date.now();
+      const diff = Math.max(0, now - start);
+      const minutes = Math.floor(diff / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      setMatchDuration(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+
+      return () => clearInterval(interval);
+    }
+  }, [match]);
+
+  const courtId = _courtId ?? ""; // fallback to empty string if undefined
+
+  const onClickHandler = () => {
+    setBellTarget({ type: "save", courtId: courtId });
+    navigate(`/savematch/${_courtId}`)
+    }
+  
   return (
     <div className="bg-[#011937] min-h-screen w-screen text-white pt-8 pb-20">
       {" "}
@@ -44,16 +98,16 @@ function Ongoing_Match() {
         </div>
         {/* Player names */}
         <div className="absolute top-[40%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[0] ? fourPlayers[0].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamA[0] ? match.teamA[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] left-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[1] ? fourPlayers[1].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamA[1] ? match.teamA[1].firstName : ""}</p>
         </div>
         <div className="absolute top-[40%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[2] ? fourPlayers[2].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamB[0] ? match.teamB[0].firstName : ""}</p>
         </div>
         <div className="absolute top-[55%] right-4 text-center">
-          <p className="text-2xl font-bold text-[#0c2461]">{fourPlayers && fourPlayers[3] ? fourPlayers[3].firstName : ""}</p>
+          <p className="text-2xl font-bold text-[#0c2461]">{match && match.teamB[1] ? match.teamB[1].firstName : ""}</p>
         </div>
         {/* Sand texture elements */}
         <div className="absolute inset-0 opacity-10">
@@ -67,7 +121,7 @@ function Ongoing_Match() {
         {/* Increased mt-12 to mt-16 and mb-8 to mb-10 */}
         <div className="relative">
           <div className="text-7xl font-bold bg-gradient-to-br from-white to-[#f8c291] text-transparent bg-clip-text tracking-tighter px-1 drop-shadow-[0_2px_8px_rgba(248,194,145,0.4)]">
-            08:10
+            {matchDuration && `(${matchDuration})`}
           </div>
           <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-[#0c2461]/10 to-[#0a3d62]/20 pointer-events-none"></div>
         </div>
@@ -75,7 +129,7 @@ function Ongoing_Match() {
       {/* Finish button - Moved down further */}
       <div className="mt-16 flex justify-center">
         <button
-          onClick={() => navigate("/savematch")}
+          onClick={() => onClickHandler()}
           className="relative px-16 py-5 bg-gradient-to-br from-[#ff3e3e] via-[#e74c3c] to-[#c0392b] text-white text-2xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group overflow-hidden"
         >
           <span className="relative z-10">FINISH</span>

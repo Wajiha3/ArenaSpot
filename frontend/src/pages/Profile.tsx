@@ -6,7 +6,7 @@ import { useBell } from "../context/BellContext";
 import ReactBellIcon from "../animations/bell";
 
 function Profile() {
-  const { handleBellClick, bellRing } = useBell();
+  const { handleBellClick, bellRing, bellColor, bellAnimate } = useBell();
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useState("Profile");
   const [selectedFilter, setSelectedFilter] = useState("Today");
@@ -21,9 +21,9 @@ function Profile() {
     <div className="min-h-screen bg-gradient-to-b from-[#011937] to-[#003366] text-white pb-24">
       {/* Header with Logo and Notification */}
       <div className="flex justify-between items-center px-8 pt-8">
-        <div className="w-14 h-20">
+        <div className="w-[4rem] h-[5.4rem] flex items-center">
           <img
-            src="/logo.png"
+            src="/logo1.png"
             alt="App Logo"
             className="w-full h-full object-contain"
           />
@@ -32,9 +32,9 @@ function Profile() {
             width={"24"}
             height={"24"}
             animationSpeed={"0.3"}
-            color={`${bellRing ? "#ff0000" : "#fff"}`}
-            animate={bellRing}
-            active={bellRing}
+            color={bellColor}
+            animate={bellAnimate}
+            active={bellAnimate}
             onClick={() => handleBellClick()}
           />
       </div>

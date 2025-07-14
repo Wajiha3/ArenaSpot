@@ -67,8 +67,8 @@ function SignUp() {
 
   return (
     <div className="bg-[#011937] h-screen w-screen text-white pt-[2rem]">
-      <div className="ml-[2rem] w-[3.6rem] h-[5.4rem]">
-        <img src="/logo.png" alt="" />
+      <div className="ml-[2rem] w-[5rem] h-[5.4rem]">
+        <img src="/logo1.png" alt="" />
       </div>
       <div className="flex flex-col justify-center items-center w-[100%] pb-[4rem]">
         <p className="text-[2rem] font-bold mt-[2rem] mb-[2rem]">Sign Up</p>

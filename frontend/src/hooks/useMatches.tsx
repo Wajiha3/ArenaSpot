@@ -19,6 +19,7 @@ export interface UserType {
 }
 
 export interface MatchesType {
+  _id: string;
   _courtId: string;
   teamA: UserType[];
   teamB: UserType[];
