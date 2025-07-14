@@ -18,8 +18,8 @@ function HistoryMatch({ match, idx }: HistoryMatchesProps) {
     (match.winningTeam === "teamB" && userInTeamB);
 
   // Example: get team names (customize as needed)
-  const teamAName = match.teamA.map(p => p.userName).join(" & ");
-  const teamBName = match.teamB.map(p => p.userName).join(" & ");
+  const teamAName = match.teamA.map(p => p.firstName).join(" & ");
+  const teamBName = match.teamB.map(p => p.firstName).join(" & ");
 
   // Example: score and duration (customize as needed)
   const score = match.score || { teamA: 0, teamB: 0 };
@@ -51,7 +51,7 @@ const duration = `${minutes}:${seconds.toString().padStart(2, "0")}`;
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-semibold">{teamAName}</span>
-              <span className="text-lg font-semibold">vs {teamBName}</span>
+              <span className="text-lg font-semibold"><b>vs</b> {teamBName}</span>
             </div>
           </div>
           <div className="mt-2 flex items-center space-x-4 text-sm text-white/80">
