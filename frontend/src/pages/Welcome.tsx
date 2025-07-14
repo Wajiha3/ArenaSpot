@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import HistoryMatch from "../Components/HistoryMatch";
-import { useUser } from '../hooks/useUser';
-import { useMatches } from '../hooks/useMatches';
+import { useUser } from "../hooks/useUser";
+import { useMatches } from "../hooks/useMatches";
 import { useCourts } from "../hooks/useCourts";
-import { Bounce, ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ReactBellIcon from "../animations/bell";
 import { useBell } from "../context/BellContext";
 
@@ -22,7 +22,8 @@ function Welcome() {
   let progress = 0;
   if (user && typeof user.points === "number") {
     if (user.level === "Beginner") progress = (user.points * 100) / 399;
-    else if (user.level === "Intermediate") progress = (user.points * 100) / 799;
+    else if (user.level === "Intermediate")
+      progress = (user.points * 100) / 799;
     else if (user.level === "Advanced") progress = 100;
   }
 
@@ -48,14 +49,18 @@ function Welcome() {
       {/* Main Content */}
       <div className="px-6">
         {/* Welcome Title */}
-        <h1 className="text-3xl font-bold mt-6 mb-8">Welcome, {user ? user.userName : "Player"}</h1>
+        <h1 className="text-3xl font-bold mt-6 mb-8">
+          Welcome, {user ? user.userName : "Player"}
+        </h1>
 
         {/* Status Card */}
         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 shadow-lg border border-white/20">
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-white/80">Status:</span>
-              <span className="font-medium text-green-400">{checkInUsers === 0 ? "Closed" : "Open"}</span>
+              <span className="font-medium text-green-400">
+                {checkInUsers === 0 ? "Closed" : "Open"}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Active Courts:</span>
@@ -83,15 +88,21 @@ function Welcome() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-white/80">Games Played:</span>
-              <span className="font-medium">{user ? user.gamesPlayed : ""}</span>
+              <span className="font-medium">
+                {user ? user.gamesPlayed : ""}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Wins:</span>
-              <span className="font-medium text-green-400">{user ? user.wins : ""}</span>
+              <span className="font-medium text-green-400">
+                {user ? user.wins : ""}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Losses:</span>
-              <span className="font-medium text-red-400">{user ? user.losses : ""}</span>
+              <span className="font-medium text-red-400">
+                {user ? user.losses : ""}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-white/80">Winning percentage:</span>
