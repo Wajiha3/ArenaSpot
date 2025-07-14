@@ -44,7 +44,7 @@ export function useMatches() {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const statsRes = await fetch(`http://localhost:3007/api/${sessionStorage.getItem('token') || ''}/matches`, {
+        const statsRes = await fetch(`http://localhost:3033/api/${sessionStorage.getItem('token') || ''}/matches`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
         });

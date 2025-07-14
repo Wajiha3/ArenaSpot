@@ -11,7 +11,7 @@ function Check_In() {
 
   const fetchPayement = async () => {
     try {
-      const response = await fetch('http://localhost:3007/api/checkin', {
+      const response = await fetch('http://localhost:3033/api/checkin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
       });

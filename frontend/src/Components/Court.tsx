@@ -38,7 +38,7 @@ function Court({ _courtId, courtName, courtStatus, level, queue, userQueue, setU
     if (!userInQueue) return;
 
     const interval = setInterval(async () => {
-      const response = await fetch(`http://localhost:3007/api/match/ready/${_courtId}`, {
+      const response = await fetch(`http://localhost:3033/api/match/ready/${_courtId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
       });

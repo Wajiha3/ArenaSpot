@@ -17,7 +17,7 @@ function Ongoing_Match() {
   useEffect(() => {
       const fetchMacthData = async () => {
         try {
-          const response = await fetch(`http://localhost:3007/api/matches/${_courtId}`, {
+          const response = await fetch(`http://localhost:3033/api/matches/${_courtId}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
           });

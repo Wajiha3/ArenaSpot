@@ -21,7 +21,7 @@ export function useCourts() {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch('http://localhost:3007/api/allcourts', {
+                const response = await fetch('http://localhost:3033/api/allcourts', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
                 });
@@ -53,7 +53,7 @@ export function useCourts() {
         const results: { [courtId: string]: MatchesType | null } = {};
         for (const id of courtIds) {
             try {
-                const response = await fetch(`http://localhost:3007/api/matches/${id}`, {
+                const response = await fetch(`http://localhost:3033/api/matches/${id}`, {
                     headers: { 'authorization': sessionStorage.getItem('token') || '' }
                 });
                 if (response.ok) {
@@ -79,7 +79,7 @@ export function useCourts() {
     // 1. Matches played today
     const joinCourt = async (_idCourt: string) => {
         try {
-            const response = await fetch(`http://localhost:3007/api/courts/${_idCourt}/join`, {
+            const response = await fetch(`http://localhost:3033/api/courts/${_idCourt}/join`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
             });
@@ -99,7 +99,7 @@ export function useCourts() {
 
     const leaveCourt = async (_idCourt: string) => {
         try {
-            const response = await fetch(`http://localhost:3007/api/courts/${_idCourt}/leave`, {
+            const response = await fetch(`http://localhost:3033/api/courts/${_idCourt}/leave`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
             });

@@ -16,7 +16,7 @@ function Save_Match() {
   useEffect(() => {
     const fetchMacthData = async () => {
       try {
-        const response = await fetch(`http://localhost:3007/api/matches/${_courtId}`, {
+        const response = await fetch(`http://localhost:3033/api/matches/${_courtId}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
         });
@@ -48,7 +48,7 @@ function Save_Match() {
 
   const clickSaveHandler = async () => {
     try {
-      const response = await fetch(`http://localhost:3007/api/match/${match?._id}/finish`, {
+      const response = await fetch(`http://localhost:3033/api/match/${match?._id}/finish`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' },
         body: JSON.stringify({

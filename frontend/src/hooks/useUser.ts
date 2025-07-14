@@ -25,7 +25,7 @@ export function useUser() {
 
   const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:3007/api/user/${sessionStorage.getItem('token')}`, {
+        const res = await fetch(`http://localhost:3033/api/user/${sessionStorage.getItem('token')}`, {
         method: 'GET',
           headers: { 'Content-Type': 'application/json', 'authorization': sessionStorage.getItem('token') || '' }
         });
@@ -40,7 +40,7 @@ export function useUser() {
 
     const fetchCheckInUsers = async () => {
       try {
-        const res = await fetch(`http://localhost:3007/api/users/checkedin/count`, {
+        const res = await fetch(`http://localhost:3033/api/users/checkedin/count`, {
         method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });

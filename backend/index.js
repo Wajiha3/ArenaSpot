@@ -5,7 +5,7 @@ const express = require('express')
 const app = express()
 
 // porta escolhida
-const port = 3007
+const port = 3033
 
 // Aceitar JSON
 app.use(express.json())

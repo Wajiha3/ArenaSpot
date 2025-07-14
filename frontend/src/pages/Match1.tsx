@@ -37,7 +37,7 @@ function Match1() {
 
   useEffect(() => {
     const fetchMatch = async () => {
-      const res = await fetch(`http://localhost:3007/api/matches/${id}`, {
+      const res = await fetch(`http://localhost:3033/api/matches/${id}`, {
         headers: { authorization: sessionStorage.getItem("token") || "" },
       });
       if (res.ok) {
