@@ -45,7 +45,7 @@ async function findInProgressMatchesByCourt (courtId) {
     const result = await collection.findOne({
         courtId: id,
         status: "In Progress"
-    })
+    })  
     return result
 }
 
